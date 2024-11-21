@@ -1,4 +1,4 @@
 package dev.team.systers.grupos;
 
-public class Mensagem {
+public class Comentario {
 }
