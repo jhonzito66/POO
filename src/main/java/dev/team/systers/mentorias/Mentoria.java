@@ -1,9 +1,6 @@
-package dev.team.systers.model.mentoria;
+package dev.team.systers.mentorias;
 
-import dev.team.systers.model.grupos.Membro;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 /*
 Exemplo: Mentee solicita uma sessão de mentoria com uma Mentora em determinada data e hora.

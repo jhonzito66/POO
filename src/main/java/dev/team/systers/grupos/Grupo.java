@@ -1,12 +1,4 @@
-package dev.team.systers.model.grupos;
-
-/*
-Exemplo: Usuárias podem criar e participar de grupos de networking com interesses comuns.
-
-Grupo: Representa um grupo com atributos id, nome, descricao, listaDeMembros.
-Mensagem: Permite troca de mensagens dentro do grupo.
-Banco de Dados: Tabelas para Grupos, Usuarios_Grupos, Mensagens.
- */
+package dev.team.systers.grupos;
 
 import jakarta.persistence.*;
 

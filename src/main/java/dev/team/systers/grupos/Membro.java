@@ -1,6 +1,6 @@
-package dev.team.systers.model.grupos;
+package dev.team.systers.grupos;
 
-import dev.team.systers.model.Usuario.Usuario;
+import dev.team.systers.usuarios.Usuario;
 import jakarta.persistence.*;
 
 @Entity

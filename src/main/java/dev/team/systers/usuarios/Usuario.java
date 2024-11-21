@@ -1,6 +1,6 @@
-package dev.team.systers.model.Usuario;
+package dev.team.systers.usuarios;
 
-import dev.team.systers.model.grupos.Membro;
+import dev.team.systers.grupos.Membro;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -33,4 +33,5 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Membro> membros;
 
+    // ligação com denúncia aqui
 }

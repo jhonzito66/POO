@@ -1,4 +1,4 @@
-package dev.team.systers.model.suporte;
+package dev.team.systers.suporte;
 
 import java.time.LocalDateTime;
 
