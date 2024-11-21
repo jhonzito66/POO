@@ -23,7 +23,7 @@ public class Membro {
      * Deve ser igual ao login do usuário.
      * Obrigatório.
      */
-    @Column(name = "tag", nullable = false)
+    @Column(name = "membro_tag", nullable = false)
     private String tag;
 
     /**
@@ -56,14 +56,14 @@ public class Membro {
      * Usuário associado ao membro do grupo.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name = "usuario_id_fk"), nullable = false)
+    @JoinColumn(name = "usuario_id_membro_fk", foreignKey = @ForeignKey(name = "usuario_id_fk"), nullable = false)
     private Usuario usuario;
 
     /**
      * Grupo associado ao membro.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grupo_id", foreignKey = @ForeignKey(name = "grupo_id_fk"), nullable = false)
+    @JoinColumn(name = "grupo_id_membro_fk", foreignKey = @ForeignKey(name = "grupo_id_fk"), nullable = false)
     private Grupo grupo;
 
     /**

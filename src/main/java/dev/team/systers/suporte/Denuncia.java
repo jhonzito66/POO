@@ -38,13 +38,13 @@ public class Denuncia {
      * Associação do usuário autor da denúncia.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_autor_fk", foreignKey = @ForeignKey(name = "usuario_autor_fk"), nullable = false)
+    @JoinColumn(name = "usuario_autor_usuario_fk", foreignKey = @ForeignKey(name = "usuario_autor_fk"), nullable = false)
     private Usuario usuarioAutor;
 
     /**
      * Associação do usuário reportado na denúncia.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_reportado_fk", foreignKey = @ForeignKey(name = "usuario_reportado_fk"), nullable = false)
+    @JoinColumn(name = "usuario_reportado_usuario_fk", foreignKey = @ForeignKey(name = "usuario_reportado_fk"), nullable = false)
     private Usuario usuarioReportado;
 }
