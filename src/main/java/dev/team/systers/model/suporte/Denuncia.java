@@ -1,5 +1,7 @@
 package dev.team.systers.model.suporte;
 
+import java.time.LocalDateTime;
+
 /*
 Exemplo: Usuária faz uma Denuncia sobre comportamento inapropriado, que é analisada por uma Moderadora.
 
@@ -10,15 +12,11 @@ Banco de Dados: Tabelas para Denuncias, Usuarios.
 public class Denuncia {
     private Long id; // pk
     private String descricao;
+    private String categoria;
+    private String status;
+    private LocalDateTime dataDenuncia;
 
     // usuário reportado e usuário autor da denúncia
-    // denuncia tipo
 
-    private Enum<Status> status;
 
-    private enum Status {
-            ABERTA,
-            ANALISE,
-            FECHADA
-    }
 }
