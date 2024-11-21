@@ -1,37 +1,152 @@
 package dev.team.systers.usuarios;
 
 import dev.team.systers.grupos.Membro;
+import dev.team.systers.suporte.Denuncia;
 import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.TimeZone;
 
+/**
+ * Representa um usuário do sistema.
+ */
 @Entity
 @Table(name = "usuario")
 public class Usuario {
+    /**
+     * Identificador único do usuário.
+     * Obrigatório (não há usuário sem ID).
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usuario_id", nullable = false)
     private Long id;
+
+    /**
+     * Login do usuário.
+     * Funciona como sua tag @ no restante do sistema.
+     * Obrigatório.
+     */
     @Column(name = "usuario_login", nullable = false)
     private String login;
+
+    /**
+     * Senha do usuário.
+     * Obrigatório.
+     */
     @Column(name = "usuario_senha", nullable = false)
     private String senha;
+
+    /**
+     * Nome do usuário
+     * Obrigatório.
+     */
     @Column(name = "usuario_nome", nullable = false)
     private String nome;
+
+    /**
+     * Email do usuário.
+     * Opcional.
+     */
     @Column(name = "usuario_email")
     private String email;
+
+    /**
+     * Telefone do usuário.
+     * Apenas um.
+     * Opcional.
+     */
     @Column(name = "usuario_telefone")
     private String telefone;
-    @Column(name = "usuario_fusoHorario")
-    private TimeZone fusoHorario;
-    @Column(name = "usuario_autorizacao")
-    private String autorizacao; // nível de acesso: usuário padrão e usuário moderador
-    @Column(name = "usuario_status_conta")
-    private String statusConta;
 
+    /**
+     * Fuso horário do usuário.
+     * Deve ser definido pelo próprio usuário (preferencialmente na tela de cadastro).
+     * Caso contrário, o horário no sistema aparecerá -- para o usuário -- como o padrão universal.
+     * Opcional.
+     */
+    @Column(name = "usuario_fuso_horario")
+    private TimeZone fusoHorario;
+
+    /**
+     * Nível de acesso do usuário ao sistema.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usuario_autorizacao", nullable = false)
+    private Autorizacao autorizacao;
+
+    /**
+     * StatusConta da conta do usuário (padrão ou moderador).
+     * Qualquer usuário é criado inicialmente com acesso padrão.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usuario_status_conta", nullable = false)
+    private StatusConta statusConta;
+
+    /**
+     * Associação com a tabela de membros.
+     */
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Membro> membros;
 
-    // ligação com denúncia aqui
+    // Associação com denúncia aqui
+    @OneToMany(mappedBy = "usuarioAutor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Denuncia> denunciasCriadas;
+
+    @OneToMany(mappedBy = "usuarioReportado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Denuncia> denunciasRecebidas;
+
+    /**
+     * Construtor sem parâmetros.
+     */
+    public Usuario() {}
+
+    /**
+     * Construtor completo.
+     * @param id
+     * @param login
+     * @param senha
+     * @param nome
+     * @param email
+     * @param telefone
+     * @param fusoHorario
+     * @param autorizacao
+     * @param statusConta
+     * @param membros
+     * @param denunciasCriadas
+     * @param denunciasRecebidas
+     */
+    public Usuario(Long id, String login, String senha, String nome, String email, String telefone, TimeZone fusoHorario, Autorizacao autorizacao, StatusConta statusConta, List<Membro> membros, List<Denuncia> denunciasCriadas, List<Denuncia> denunciasRecebidas) {
+        this.id = id;
+        this.login = login;
+        this.senha = senha;
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+        this.fusoHorario = fusoHorario;
+        this.autorizacao = autorizacao;
+        this.statusConta = statusConta;
+        this.membros = membros;
+        this.denunciasCriadas = denunciasCriadas;
+        this.denunciasRecebidas = denunciasRecebidas;
+    }
+
+    /**
+     * Enum para representar o nível de autorização do usuário.
+     * Pode ser <i>PADRAO</i> ou <i>ADMINISTRADOR</i>.
+     */
+    public enum Autorizacao {
+        PADRAO,
+        ADMINISTRADOR
+    }
+
+    /**
+     * Enum para representar os status de acesso do usuário.
+     * Pode sr <i>NORMAL</i>, <i>SUSPENSO</i> ou <i>BANIDO</i>.
+     */
+    public enum StatusConta {
+        NORMAL,
+        SUSPENSO,
+        BANIDO
+    }
 }
