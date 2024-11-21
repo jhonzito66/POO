@@ -109,4 +109,62 @@ public class Membro {
         SUSPENSO,
         BANIDO
     }
+
+    // Getters & Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public Autorizacao getAutorizacao() {
+        return autorizacao;
+    }
+
+    public void setAutorizacao(Autorizacao autorizacao) {
+        this.autorizacao = autorizacao;
+    }
+
+    public StatusAcesso getStatusAcesso() {
+        return statusAcesso;
+    }
+
+    public void setStatusAcesso(StatusAcesso statusAcesso) {
+        this.statusAcesso = statusAcesso;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
 }

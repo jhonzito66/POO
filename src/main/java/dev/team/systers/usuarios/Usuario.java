@@ -89,12 +89,14 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Membro> membros;
 
-    // Associação com denúncia aqui
     @OneToMany(mappedBy = "usuarioAutor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasCriadas;
 
     @OneToMany(mappedBy = "usuarioReportado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasRecebidas;
+
+    @OneToMany(mappedBy = "usuarioNotificacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Notificacao> notificacoes;
 
     /**
      * Construtor sem parâmetros.
@@ -148,5 +150,111 @@ public class Usuario {
         NORMAL,
         SUSPENSO,
         BANIDO
+    }
+
+    // Getters & Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public TimeZone getFusoHorario() {
+        return fusoHorario;
+    }
+
+    public void setFusoHorario(TimeZone fusoHorario) {
+        this.fusoHorario = fusoHorario;
+    }
+
+    public Autorizacao getAutorizacao() {
+        return autorizacao;
+    }
+
+    public void setAutorizacao(Autorizacao autorizacao) {
+        this.autorizacao = autorizacao;
+    }
+
+    public StatusConta getStatusConta() {
+        return statusConta;
+    }
+
+    public void setStatusConta(StatusConta statusConta) {
+        this.statusConta = statusConta;
+    }
+
+    public List<Membro> getMembros() {
+        return membros;
+    }
+
+    public void setMembros(List<Membro> membros) {
+        this.membros = membros;
+    }
+
+    public List<Denuncia> getDenunciasCriadas() {
+        return denunciasCriadas;
+    }
+
+    public void setDenunciasCriadas(List<Denuncia> denunciasCriadas) {
+        this.denunciasCriadas = denunciasCriadas;
+    }
+
+    public List<Denuncia> getDenunciasRecebidas() {
+        return denunciasRecebidas;
+    }
+
+    public void setDenunciasRecebidas(List<Denuncia> denunciasRecebidas) {
+        this.denunciasRecebidas = denunciasRecebidas;
+    }
+
+    public List<Notificacao> getNotificacoes() {
+        return notificacoes;
+    }
+
+    public void setNotificacoes(List<Notificacao> notificacoes) {
+        this.notificacoes = notificacoes;
     }
 }
