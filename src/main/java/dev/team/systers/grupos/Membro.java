@@ -1,7 +1,18 @@
 package dev.team.systers.grupos;
 
 import dev.team.systers.usuarios.Usuario;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Representa um membro de um grupo.
@@ -35,8 +46,9 @@ public class Membro {
     private String nome;
 
     /**
-     * Nível de acesso do membro no grupo (padrão ou moderador).
-     * Quem cria o grupo se torna moderador.
+     * Nível de acesso do membro no grupo (padrão, moderador ou dono).
+     * Quem cria o grupo se torna dono.
+     * O dono pode escolher moderadores.
      * Quem entra se torna membro padrão.
      * Obrigatório.
      */
@@ -93,11 +105,12 @@ public class Membro {
 
     /**
      * Enum para representar os níveis de autorização dos membros.
-     * Pode ser <i>PADRAO</i> ou <i>MODERADOR</i>.
+     * Pode ser <i>PADRAO</i>, <i>MODERADOR</i> OU <i>DONO</i>.
      */
     public enum Autorizacao {
         PADRAO,
-        MODERADOR
+        MODERADOR,
+        DONO
     }
 
     /**
