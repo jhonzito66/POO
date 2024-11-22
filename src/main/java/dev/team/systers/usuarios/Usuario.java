@@ -1,6 +1,7 @@
 package dev.team.systers.usuarios;
 
 import dev.team.systers.grupos.Membro;
+import dev.team.systers.suporte.Denuncia;
 import jakarta.persistence.*;
 
 import java.util.List;
