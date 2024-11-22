@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
@@ -19,4 +20,11 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
             "JOIN usuario ON membro_id = :usuarioId",
             nativeQuery = true)
     List<Object[]> findGruposDeUmUsuarioNativo(@Param("usuarioId") Long usuarioId);
+
+    /**
+     * Encontra todos os usuários pelo login.
+     * @param login
+     * @return
+     */
+    Optional<Usuario> findAllByLogin(String login);
 }
