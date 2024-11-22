@@ -16,10 +16,10 @@ public interface MentoriaRepository extends JpaRepository<Mentoria, Long> {
     List<Mentoria> findByStatus(String status);
 
     // Encontrar mentorias de um determinado mentor
-    List<Mentoria> findByMentor(Mentor mentor);
+    List<Mentoria> findByMentor(Participante mentor);
 
     // Encontrar mentorias de um determinado mentee
-    List<Mentoria> findByMentee(Mentee mentee);
+    List<Mentoria> findByMentee(Participante mentee);
 
     // Encontrar mentorias que estão no intervalo de uma data
     List<Mentoria> findByDataHoraInicioBetween(LocalDateTime start, LocalDateTime end);

@@ -13,19 +13,19 @@ public interface DialogoMentoriaRepository extends JpaRepository<DialogoMentoria
     List<DialogoMentoria> findByMentoria(Mentoria mentoria);
 
     // Buscar todos os diálogos de um determinado mentor
-    List<DialogoMentoria> findByMentor(Mentor mentor);
+    List<DialogoMentoria> findByMentor(Participante mentor);
 
     // Buscar todos os diálogos de um determinado mentee
-    List<DialogoMentoria> findByMentee(Mentee mentee);
+    List<DialogoMentoria> findByMentee(Participante mentee);
 
     // Buscar todos os diálogos de uma mentoria que ocorreram em um intervalo de tempo
     List<DialogoMentoria> findByMentoriaAndDataHoraBetween(Mentoria mentoria, LocalDateTime start, LocalDateTime end);
 
     // Buscar todos os diálogos enviados por um determinado mentor em um intervalo de tempo
-    List<DialogoMentoria> findByMentorAndDataHoraBetween(Mentor mentor, LocalDateTime start, LocalDateTime end);
+    List<DialogoMentoria> findByMentorAndDataHoraBetween(Participante mentor, LocalDateTime start, LocalDateTime end);
 
     // Buscar todos os diálogos enviados por um determinado mentee em um intervalo de tempo
-    List<DialogoMentoria> findByMenteeAndDataHoraBetween(Mentee mentee, LocalDateTime start, LocalDateTime end);
+    List<DialogoMentoria> findByMenteeAndDataHoraBetween(Participante mentee, LocalDateTime start, LocalDateTime end);
 
     // Buscar todos os diálogos de uma mentoria, ordenados por data e hora
     List<DialogoMentoria> findByMentoriaOrderByDataHoraAsc(Mentoria mentoria);
