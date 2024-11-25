@@ -98,6 +98,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuarioNotificacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Notificacao> notificacoes;
 
+    @OneToOne(mappedBy = "usuario_perfil", cascade = CascadeType.ALL)
+    private Perfil perfil_usuario;
+
     /**
      * Construtor sem parâmetros.
      */
@@ -256,5 +259,14 @@ public class Usuario {
 
     public void setNotificacoes(List<Notificacao> notificacoes) {
         this.notificacoes = notificacoes;
+    }
+
+    public Perfil getPerfil_usuario() {
+        return perfil_usuario;
+    }
+
+    public void setPerfil_usuario(Perfil perfil_usuario) {
+        this.perfil_usuario = perfil_usuario;
+        perfil_usuario.setUsuario_perfil(this);
     }
 }

@@ -15,10 +15,13 @@
     </nav>
 </header>
 
-<main>
+<main class="main-perfil">
     <section>
-        <h1><span th:text="${usuario.nome ?: 'Usuário desconhecido'}">Usuário</span>
-        <p><strong>@</strong><span th:text="${usuario.login ?: 'Login não informado'}">username</span></p>
+        <h1>
+            <div class="user-info">
+                <span th:text="${usuario.nome ?: 'Usuário desconhecido'}">Usuário</span>
+                <p><strong>@</strong><span th:text="${usuario.login ?: 'Login não informado'}">username</span></p>
+            </div>
         </h1>
     </section>
 
