@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import dev.team.systers.grupos.GrupoException;
+import dev.team.systers.usuarios.UsuarioException;
 
 /**
  * Controlador global de exceções para a aplicação.
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Trata exceções do tipo GrupoException.
+     * Trata exceções do tipo GrupoException (exceções de Grupo).
      * 
      * @param ex A exceção lançada.
      * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
@@ -64,6 +65,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+    }
+
+    /**
+     * Trata exceções do tipo UsuarioException (exceções de Usuario).
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(UsuarioException.class)
+    public ResponseEntity<String> handleUsuarioxception(UsuarioException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     /**

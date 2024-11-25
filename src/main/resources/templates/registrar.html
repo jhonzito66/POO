@@ -1,109 +1,73 @@
 <!DOCTYPE html>
-<html lang="pt-BR"  xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página de Registro</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+  <link rel="stylesheet" href="/css/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .form-container {
-      background: white;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 300px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .form-group button {
-      width: 100%;
-      padding: 10px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .form-group button:hover {
-      background-color: #218838;
-    }
-  </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>Registro de Usuário</h2>
-    <form action="/registrar_usuario" method="post">
-      <div class="form-group">
-        <label for="login">Login:</label>
-        <input type="text" id="login" name="login" required>
-      </div>
-      <div class="form-group">
-        <label for="senha">Senha:</label>
-        <input type="password" id="senha" name="senha" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
-      </div>
-      <div class="form-group">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
-      </div>
-      <div class="form-group">
-        <label for="telefone">Telefone:</label>
-        <input type="text" id="telefone" name="telefone">
-      </div>
-      <div class="form-group">
-        <label for="fuso_horario">Fuso Horário:</label>
-        <select id="fuso_horario" name="fuso_horario">
-          <option value="">Selecione um fuso horário</option>
-          <option value="UTC-3">UTC-3 (Brasília)</option>
-          <option value="UTC-2">UTC-2 (Ilha de Fernando de Noronha)</option>
-          <option value="UTC-4">UTC-4 (Acre)</option>
-          <option value="UTC-5">UTC-5 (Amazonas)</option>
-          <option value="UTC+0">UTC+0 (Lisboa)</option>
-          <option value="UTC+1">UTC+1 (Berlim)</option>
-          <option value="UTC+2">UTC+2 (Cairo)</option>
-          <option value="UTC+3">UTC+3 (Moscovo)</option>
-          <!-- Adicione mais opções conforme necessário -->
-        </select>
-      </div>
-      <div class="form-group">
-        <button type="submit">Registrar</button>
-      </div>
-    </form>
-  </div>
-
-<script th:inline="javascript">
-  var mensagemErro = /*[[${mensagemErro}]]*/ '';
-  if (mensagemErro) {
-    swal("Erro!", mensagemErro, "error");
-  }
-</script>
+    <header>
+        <nav>
+            <a href="/">Início</a>
+            <a href="/login">Login</a>
+            <a href="/registrar">Registrar</a>
+        </nav>
+    </header>
+    <main>
+        <div class="form-container">
+            <h2>Registro de Usuário</h2>
+            <form th:action="@{/registrar_usuario}" method="post">
+                <div class="form-group">
+                    <label for="login">Login:</label>
+                    <input type="text" id="login" name="login" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone:</label>
+                    <input type="text" id="telefone" name="telefone">
+                </div>
+                <div class="form-group">
+                    <label for="fuso_horario">Fuso Horário:</label>
+                    <select id="fuso_horario" name="fuso_horario">
+                        <option value="">Selecione um fuso horário</option>
+                        <option value="UTC-3">UTC-3 (Brasília)</option>
+                        <option value="UTC-2">UTC-2 (Ilha de Fernando de Noronha)</option>
+                        <option value="UTC-4">UTC-4 (Acre)</option>
+                        <option value="UTC-5">UTC-5 (Amazonas)</option>
+                        <option value="UTC+0">UTC+0 (Lisboa)</option>
+                        <option value="UTC+1">UTC+1 (Berlim)</option>
+                        <option value="UTC+2">UTC+2 (Cairo)</option>
+                        <option value="UTC+3">UTC+3 (Moscovo)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <!-- CSRF token -->
+                    <button type="submit">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Systers</p>
+    </footer>
+    <script th:inline="javascript">
+        var mensagemErro = /*[[${mensagemErro}]]*/ '';
+        if (mensagemErro) {
+            swal("Erro!", mensagemErro, "error");
+        }
+    </script>
 </body>
 </html>

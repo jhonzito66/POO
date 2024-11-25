@@ -1,0 +1,114 @@
+/* Estilos Globais */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Header */
+header {
+    background: #007BFF;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header nav a {
+    margin: 0 15px;
+    font-weight: bold;
+    color: #fff;
+}
+
+header nav a:hover {
+    color: #FFD700;
+}
+
+/* Main Content */
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Titles */
+main section h1,
+main section h2 {
+    color: #007BFF;
+    border-bottom: 2px solid #f4f4f9;
+    padding-bottom: 10px;
+}
+
+/* Profile Details */
+main section p {
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+main section span {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    background: #007BFF;
+    color: #fff;
+    padding: 10px 15px;
+    margin: 10px 5px;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+.btn:active {
+    background: #003f7f;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1px 0;
+    background: #333;
+    color: #fff;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        padding: 15px;
+    }
+
+    header nav a {
+        margin: 0 10px;
+        font-size: 0.9em;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+}

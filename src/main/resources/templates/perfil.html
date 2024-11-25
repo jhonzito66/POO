@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Usuário</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header>
+    <nav>
+        <a href="/">Início</a>
+        <a href="/perfil/me">Meu Perfil</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <h1><span th:text="${usuario.nome ?: 'Usuário desconhecido'}">Usuário</span>
+        <p><strong>@</strong><span th:text="${usuario.login ?: 'Login não informado'}">username</span></p>
+        </h1>
+    </section>
+
+    <section th:if="${#authentication?.name == usuario.login}">
+        <!-- Opções específicas para o usuário logado -->
+        <h2>Opções do Meu Perfil</h2>
+        <a href="/editar-perfil" class="btn">Editar Perfil</a>
+        <a href="/configuracoes" class="btn">Configurações</a>
+    </section>
+
+    <section th:if="${#authentication.name != usuario.login}">
+        <!-- Exibe ações específicas para quando o perfil visualizado não é do usuário logado -->
+        <h2>Ações</h2>
+        <button class="btn">Enviar Mensagem</button>
+        <button class="btn">Adicionar aos Favoritos</button>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 Systers</p>
+</footer>
+</body>
+</html>

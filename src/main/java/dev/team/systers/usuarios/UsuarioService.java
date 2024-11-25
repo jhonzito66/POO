@@ -4,20 +4,30 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public boolean login(String login, String senha) {
-        Optional<Usuario> usuario = usuarioRepository.findAllByLogin(login);
-        return usuario.isPresent() && usuario.get().getSenha().equals(senha);
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(login);
+
+        if (usuario.isEmpty()) {
+            return false; // Usuario não encontrado
+        }
+
+        // Verifica a senha
+        return passwordEncoder.matches(senha, usuario.get().getSenha());
     }
 
     public void registrar(String login, String senha, String email, String nome, String telefone, TimeZone fusoHorario) {
@@ -27,13 +37,13 @@ public class UsuarioService {
         if (senha == null || senha.isEmpty()) {
             throw new IllegalArgumentException("Senha não pode ser vazia");
         }
-        if (usuarioRepository.findAllByLogin(login).isPresent()) {
+        if (usuarioRepository.findByLogin(login).isPresent()) {
             throw new IllegalArgumentException("Login já está em uso");
         }
 
         Usuario usuario = new Usuario();
         usuario.setLogin(login);
-        usuario.setSenha(senha);
+        usuario.setSenha(passwordEncoder.encode(senha));
         usuario.setEmail(email);
         usuario.setAutorizacao(Usuario.Autorizacao.PADRAO);
         usuario.setNome(nome);
@@ -41,10 +51,16 @@ public class UsuarioService {
         usuario.setStatusConta(Usuario.StatusConta.NORMAL);
         usuario.setFusoHorario(fusoHorario);
 
-        try {
-            usuarioRepository.save(usuario);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao registrar usuário: " + e.getMessage());
-        }
+        usuarioRepository.save(usuario); // Persistencia do usuário
+    }
+
+    public Usuario findById(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o ID: " + id));
+    }
+
+    public Usuario findByLogin(String username) {
+        return usuarioRepository.findByLogin(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + username));
     }
 }

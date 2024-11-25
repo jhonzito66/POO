@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Erro</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Início</a>
+            <a href="/login">Login</a>
+            <a href="/registrar">Registrar</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Erro</h1>
+        <p th:text="${mensagemErro}">Um erro inesperado ocorreu.</p>
+    </main>
+    <footer>
+        <p>&copy; 2024 Systers</p>
+    </footer>
+</body>
+</html>

@@ -21,10 +21,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
             nativeQuery = true)
     List<Object[]> findGruposDeUmUsuarioNativo(@Param("usuarioId") Long usuarioId);
 
-    /**
-     * Encontra todos os usuários pelo login.
-     * @param login
-     * @return
-     */
-    Optional<Usuario> findAllByLogin(String login);
+    Optional<Usuario> findByLogin(String login);
 }
