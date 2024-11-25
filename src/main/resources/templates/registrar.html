@@ -6,6 +6,18 @@
   <title>Página de Registro</title>
   <link rel="stylesheet" href="/css/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+  <script th:inline="javascript">
+      document.addEventListener("DOMContentLoaded", function() {
+          var mensagemErro = /*[[${mensagemErro}]]*/ '';
+          if (mensagemErro) {
+              Swal.fire({
+                  title: "Erro!",
+                  text: mensagemErro,
+                  icon: "error"
+              });
+          }
+      });
+  </script>
 </head>
 <body>
     <header>
@@ -41,7 +53,7 @@
                 </div>
                 <div class="form-group">
                     <label for="fuso_horario">Fuso Horário:</label>
-                    <select id="fuso_horario" name="fuso_horario">
+                    <select id="fuso_horario" name="fuso_horario" class="styled-select">
                         <option value="">Selecione um fuso horário</option>
                         <option value="UTC-3">UTC-3 (Brasília)</option>
                         <option value="UTC-2">UTC-2 (Ilha de Fernando de Noronha)</option>
@@ -55,7 +67,7 @@
                 </div>
                 <div class="form-group">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <!-- CSRF token -->
-                    <button type="submit">Registrar</button>
+                    <button type="submit" class="btn">Registrar</button>
                 </div>
             </form>
         </div>
@@ -63,11 +75,5 @@
     <footer>
         <p>&copy; 2024 Systers</p>
     </footer>
-    <script th:inline="javascript">
-        var mensagemErro = /*[[${mensagemErro}]]*/ '';
-        if (mensagemErro) {
-            swal("Erro!", mensagemErro, "error");
-        }
-    </script>
 </body>
 </html>
