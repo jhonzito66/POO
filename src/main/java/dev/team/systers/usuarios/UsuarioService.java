@@ -18,6 +18,7 @@ public class UsuarioService {
     public UsuarioService(UsuarioRepository usuarioRepository, PerfilRepository perfilRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.perfilRepository = perfilRepository;
+      
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -26,8 +27,6 @@ public class UsuarioService {
 
         // Usuario não encontrado
         return usuario.filter(value -> passwordEncoder.matches(senha, value.getSenha())).isPresent();
-
-        // Verifica a senha
     }
 
     public void registrar(String login, String senha, String email, String nome, String telefone, TimeZone fusoHorario) {
