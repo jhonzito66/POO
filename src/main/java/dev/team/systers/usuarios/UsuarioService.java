@@ -11,23 +11,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final PerfilRepository perfilRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PerfilRepository perfilRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.perfilRepository = perfilRepository;
+      
         this.passwordEncoder = passwordEncoder;
     }
 
     public boolean login(String login, String senha) {
         Optional<Usuario> usuario = usuarioRepository.findByLogin(login);
 
-        if (usuario.isEmpty()) {
-            return false; // Usuario não encontrado
-        }
-
-        // Verifica a senha
-        return passwordEncoder.matches(senha, usuario.get().getSenha());
+        // Usuario não encontrado
+        return usuario.filter(value -> passwordEncoder.matches(senha, value.getSenha())).isPresent();
     }
 
     public void registrar(String login, String senha, String email, String nome, String telefone, TimeZone fusoHorario) {
@@ -51,7 +50,12 @@ public class UsuarioService {
         usuario.setStatusConta(Usuario.StatusConta.NORMAL);
         usuario.setFusoHorario(fusoHorario);
 
-        usuarioRepository.save(usuario); // Persistencia do usuário
+        usuarioRepository.save(usuario); // Persistência do usuário primeiro; depois o perfil!
+
+        Perfil perfil = new Perfil();
+        perfil.setUsuario_perfil(usuario);
+        perfil.setPerfil_nome(usuario.getNome());
+        perfilRepository.save(perfil);
     }
 
     public Usuario findById(Long id) {

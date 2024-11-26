@@ -1,103 +1,163 @@
 /* Estilos Globais */
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: #f0f2f5; /* Light gray background similar to Facebook */
+}
+
 body {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    margin: 0;
     padding: 0;
     background-color: #f4f4f9;
     color: #333;
+    padding-top: 80px; /* Add padding to the top of the body to prevent content from being hidden behind the navbar */
 }
 
-a {
-    text-decoration: none;
-    color: #007BFF;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Header */
 header {
-    background: #007BFF;
+    background: #9568ad; /* Background color */
     color: #fff;
     padding: 1rem 0;
     text-align: center;
+    width: 100%;
+    position: fixed; /* Fix the navbar at the top */
+    top: 0; /* Position it at the top */
+    left: 0; /* Align it to the left */
+    z-index: 1000; /* Ensure it stays above other content */
+}
+
+header nav {
+    display: flex; /* Use flexbox to arrange items in a row */
+    justify-content: center; /* Center the navigation items */
 }
 
 header nav a {
-    margin: 0 15px;
+    margin: 0 15px; /* Space between the links */
     font-weight: bold;
     color: #fff;
+    text-decoration: none; /* Remove underline from links */
 }
 
 header nav a:hover {
     color: #FFD700;
 }
 
-/* Main Content */
-main {
-    max-width: 800px;
+.main-compact {
+    width: 400px; /* Fixed width for compactness */
     margin: 20px auto;
     background: #fff;
-    padding: 20px;
+    padding: 20px; /* More padding for a cleaner look */
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Section Titles */
-main section h1,
-main section h2 {
-    color: #007BFF;
-    border-bottom: 2px solid #f4f4f9;
-    padding-bottom: 10px;
+h2 {
+    text-align: center;
+    color: #333;
 }
 
-/* Profile Details */
-main section p {
-    margin: 10px 0;
-    font-size: 1.1em;
+.form-group {
+    margin-bottom: 15px;
 }
 
-main section span {
-    font-weight: bold;
-    color: #555;
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
 }
 
-/* Buttons */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
 .btn {
-    display: inline-block;
-    background: #007BFF;
+    display: block;
+    width: 100%;
+    background: #80AD68;
     color: #fff;
-    padding: 10px 15px;
-    margin: 10px 5px;
+    padding: 10px;
+    border: none;
     border-radius: 5px;
     font-size: 1em;
     font-weight: bold;
-    text-align: center;
     cursor: pointer;
     transition: background 0.3s ease;
+    box-sizing: border-box;
 }
 
 .btn:hover {
-    background: #0056b3;
+    background: #2d4373; /* Darker blue on hover */
 }
 
-.btn:active {
-    background: #003f7f;
-}
-
-/* Footer */
-footer {
+a {
+    text-decoration: none;
+    color: #007BFF;
     text-align: center;
-    padding: 1px 0;
-    background: #333;
-    color: #fff;
-    margin-top: 20px;
+    display: block; /* Center link below the button */
+    margin-top: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .main-compact {
+        width: 90%; /* Make it responsive */
+    }
+}
+
+.styled-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensure padding is included in the width */
+    appearance: none; /* Remove default styling */
+    background-color: #fff; /* Background color */
+    font-size: 14px; /* Font size */
+    color: #333; /* Text color */
+}
+
+/* Optional: Add a custom arrow for the select */
+.styled-select::after {
+    content: '▼'; /* Custom arrow */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Prevent interaction with the arrow */
+}
+
+.main-perfil {
+    width: 90%; /* Adjust width as needed */
+    margin: 10px auto; /* Adjust margin for compactness */
+    background: #fff;
+    padding: 20px; /* Less padding for a more compact look */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Lighter shadow for compactness */
+}
+
+.user-info {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between name and username */
+    align-items: center; /* Center items vertically */
+}
+
+.user-info p {
+    margin: 0; /* Remove default margin */
+    font-size: 1em; /* Adjust font size if needed */
     main {
         padding: 15px;
     }
