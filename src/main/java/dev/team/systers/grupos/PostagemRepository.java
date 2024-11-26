@@ -1,9 +1,9 @@
 package dev.team.systers.grupos;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
-@Repository
+import org.springframework.data.jpa.repository.JpaRepository;
+
 public interface PostagemRepository extends JpaRepository<Postagem, Long> {
-    //listar postagens de todo os membros
+    List<Postagem> findByGrupo(Grupo grupo);
 }
