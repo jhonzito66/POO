@@ -34,29 +34,43 @@ public class Notificacao {
     private boolean statusLida;
 
     /**
-     * Usuário associado à notificação
+     * Usuário remetente associado à notificação
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id_membro_fk", foreignKey = @ForeignKey(name = "usuario_id_fk"), nullable = false)
-    private Usuario usuarioNotificacao;
-
-    /** Construtor sem parâmetros.
-    public Notificacao() {}
+    @JoinColumn(name = "usuario_id_remetente_fk", foreignKey = @ForeignKey(name = "usuario_id_remetente_fk"), nullable = false)
+    private Usuario usuarioNotificacaoRemetente;
 
     /**
+     * Usuário destinatario associado à notificação
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id_destinatario_fk", foreignKey = @ForeignKey(name = "usuario_id_destinatario_fk"), nullable = false)
+    private Usuario usuarioNotificacaoDestinatario;
+
+    public Notificacao() {
+    }
+
+    /**
+     * Construtor sem parâmetros.
+     * public Notificacao() {}
+     * <p>
+     * /**
      * Construtor completo.
+     *
      * @param id
      * @param conteudo
      * @param dataEnvio
      * @param statusLida
-     * @param usuarioNotificacao
+     * @param usuarioNotificacaoRemetente
+     * @param usuarioNotificacaoDestinatario
      */
-    public Notificacao(Long id, String conteudo, LocalDateTime dataEnvio, boolean statusLida, Usuario usuarioNotificacao) {
+    public Notificacao(Long id, String conteudo, LocalDateTime dataEnvio, boolean statusLida, Usuario usuarioNotificacaoRemetente, Usuario usuarioNotificacaoDestinatario) {
         this.id = id;
         this.conteudo = conteudo;
         this.dataEnvio = dataEnvio;
         this.statusLida = statusLida;
-        this.usuarioNotificacao = usuarioNotificacao;
+        this.usuarioNotificacaoRemetente = usuarioNotificacaoRemetente;
+        this.usuarioNotificacaoDestinatario = usuarioNotificacaoDestinatario;
     }
 
     // Getters & Setters
@@ -93,11 +107,19 @@ public class Notificacao {
         this.statusLida = statusLida;
     }
 
-    public Usuario getUsuarioNotificacao() {
-        return usuarioNotificacao;
+    public Usuario getUsuarioNotificacaoRemetente() {
+        return usuarioNotificacaoRemetente;
     }
 
-    public void setUsuarioNotificacao(Usuario usuarioNotificacao) {
-        this.usuarioNotificacao = usuarioNotificacao;
+    public void setUsuarioNotificacaoRemetente(Usuario usuarioNotificacaoRemetente) {
+        this.usuarioNotificacaoRemetente = usuarioNotificacaoRemetente;
+    }
+
+    public Usuario getUsuarioNotificacaoDestinatario() {
+        return usuarioNotificacaoDestinatario;
+    }
+
+    public void setUsuarioNotificacaoDestinatario(Usuario usuarioNotificacaoDestinatario) {
+        this.usuarioNotificacaoDestinatario = usuarioNotificacaoDestinatario;
     }
 }

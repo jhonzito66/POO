@@ -109,10 +109,16 @@ public class Usuario {
     private List<Denuncia> denunciasRecebidas;
 
     /**
-     * Associação com a tabela de notificação.
+     * Associação com a tabela de notificação (envios).
      */
-    @OneToMany(mappedBy = "usuarioNotificacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Notificacao> notificacoes;
+    @OneToMany(mappedBy = "usuarioNotificacaoRemetente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Notificacao> notificacoesEnviadas;
+
+    /**
+     * Associação com a tabela de notificação (recebimentos).
+     */
+    @OneToMany(mappedBy = "usuarioNotificacaoDestinatario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Notificacao> notificacoesRecebidas;
 
     /**
      * Associação com a tabela de perfil.
@@ -280,12 +286,20 @@ public class Usuario {
         this.denunciasRecebidas = denunciasRecebidas;
     }
 
-    public List<Notificacao> getNotificacoes() {
-        return notificacoes;
+    public List<Notificacao> getNotificacoesRecebidas() {
+        return notificacoesRecebidas;
     }
 
-    public void setNotificacoes(List<Notificacao> notificacoes) {
-        this.notificacoes = notificacoes;
+    public void setNotificacoesRecebidas(List<Notificacao> notificacoesRecebidas) {
+        this.notificacoesRecebidas = notificacoesRecebidas;
+    }
+
+    public List<Notificacao> getNotificacoesEnviadas() {
+        return notificacoesEnviadas;
+    }
+
+    public void setNotificacoesEnviadas(List<Notificacao> notificacoesEnviadas) {
+        this.notificacoesEnviadas = notificacoesEnviadas;
     }
 
     public Perfil getPerfil_usuario() {
