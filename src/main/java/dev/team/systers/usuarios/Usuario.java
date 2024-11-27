@@ -84,20 +84,39 @@ public class Usuario {
     private StatusConta statusConta;
 
     /**
+     *  Variável que declara se o usuário é mentor ou não. Se for, ele pode criar mentorias.
+     *  Caso contrário, essa opção não estará ativa e somente poderá participar de mentorias.
+     */
+    @Column(name = "usuario_tipo_mentor")
+    private Boolean tipoMentor;
+
+    /**
      * Associação com a tabela de membros.
      */
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Membro> membros;
 
+    /**
+     * Associação com a tabela de denúncia para a relação de autor.
+     */
     @OneToMany(mappedBy = "usuarioAutor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasCriadas;
 
+    /**
+     * Associação com a tabela de denúncia para a relação de reportado.
+     */
     @OneToMany(mappedBy = "usuarioReportado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasRecebidas;
 
+    /**
+     * Associação com a tabela de notificação.
+     */
     @OneToMany(mappedBy = "usuarioNotificacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Notificacao> notificacoes;
 
+    /**
+     * Associação com a tabela de perfil.
+     */
     @OneToOne(mappedBy = "usuario_perfil", cascade = CascadeType.ALL)
     private Perfil perfil_usuario;
 
@@ -227,6 +246,14 @@ public class Usuario {
 
     public void setStatusConta(StatusConta statusConta) {
         this.statusConta = statusConta;
+    }
+
+    public Boolean getTipoMentor() {
+        return tipoMentor;
+    }
+
+    public void setTipoMentor(Boolean tipoMentor) {
+        this.tipoMentor = tipoMentor;
     }
 
     public List<Membro> getMembros() {

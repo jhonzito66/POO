@@ -1,5 +1,8 @@
 package dev.team.systers.tools;
 
+import dev.team.systers.grupos.ComentarioException;
+import dev.team.systers.grupos.MembroException;
+import dev.team.systers.grupos.PostagemException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -46,17 +49,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Trata exceções do tipo GrupoException (exceções de Grupo).
-     * 
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
-     */
-    @ExceptionHandler(GrupoException.class)
-    public ResponseEntity<String> handleGrupoException(GrupoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-
-    /**
      * Trata exceções genéricas.
      * 
      * @param ex A exceção lançada.
@@ -75,6 +67,50 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsuarioException.class)
     public ResponseEntity<String> handleUsuarioxception(UsuarioException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    /**
+     * Trata exceções do tipo GrupoException (exceções de Grupo).
+     *
+     * @param ex A exceção lançada.
+     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     */
+    @ExceptionHandler(GrupoException.class)
+    public ResponseEntity<String> handleGrupoException(GrupoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    /**
+     * Trata exceções do tipo PostagemException (exceções de Postagem).
+     *
+     * @param ex A exceção lançada.
+     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     */
+    @ExceptionHandler(PostagemException.class)
+    public ResponseEntity<String> handlePostagemException(PostagemException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    /**
+     * Trata exceções do tipo MembroException (exceções de Membro).
+     *
+     * @param ex A exceção lançada.
+     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     */
+    @ExceptionHandler(MembroException.class)
+    public ResponseEntity<String> handlePostagemException(MembroException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    /**
+     * Trata exceções do tipo ComentarioException (exceções de Comentario).
+     *
+     * @param ex A exceção lançada.
+     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     */
+    @ExceptionHandler(ComentarioException.class)
+    public ResponseEntity<String> handlePostagemException(ComentarioException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     /**

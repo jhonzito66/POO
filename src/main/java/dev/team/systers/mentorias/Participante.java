@@ -26,13 +26,6 @@ public class Participante {
     private String nome;
 
     /**
-     * Tipo de participante na mentoria (MENTOR ou MENTORADO).
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "participante_tipo", nullable = false)
-    private TipoParticipante tipo;
-
-    /**
      * Usuário associado ao participante.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,9 +52,8 @@ public class Participante {
      * @param usuario usuário associado ao participante
      * @param mentoria mentoria associada ao participante
      */
-    public Participante(String nome, TipoParticipante tipo, Usuario usuario, Mentoria mentoria) {
+    public Participante(String nome, Usuario usuario, Mentoria mentoria) {
         this.nome = nome;
-        this.tipo = tipo;
         this.usuario = usuario;
         this.mentoria = mentoria;
     }
@@ -84,14 +76,6 @@ public class Participante {
         this.nome = nome;
     }
 
-    public TipoParticipante getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoParticipante tipo) {
-        this.tipo = tipo;
-    }
-
     public Usuario getUsuario() {
         return usuario;
     }
@@ -106,14 +90,5 @@ public class Participante {
 
     public void setMentoria(Mentoria mentoria) {
         this.mentoria = mentoria;
-    }
-
-    /**
-     * Enum para representar os tipos de participantes.
-     * Pode ser MENTOR ou MENTORADO.
-     */
-    public enum TipoParticipante {
-        MENTOR,
-        MENTORADO
     }
 }

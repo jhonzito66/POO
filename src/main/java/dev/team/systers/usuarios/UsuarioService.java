@@ -25,7 +25,9 @@ public class UsuarioService {
     public boolean login(String login, String senha) {
         Optional<Usuario> usuario = usuarioRepository.findByLogin(login);
 
-        // Usuario não encontrado
+        // Todo: Usuario não encontrado
+        // Todo: Senha inválida
+
         return usuario.filter(value -> passwordEncoder.matches(senha, value.getSenha())).isPresent();
     }
 

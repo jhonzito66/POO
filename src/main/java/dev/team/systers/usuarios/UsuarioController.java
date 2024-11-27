@@ -45,10 +45,11 @@ public class UsuarioController {
     @PostMapping("/registrar_usuario")
     public String registrarUsuario(@ModelAttribute("usuario") Usuario usuario, Model model) {
         /*
-         * Um modelo representa a estrutura dos dados e a lógica de negócios da aplicação.
+         * Um modelo (Model model) representa a estrutura dos dados e a lógica de negócios da aplicação.
          * Ele é usado para separar a lógica de negócios da apresentação.
          *
-         * @ModelAttribute("usuario") permite que o Spring preencha automaticamente o objeto Usuario a partir dos dados do formulário.
+         * @ModelAttribute("usuario") permite que o Spring preencha automaticamente o objeto Usuario
+         * a partir dos dados do formulário (no HTML).
          */
         try {
             // Lógica de registro do usuário
@@ -80,7 +81,8 @@ public class UsuarioController {
     public String getCurrentUserProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated() ||
+        if (authentication == null ||
+                !authentication.isAuthenticated() ||
                 authentication.getName().equals("anonymousUser")) {
             throw new IllegalStateException("Usuário não autenticado");
         }
