@@ -32,9 +32,12 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                        .permitAll()
+                        .logoutSuccessUrl("/login") // Redireciona à tela de login após logout
+                        .invalidateHttpSession(true) // Invalidar sessão
+                        .deleteCookies("JSESSIONID") // Deletar cookies
+                );
+                http.csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/css/**", "/js/**")
                 );
         return http.build();
     }

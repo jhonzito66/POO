@@ -11,7 +11,10 @@
     <nav>
         <a href="/">Início</a>
         <a href="/perfil/me">Meu Perfil</a>
-        <a href="/logout">Logout</a>
+        <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+        <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        </form>
     </nav>
 </header>
 

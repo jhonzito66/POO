@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import dev.team.systers.grupos.GrupoException;
 
+import java.util.Locale;
+
 @Controller
 public class UsuarioController {
 
@@ -53,7 +55,7 @@ public class UsuarioController {
          */
         try {
             // Lógica de registro do usuário
-            usuarioService.registrar(usuario.getLogin(), usuario.getSenha(), usuario.getEmail(), 
+            usuarioService.registrar(usuario.getLogin().toLowerCase(), usuario.getSenha(), usuario.getEmail().toLowerCase(),
                                       usuario.getNome(), usuario.getTelefone(), usuario.getFusoHorario());
         } catch (GrupoException e) {
             // A mensagem de erro é adicionada ao modelo para ser exibida na página de registro,
@@ -79,15 +81,15 @@ public class UsuarioController {
 
     @GetMapping("/perfil/me")
     public String getCurrentUserProfile(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null ||
-                !authentication.isAuthenticated() ||
-                authentication.getName().equals("anonymousUser")) {
+        if (auth == null ||
+                !auth.isAuthenticated() ||
+                auth.getName().equals("anonymousUser")) {
             throw new IllegalStateException("Usuário não autenticado");
         }
 
-        String username = authentication.getName();
+        String username = auth.getName();
         Usuario usuario = usuarioService.findByLogin(username);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não encontrado");
