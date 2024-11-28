@@ -3,6 +3,9 @@ package dev.team.systers.tools;
 import dev.team.systers.grupos.ComentarioException;
 import dev.team.systers.grupos.MembroException;
 import dev.team.systers.grupos.PostagemException;
+import dev.team.systers.mentorias.DialogoMentoriaException;
+import dev.team.systers.mentorias.MentoriaException;
+import dev.team.systers.suporte.DenunciaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -110,6 +113,21 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ComentarioException.class)
     public ResponseEntity<String> handlePostagemException(ComentarioException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MentoriaException.class)
+    public ResponseEntity<String> handleMentoriaException(MentoriaException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DialogoMentoriaException.class)
+    public ResponseEntity<String> handleDialogoMentoriaException(DialogoMentoriaException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DenunciaException.class)
+    public ResponseEntity<String> handleDenunciaException(DenunciaException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
