@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title} :: title">Template</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/perfil-template-style.css">
+</head>
+<body>
+<header>
+    <nav>
+        <a href="/">Início</a>
+        <a href="/grupos">Grupos</a>
+        <a href="/mentorias">Mentorias</a>
+        <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+        <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        </form>
+    </nav>
+</header>
+
+<div class="container">
+    <aside class="main-perfil sidebar-container" th:replace="${sidebar} :: sidebar">
+        <!-- Sidebar fragment -->
+    </aside>
+    <main class="main-content" th:replace="${content} :: content">
+        <!-- Main content fragment -->
+    </main>
+</div>
+
+<footer>
+    <p>&copy; 2024 Systers</p>
+</footer>
+</body>
+</html>

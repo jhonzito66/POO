@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import dev.team.systers.grupos.GrupoException;
 
-import java.util.Locale;
-
 @Controller
 public class UsuarioController {
 
@@ -80,8 +78,41 @@ public class UsuarioController {
     }
 
     @GetMapping("/perfil/me")
-    public String getCurrentUserProfile(Model model) {
+    public String exibirPerfilAtual(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null ||
+                !auth.isAuthenticated() ||
+                auth.getName().equals("anonymousUser")) {
+            throw new IllegalStateException("Usuário não autenticado");
+        }
+
+        String login = auth.getName();
+        Usuario usuario = usuarioService.findByLogin(login);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
+        model.addAttribute("usuario", usuario);
+        return "perfil";
+    }
+
+    @GetMapping("/perfil/{login}")
+    public String exibirPerfilUsuario(@PathVariable String login, Model model) {
+        Usuario usuario = usuarioService.findByLogin(login);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
+        model.addAttribute("usuario", usuario);
+        return "perfil";
+    }
+
+    @GetMapping("/grupos")
+    public String exibirGrupos(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        model.addAttribute("title", "grupos");
+        model.addAttribute("content", "grupos");
+        model.addAttribute("sidebar", "perfil-template");
 
         if (auth == null ||
                 !auth.isAuthenticated() ||
@@ -95,16 +126,7 @@ public class UsuarioController {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
         model.addAttribute("usuario", usuario);
-        return "perfil";
-    }
 
-    @GetMapping("/perfil/{login}")
-    public String getUserProfile(@PathVariable String login, Model model) {
-        Usuario usuario = usuarioService.findByLogin(login);
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
-        }
-        model.addAttribute("usuario", usuario);
-        return "perfil";
+        return "template";
     }
 }
