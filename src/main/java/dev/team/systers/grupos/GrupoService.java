@@ -24,24 +24,30 @@ public class GrupoService {
     }
 
     public Grupo criarGrupo(String nome, String descricao, Usuario criador) {
-        Grupo grupo = new Grupo();
-        grupo.setNome(nome);
-        grupo.setDescricao(descricao);
-        grupo.setStatusAtivo(true);
+        try {
+            Membro membro = new Membro();
+            membro.setTag(criador.getLogin());
+            membro.setNome(criador.getNome());
+            membro.setAutorizacao(Membro.Autorizacao.DONO);
+            membro.setStatusAcesso(Membro.StatusAcesso.NORMAL);
+            membro.setUsuario(criador);
 
-        grupoRepository.save(grupo);
+            Grupo grupo = new Grupo();
+            grupo.setNome(nome);
+            grupo.setDescricao(descricao);
+            grupo.setStatusAtivo(true);
 
-        Membro membro = new Membro();
-        membro.setTag(criador.getLogin());
-        membro.setNome(criador.getNome());
-        membro.setAutorizacao(Membro.Autorizacao.DONO);
-        membro.setStatusAcesso(Membro.StatusAcesso.NORMAL);
-        membro.setUsuario(criador);
-        membro.setGrupo(grupo);
+            grupoRepository.save(grupo);
+            membro.setGrupo(grupo);
+            
+            membroRepository.save(membro);
 
-        membroRepository.save(membro);
-
-        return grupo;
+            return grupo;
+        } catch (MembroException e) {
+            throw new MembroException(e.getMessage());
+        } catch (GrupoException e) {
+            throw new GrupoException(e.getMessage());
+        }
     }
 
     public void participarGrupo(Long grupoId, Long usuarioId) {
