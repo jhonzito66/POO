@@ -1,13 +1,10 @@
 package dev.team.systers.usuarios;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import dev.team.systers.grupos.GrupoException;
@@ -75,58 +72,5 @@ public class UsuarioController {
     @GetMapping("/login")
     public String exibirFormularioLogin(Model model) {
         return "login"; // Retorna a página login.html
-    }
-
-    @GetMapping("/perfil/me")
-    public String exibirPerfilAtual(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null ||
-                !auth.isAuthenticated() ||
-                auth.getName().equals("anonymousUser")) {
-            throw new IllegalStateException("Usuário não autenticado");
-        }
-
-        String login = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(login);
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
-        }
-        model.addAttribute("usuario", usuario);
-        return "perfil";
-    }
-
-    @GetMapping("/perfil/{login}")
-    public String exibirPerfilUsuario(@PathVariable String login, Model model) {
-        Usuario usuario = usuarioService.findByLogin(login);
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
-        }
-        model.addAttribute("usuario", usuario);
-        return "perfil";
-    }
-
-    @GetMapping("/grupos")
-    public String exibirGrupos(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        model.addAttribute("title", "grupos");
-        model.addAttribute("content", "grupos");
-        model.addAttribute("sidebar", "perfil-template");
-
-        if (auth == null ||
-                !auth.isAuthenticated() ||
-                auth.getName().equals("anonymousUser")) {
-            throw new IllegalStateException("Usuário não autenticado");
-        }
-
-        String username = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(username);
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
-        }
-        model.addAttribute("usuario", usuario);
-
-        return "template";
     }
 }

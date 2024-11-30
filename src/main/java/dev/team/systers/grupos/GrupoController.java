@@ -23,6 +23,30 @@ public class GrupoController {
         this.usuarioService = usuarioService;
     }
 
+    @GetMapping("/grupos")
+    public String exibirGrupos(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        model.addAttribute("title", "grupos");
+        model.addAttribute("content", "grupos");
+        model.addAttribute("sidebar", "perfil-template");
+
+        if (auth == null ||
+                !auth.isAuthenticated() ||
+                auth.getName().equals("anonymousUser")) {
+            throw new UsuarioException("Usuário não autenticado");
+        }
+
+        String username = auth.getName();
+        Usuario usuario = usuarioService.findByLogin(username);
+        if (usuario == null) {
+            throw new UsuarioException("Usuário não encontrado");
+        }
+        model.addAttribute("usuario", usuario);
+
+        return "template";
+    }
+
     @GetMapping("/grupos/criar-grupo")
     public String registrarGrupo(Model model) {
         model.addAttribute("grupo", new Grupo());
@@ -48,7 +72,6 @@ public class GrupoController {
             if (usuario == null) {
                 throw new UsuarioException("Usuário não encontrado");
             }
-
             model.addAttribute("usuario", usuario);
 
             grupoService.criarGrupo(grupo.getNome(), grupo.getDescricao(), usuario);
