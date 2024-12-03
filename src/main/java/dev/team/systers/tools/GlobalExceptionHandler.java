@@ -1,18 +1,18 @@
 package dev.team.systers.tools;
 
-import dev.team.systers.grupos.ComentarioException;
-import dev.team.systers.grupos.MembroException;
-import dev.team.systers.grupos.PostagemException;
-import dev.team.systers.mentorias.DialogoMentoriaException;
-import dev.team.systers.mentorias.MentoriaException;
-import dev.team.systers.suporte.DenunciaException;
+import dev.team.systers.exception.ComentarioException;
+import dev.team.systers.exception.MembroException;
+import dev.team.systers.exception.PostagemException;
+import dev.team.systers.exception.DialogoMentoriaException;
+import dev.team.systers.exception.MentoriaException;
+import dev.team.systers.exception.DenunciaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import dev.team.systers.grupos.GrupoException;
-import dev.team.systers.usuarios.UsuarioException;
+import dev.team.systers.exception.GrupoException;
+import dev.team.systers.exception.UsuarioException;
 
 /**
  * Controlador global de exceções para a aplicação.

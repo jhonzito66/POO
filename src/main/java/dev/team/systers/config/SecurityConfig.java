@@ -10,8 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import dev.team.systers.usuarios.Usuario;
-import dev.team.systers.usuarios.UsuarioRepository;
+import dev.team.systers.model.Usuario;
+import dev.team.systers.repository.UsuarioRepository;
 
 @Configuration
 @EnableWebSecurity
