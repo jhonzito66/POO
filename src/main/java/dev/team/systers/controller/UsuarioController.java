@@ -29,8 +29,8 @@ public class UsuarioController {
      */
     @GetMapping("/registrar")
     public String exibirFormularioRegistro(Model model) {
-        model.addAttribute("usuario", new Usuario()); // Preenche o modelo com um objeto vazio para o formulário
-        return "registrar"; // Retorna a página registrar.html
+        model.addAttribute("usuario", new Usuario());
+        return "registrar";
     }
 
     /**
@@ -51,28 +51,21 @@ public class UsuarioController {
          * a partir dos dados do formulário (no HTML).
          */
         try {
-            // Lógica de registro do usuário
             usuarioService.registrar(usuario.getLogin().toLowerCase(), usuario.getSenha(), usuario.getEmail().toLowerCase(),
                                       usuario.getNome(), usuario.getTelefone(), usuario.getFusoHorario());
-        } catch (GrupoException e) {
-            // A mensagem de erro é adicionada ao modelo para ser exibida na página de registro,
-            // permitindo que o usuário veja o que deu errado.
+        } catch (GrupoException | IllegalArgumentException e) {
+
             model.addAttribute("mensagemErro", e.getMessage());
-            return "registrar"; // Retorna para a página de registro
-        } catch (IllegalArgumentException e) {
-            // Captura exceções de argumento inválido
-            model.addAttribute("mensagemErro", e.getMessage());
-            return "registrar"; // Retorna para a página de registro
+            return "registrar";
         } catch (Exception e) {
-            // Captura qualquer outra exceção
             model.addAttribute("mensagemErro", "Erro inesperado: " + e.getMessage());
-            return "registrar"; // Retorna para a página de registro
+            return "registrar";
         }
-        return "login"; // Retorna para uma página de sucesso (neste caso login) após o registro
+        return "login";
     }
 
     @GetMapping("/login")
     public String exibirFormularioLogin(Model model) {
-        return "login"; // Retorna a página login.html
+        return "login";
     }
 }

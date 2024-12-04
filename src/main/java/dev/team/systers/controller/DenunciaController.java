@@ -47,7 +47,7 @@ public class DenunciaController {
      */
     @PostMapping
     public ResponseEntity<Denuncia> criarDenuncia(@RequestBody Denuncia denuncia) {
-        denuncia.setDataHora(LocalDateTime.now()); // Define a data e hora da criação
+        denuncia.setDataHora(LocalDateTime.now());
         Denuncia novaDenuncia = denunciaRepository.save(denuncia);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaDenuncia);
     }
