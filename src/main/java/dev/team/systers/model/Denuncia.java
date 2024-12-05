@@ -132,7 +132,12 @@ public class Denuncia {
     }
 
     // Método toString para facilitar a visualização
-
+    
+    public enum status {
+        Pendente,
+        Analise,
+        Resolvida
+    }
     @Override
     public String toString() {
         return "Denuncia{" +

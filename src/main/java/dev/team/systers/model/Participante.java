@@ -115,6 +115,7 @@ public class Participante {
      */
     public enum TipoParticipante {
         MENTOR,
-        MENTORADO
+        MENTORADO,
+        MODERADOR
     }
 }
