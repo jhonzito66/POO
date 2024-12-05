@@ -1,5 +1,6 @@
 package dev.team.systers.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dev.team.systers.exception.GrupoException;
@@ -112,18 +113,8 @@ public class GrupoService {
         membroRepository.save(membro);
     }
 
-    public void apagarPostagem(Long postagemId, Usuario usuario) {
-        Postagem postagem = postagemRepository.findById(postagemId)
-                .orElseThrow(() -> new GrupoException("Postagem não encontrada"));
-
-        Membro autor = membroRepository.findByUsuarioAndGrupo(postagem.getAutor().getUsuario(), postagem.getGrupo())
-                .orElseThrow(() -> new GrupoException("Usuário não é membro do grupo"));
-
-        if (!autor.getUsuario().equals(usuario) && autor.getAutorizacao() != Membro.Autorizacao.MODERADOR) {
-            throw new GrupoException("Permissão negada: apenas o autor ou um moderador pode apagar esta postagem");
-        }
-
-        postagemRepository.delete(postagem);
+    private List<Postagem> listarPostagens(Grupo grupo) {
+        return postagemRepository.getAllByGrupo(grupo);
     }
 
     private void verificarPermissao(Usuario usuario, Grupo grupo, Membro.Autorizacao autorizacaoNecessaria) {

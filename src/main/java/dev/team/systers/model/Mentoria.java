@@ -25,9 +25,17 @@ public class Mentoria {
     @Column(name = "mentoria_status")
     private String status;
 
-    // Relacionamento com Participantes
+    /**
+     * Relacionamento com Participantes
+     */
     @OneToMany(mappedBy = "mentoria")
     private List<Participante> participantes;
+
+    /**
+     * Relacionamento com Avaliação
+     */
+    @OneToMany(mappedBy = "mentoriaAvaliada")
+    private List<Avaliacao> avaliacoesMentoria;
 
     public Long getId() {
         return id;

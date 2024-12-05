@@ -125,6 +125,13 @@ public class Usuario {
     private Perfil perfil_usuario;
 
     /**
+     * Avaliações associada ao usuário.
+     */
+    @OneToMany(mappedBy = "participanteAvaliador")
+    private List<Avaliacao> avaliacoesUsuario;
+
+
+    /**
      * Construtor sem parâmetros.
      */
     public Usuario() {}

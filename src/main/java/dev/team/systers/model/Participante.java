@@ -2,6 +2,8 @@ package dev.team.systers.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 /**
  * Representa um participante em uma mentoria.
  */
