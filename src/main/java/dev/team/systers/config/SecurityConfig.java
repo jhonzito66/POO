@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .loginPage("/login") // Página personalizada  de login
                         .usernameParameter("login")
                         .passwordParameter("senha")
-                        .defaultSuccessUrl("/perfil/me", true) // Redireciona à página de perfil após o login
+                        .defaultSuccessUrl("/feed", true) // Redireciona à página de perfil após o login
                         .permitAll()
                 )
                 .logout(logout -> logout
