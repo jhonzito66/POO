@@ -47,7 +47,7 @@ public class GrupoController {
         }
         model.addAttribute("usuario", usuario);
 
-        return "template";
+        return "grupos";
     }
 
     @GetMapping("/grupos/criar-grupo")
