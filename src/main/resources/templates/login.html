@@ -4,45 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página de Login</title>
-  <link rel="stylesheet" href="/css/style.css">
+
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/login.css">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 </head>
 <body>
-  <header>
-    <nav>
-      <strong>Systers</strong>
-    </nav>
-  </header>
-  <main class="main-compact">
-    <div class="form-container">
-      <h2>Login</h2>
-      <form th:action="@{/login}" method="post">
-        <div class="form-group">
-          <label for="login">Usuário:</label>
-          <input type="text" id="login" name="login" required>
-        </div>
-        <div class="form-group">
-          <label for="senha">Senha:</label>
-          <input type="password" id="senha" name="senha" required>
-        </div>
-        <div class="form-group">
-          <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-          <button type="submit" class="btn">Entrar</button>
-        </div>
-        <div class="form-group">
-          <a href="/registrar">Criar nova conta</a>
-        </div>
-      </form>
-    </div>
-  </main>
-  <footer>
-    <p>&copy; 2024 Systers</p>
-  </footer>
-  <script>
-    var mensagemErro = /*[[${mensagemErro}]]*/ '';
-    if (mensagemErro) {
-      swal("Erro!", mensagemErro, "error");
-    }
-  </script>
+<!-- Cabeçalho -->
+<header>
+  <nav>
+    <strong>Systers</strong>
+  </nav>
+</header>
+
+<!-- Conteúdo Principal -->
+<main class="main-compact">
+  <div class="form-container">
+    <h2>Login</h2>
+    <!-- Formulário -->
+    <form th:action="@{/login}" method="post">
+      <!-- Campo Usuário -->
+      <div class="form-group">
+        <label for="login">Usuário:</label>
+        <input type="text" id="login" name="login" placeholder="Digite seu usuário" required>
+      </div>
+
+      <!-- Campo Senha -->
+      <div class="form-group">
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+      </div>
+
+      <!-- Token CSRF -->
+      <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+      <!-- Botão de Login -->
+      <div class="form-group">
+        <button type="submit" class="btn" aria-label="Entrar">Entrar</button>
+      </div>
+
+      <!-- Link para cadastro -->
+      <p class="register-link">
+        Não possui uma conta? <a href="/registrar">Criar nova conta</a>
+      </p>
+
+    </form>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2024 Systers</p>
+</footer>
+
 </body>
 </html>
+
+<!-- SweetAlert para mensagens de erro -->
+<script>
+  var mensagemErro = /*[[${mensagemErro}]]*/ '';
+  if (mensagemErro && mensagemErro !== 'null') {
+    swal("Erro!", mensagemErro, "error");
+  }
+</script>

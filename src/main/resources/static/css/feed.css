@@ -1,0 +1,166 @@
+/* Estilos Globais */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; /* Fundo suave */
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Barra Superior */
+header.top-bar {
+    background-color: #9568ad;
+    color: #fff;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Centraliza o título */
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Container Principal */
+.container {
+    max-width: 1000px;
+    margin: 100px auto 20px; /* Centraliza o conteúdo e adiciona espaço abaixo da barra superior */
+    padding: 20px;
+}
+
+/* Seção de Usuário */
+.user-panel {
+    text-align: center;
+    margin-bottom: 40px; /* Espaço entre a seção do usuário e os posts */
+}
+
+.user-panel h2 {
+    font-size: 24px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.user-panel p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.user-panel .btn {
+    display: inline-block;
+    margin: 10px 5px; /* Ajusta o espaçamento entre botões */
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #9568ad;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.user-panel .btn:hover {
+    background-color: #7d4d9e;
+    transform: scale(1.05);
+}
+
+/* Feed de Posts */
+main.content {
+    display: flex;
+    flex-direction: column;
+    gap: 70px; /* Espaçamento maior entre os posts */
+}
+
+.post {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border: 1px solid #e0e0e0; /* Borda sutil para melhor separação */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra mais forte no hover */
+}
+
+/* Post Header */
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ddd;
+}
+
+.post-info h4 {
+    margin: 0;
+    font-size: 18px;
+    color: #444;
+}
+
+.post-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #777;
+}
+
+/* Post Content */
+.post-content p {
+    font-size: 15px;
+    margin: 10px 0;
+    color: #555;
+}
+
+.post-content img {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Rodapé */
+footer.footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    color: #9568ad;
+    margin-top: auto;
+    background-color: transparent;
+    width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .post {
+        padding: 15px;
+    }
+
+    .user-panel .btn {
+        width: 100%; /* Botões ocupam toda a largura em telas pequenas */
+        margin-bottom: 10px;
+    }
+}

@@ -1,79 +1,122 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página de Registro</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-  <script th:inline="javascript">
-      document.addEventListener("DOMContentLoaded", function() {
-          var mensagemErro = /*[[${mensagemErro}]]*/ '';
-          if (mensagemErro) {
-              Swal.fire({
-                  title: "Erro!",
-                  text: mensagemErro,
-                  icon: "error"
-              });
-          }
-      });
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar uma Nova Conta</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/registrar.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            var mensagemErro = /*[[${mensagemErro}]]*/ '';
+            if (mensagemErro) {
+                Swal.fire({
+                    title: "Erro!",
+                    text: mensagemErro,
+                    icon: "error"
+                });
+            }
+        });
+    </script>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="/">Início</a>
-            <a href="/login">Login</a>
-            <a href="/registrar">Registrar</a>
-        </nav>
-    </header>
-    <main>
-        <div class="form-container">
-            <h2>Registro de Usuário</h2>
-            <form th:action="@{/registrar_usuario}" method="post">
-                <div class="form-group">
-                    <label for="login">Login:</label>
-                    <input type="text" id="login" name="login" required>
-                </div>
-                <div class="form-group">
-                    <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email">
-                </div>
-                <div class="form-group">
-                    <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" required>
-                </div>
-                <div class="form-group">
-                    <label for="telefone">Telefone:</label>
-                    <input type="text" id="telefone" name="telefone">
-                </div>
-                <div class="form-group">
-                    <label for="fuso_horario">Fuso Horário:</label>
-                    <select id="fuso_horario" name="fuso_horario" class="styled-select">
-                        <option value="">Selecione um fuso horário</option>
-                        <option value="UTC-3">UTC-3 (Brasília)</option>
-                        <option value="UTC-2">UTC-2 (Ilha de Fernando de Noronha)</option>
-                        <option value="UTC-4">UTC-4 (Acre)</option>
-                        <option value="UTC-5">UTC-5 (Amazonas)</option>
-                        <option value="UTC+0">UTC+0 (Lisboa)</option>
-                        <option value="UTC+1">UTC+1 (Berlim)</option>
-                        <option value="UTC+2">UTC+2 (Cairo)</option>
-                        <option value="UTC+3">UTC+3 (Moscovo)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <!-- CSRF token -->
-                    <button type="submit" class="btn">Registrar</button>
-                </div>
-            </form>
-        </div>
-    </main>
-    <footer>
-        <p>&copy; 2024 Systers</p>
-    </footer>
+<!-- Cabeçalho -->
+<header>
+    <nav>
+        <strong>Systers</strong>
+    </nav>
+</header>
+
+<!-- Conteúdo Principal -->
+<main>
+    <div class="form-container">
+        <h2>Criar uma nova conta</h2>
+        <hr>
+        <!-- Formulário de Registro -->
+        <form th:action="@{/registrar_usuario}" th:object="${usuario}" method="post">
+            <!-- Campo Login -->
+            <div class="form-group">
+                <label for="login">Login:</label>
+                <input type="text" id="login" name="login" placeholder="Digite seu login"
+                       aria-label="Digite seu login" required minlength="4" maxlength="20">
+                <p th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="error-message"></p>
+            </div>
+
+            <!-- Campo Senha -->
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha"
+                       aria-label="Digite sua senha" required minlength="6">
+                <p th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="error-message"></p>
+            </div>
+
+            <!-- Campo Email -->
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Digite seu email"
+                       aria-label="Digite seu email">
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></p>
+            </div>
+
+            <!-- Campo Nome -->
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo"
+                       aria-label="Digite seu nome completo" required>
+                <p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="error-message"></p>
+            </div>
+
+            <!-- Campo Telefone -->
+            <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" placeholder="Digite seu telefone" maxlength="15" oninput="formatarTelefone(this)">
+            </div>
+
+
+            <!-- Token CSRF -->
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+            <!-- Botão Registrar -->
+            <div class="form-group">
+                <button type="submit" class="btn">Registrar</button>
+            </div>
+
+            <!-- Link para login -->
+            <p class="register-link">
+                Já possui uma conta? <a href="/login">Faça login</a>
+            </p>
+        </form>
+    </div>
+</main>
+
+<!-- Rodapé -->
+<footer>
+    <p>&copy; 2024 Systers</p>
+</footer>
 </body>
 </html>
+
+<script>
+    function formatarTelefone(input) {
+        let telefone = input.value;
+
+        telefone = telefone.replace(/\D/g, "");
+
+        telefone = telefone.substring(0, 11);
+
+        if (telefone.length <= 10) {
+            telefone = telefone.replace(/^(\d{2})(\d)/g, "($1) $2");
+            telefone = telefone.replace(/(\d{4})(\d)/, "$1-$2");
+        }
+        else {
+            telefone = telefone.replace(/^(\d{2})(\d)/g, "($1) $2");
+            telefone = telefone.replace(/(\d{5})(\d)/, "$1-$2");
+        }
+
+        input.value = telefone;
+    }
+</script>
+

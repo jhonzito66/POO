@@ -1,0 +1,116 @@
+/* Estilos Globais */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5; /* Fundo suave */
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante altura mínima de 100% da viewport */
+}
+
+/* Cabeçalho */
+header {
+    background: #9568ad; /* Roxo */
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+/* Conteúdo Principal */
+main {
+    flex: 1; /* Faz com que o main ocupe o espaço disponível */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Formulário */
+.form-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.form-container h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #333;
+}
+
+.form-container hr {
+    margin: 20px 0;
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+}
+
+/* Campos do Formulário */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #9568ad; /* Roxo */
+    outline: none;
+}
+
+/* Botão */
+.btn {
+    background-color: #80ad68; /* Verde */
+    color: white;
+    font-size: 16px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #5a7d4e; /* Verde mais escuro */
+    transform: translateY(-2px);
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    color: #9568ad;
+    background-color: transparent;
+    width: 100%;
+    margin-top: 20px; /* Adiciona espaço entre o rodapé e o conteúdo */
+}

@@ -1,0 +1,76 @@
+/* Estilos Globais */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5; /* Fundo suave */
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante altura mínima de 100% da viewport */
+}
+
+
+/* Cabeçalho */
+header {
+    background: #9568ad; /* Roxo */
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+header nav strong {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* Botões */
+.main {
+    flex: 1; /* Ocupa o espaço disponível entre o header e footer */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Botões */
+.btn {
+    background: #80AD68;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 20px auto 10px;
+    display: block;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    background: #2d4373;
+    transform: translateY(-2px);
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    color: #9568ad;
+    background-color: transparent;
+    width: 100%;
+    box-sizing: border-box;
+}

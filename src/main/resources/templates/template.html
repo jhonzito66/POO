@@ -4,33 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:replace="${title} :: title">Template</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/perfil-template-style.css">
+    <link rel="stylesheet" href="css/feed.css">
 </head>
 <body>
-<header>
-    <nav>
-        <a href="/">Início</a>
-        <a href="/grupos">Grupos</a>
-        <a href="/mentorias">Mentorias</a>
-        <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+<!-- Barra superior -->
+<header class="top-bar">
+    <div class="logo">Systers</div>
+</header>
+
+<!-- Container principal -->
+<div class="container">
+    <!-- Conteúdo principal -->
+    <main>
+        <!-- Seção para Moderador -->
+        <div class="user-panel" id="moderador-section">
+            <h2>Bem-vindo, Moderador!</h2>
+            <p>Você pode gerenciar denúncias e visualizar denúncias:</p>
+            <a href="/gerenciar-denuncias" class="btn">Gerenciar Denúncias</a>
+            <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+            <a href="#" class="btn" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+        </div>
+
+        <!-- Seção para mentee -->
+        <div class="user-panel" id="mentee-section">
+            <h2>Bem-vindo, Mentee!</h2>
+            <p>Você pode solicitar mentoria, avaliar mentoria e denunciar perfis:</p>
+            <a href="/" class="btn">Editar Perfil</a>
+            <a href="/grupos" class="btn">Grupos</a>
+            <a href="/mentorias" class="btn">Solicitar Mentoria</a>
+            <a href="/denucia" class="btn">Realizar uma Denúncia</a>
+            <a href="#" class="btn" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+        </div>
+
+        <!-- Seção para mentor -->
+        <div class="user-panel" id="mentor-section">
+            <h2>Bem-vindo, Mentor!</h2>
+            <p>Você pode oferecer mentoria e gerenciar suas mentorias:</p>
+            <a href="/" class="btn">Editar Perfil</a>
+            <a href="/mentorias" class="btn">Realizar uma Mentoria</a>
+            <a href="#" class="btn" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+        </div>
+
+        <!-- Formulário de Logout Global -->
         <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
             <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
         </form>
-    </nav>
-</header>
 
-<div class="container">
-    <aside class="main-perfil sidebar-container" th:replace="${sidebar} :: sidebar">
-        <!-- Sidebar fragment -->
-    </aside>
-    <main class="main-content" th:replace="${content} :: content">
-        <!-- Main content fragment -->
+        <!-- Posts -->
+        <div class="post">
+            <div class="post-header">
+                <div class="profile-pic"></div>
+                <div class="post-info">
+                    <h4>Nome do Grupo</h4>
+                    <p>15h</p>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>Venho através desta publicação anunciar a aprovação.</p>
+            </div>
+        </div>
+
+        <div class="post">
+            <div class="post-header">
+                <div class="profile-pic"></div>
+                <div class="post-info">
+                    <h4>Eventos Especiais</h4>
+                    <p>2h</p>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>Participe do nosso evento exclusivo este fim de semana. Não perca!</p>
+            </div>
+        </div>
+
+        <div class="post">
+            <div class="post-header">
+                <div class="profile-pic"></div>
+                <div class="post-info">
+                    <h4>Atualizações</h4>
+                    <p>1h</p>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>Confira as últimas novidades na nossa plataforma. Estamos trabalhando duro para melhorar sua experiência!</p>
+            </div>
+        </div>
     </main>
 </div>
 
-<footer>
+<!-- Rodapé -->
+<footer class="footer">
     <p>&copy; 2024 Systers</p>
 </footer>
+
+<script>
+    const userType = "mentee";
+
+    document.querySelectorAll('.user-panel').forEach(panel => {
+        panel.style.display = 'none';
+    });
+
+    document.getElementById(`${userType}-section`).style.display = 'block';
+</script>
 </body>
 </html>
