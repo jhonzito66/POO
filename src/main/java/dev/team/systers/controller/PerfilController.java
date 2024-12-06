@@ -22,11 +22,6 @@ public class PerfilController {
 
     @GetMapping("/perfil/me")
     public String exibirPerfilAtual(Model model) {
-        Authentication(model, usuarioService);
-        return "perfil";
-    }
-
-    static void Authentication(Model model, UsuarioService usuarioService) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null ||
@@ -41,6 +36,7 @@ public class PerfilController {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
         model.addAttribute("usuario", usuario);
+        return "perfil";
     }
 
     @GetMapping("/perfil/{login}")

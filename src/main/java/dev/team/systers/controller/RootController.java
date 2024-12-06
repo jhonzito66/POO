@@ -20,7 +20,20 @@ public class RootController {
 
     @GetMapping("/feed")
     public String feed(Model model) {
-        PerfilController.Authentication(model, usuarioService);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null ||
+                !auth.isAuthenticated() ||
+                auth.getName().equals("anonymousUser")) {
+            throw new IllegalStateException("Usuário não autenticado");
+        }
+
+        String login = auth.getName();
+        Usuario usuario = usuarioService.findByLogin(login);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
+        model.addAttribute("usuario", usuario);
         return "feed";
     }
 
