@@ -5,13 +5,21 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="/">Início</a>
-            <a href="/login">Login</a>
-            <a href="/registrar">Registrar</a>
-        </nav>
-    </header>
+<header class="top-bar">
+    <div class="logo">Systers</div>
+    <nav class="nav-bar">
+        <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
+        <button class="nav-btn" onclick="window.location.href='/perfil/me';">Meu Perfil</button>
+        <button class="nav-btn" onclick="window.location.href='/grupos';">Grupo</button>
+        <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
+        <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
+    </nav>
+    <!-- Formulário de Logout Global -->
+    <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    </form>
+</header>
+
     <main>
         <h1>Erro</h1>
         <p th:text="${mensagemErro}">Um erro inesperado ocorreu.</p>

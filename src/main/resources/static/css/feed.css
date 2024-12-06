@@ -21,64 +21,59 @@ header.top-bar {
     left: 0;
     width: 100%;
     z-index: 1000;
+    display: flex;
+    justify-content: space-between; /* Espaço entre logo e botões */
+    align-items: center; /* Centraliza itens verticalmente */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-align: center; /* Centraliza o título */
 }
 
 header .logo {
     font-size: 24px;
     font-weight: bold;
 }
+.nav-bar {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-right: 50px; /* Garantia de afastamento da borda direita */
+}
+
+.nav-btn {
+    background-color: #fff;
+    color: #9568ad;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: #d9b3e6; /* Cor de fundo no hover */
+    color: #fff; /* Cor do texto no hover */
+}
 
 /* Container Principal */
 .container {
     max-width: 1000px;
-    margin: 100px auto 20px; /* Centraliza o conteúdo e adiciona espaço abaixo da barra superior */
-    padding: 20px;
+    margin: 60px auto 50px; /* Ajustado o espaço superior para o cabeçalho fixo */
+    padding: 10px;
 }
 
-/* Seção de Usuário */
-.user-panel {
-    text-align: center;
-    margin-bottom: 40px; /* Espaço entre a seção do usuário e os posts */
-}
-
-.user-panel h2 {
-    font-size: 24px;
-    color: #444;
-    margin-bottom: 10px;
-}
-
-.user-panel p {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.user-panel .btn {
-    display: inline-block;
-    margin: 10px 5px; /* Ajusta o espaçamento entre botões */
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #9568ad;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.user-panel .btn:hover {
-    background-color: #7d4d9e;
-    transform: scale(1.05);
+/* Título do Feed */
+.posts-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px; /* Reduz o espaço abaixo do título */
+    text-align: left; /* Alinhado à direita */
+    color: #333;
 }
 
 /* Feed de Posts */
 main.content {
     display: flex;
     flex-direction: column;
-    gap: 70px; /* Espaçamento maior entre os posts */
+    gap: 50px; /* Reduzido o espaçamento entre os posts */
 }
 
 .post {
@@ -100,7 +95,7 @@ main.content {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Ajustado para menos espaço */
 }
 
 .profile-pic {
@@ -125,7 +120,7 @@ main.content {
 /* Post Content */
 .post-content p {
     font-size: 15px;
-    margin: 10px 0;
+    margin: 15px 0;
     color: #555;
 }
 
@@ -135,8 +130,6 @@ main.content {
     margin-top: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
-
 
 /* Rodapé */
 footer.footer {
@@ -162,5 +155,27 @@ footer.footer {
     .user-panel .btn {
         width: 100%; /* Botões ocupam toda a largura em telas pequenas */
         margin-bottom: 10px;
+    }
+
+    .post-header {
+        gap: 10px;
+    }
+
+    .profile-pic {
+        width: 40px;
+        height: 40px;
+    }
+
+    .post-info h4 {
+        font-size: 16px;
+    }
+
+    .post-info p {
+        font-size: 12px;
+    }
+
+    .posts-title {
+        font-size: 1.3rem;
+        text-align: right;
     }
 }

@@ -4,47 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil do Usuário</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/perfil.css">
 </head>
 <body>
-<header>
-    <nav>
-        <a href="/">Início</a> <!-- feed -->
-        <a href="/grupos">Meu Perfil</a> <!-- grupos: por /{id} especifica -->
-        <a href="/mentorias">Grupos</a> <!-- mentorias: por /{id} especifica -->
-        <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
-        <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
-            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-        </form>
+<!-- Barra superior -->
+<header class="top-bar">
+    <!-- Logo do sistema -->
+    <div class="logo">Systers</div>
+
+    <!-- Navegação principal -->
+    <nav class="nav-bar">
+        <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
+        <button class="nav-btn" onclick="window.location.href='/';">Meu Perfil</button>
+        <button class="nav-btn" onclick="window.location.href='/grupos';">Grupo</button>
+        <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
+        <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
     </nav>
+    <!-- Formulário de Logout Global -->
+    <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    </form>
+
 </header>
 
+<!-- Conteúdo principal -->
 <main class="main-perfil">
+    <!-- Seção de informações do usuário -->
     <section>
         <h1>
             <div class="user-info">
+                <!-- Foto do perfil -->
+
+
+                <!-- Nome do usuário (ou mensagem padrão) -->
                 <span th:text="${usuario.nome ?: 'Usuário desconhecido'}">Usuário</span>
+
+                <!-- Nome de login do usuário (ou mensagem padrão) -->
                 <p><strong>@</strong><span th:text="${usuario.login ?: 'Login não informado'}">username</span></p>
+
+                <!-- Biografia do usuário -->
+                <p class="bio" th:text="${usuario.bio ?: 'Nenhuma biografia disponível.'}">
+                    Este é um exemplo de biografia.
+                </p>
             </div>
         </h1>
+
     </section>
 
+    <!-- Seção com opções disponíveis apenas para o próprio usuário logado -->
     <section th:if="${#authentication?.name == usuario.login}">
-        <!-- Opções específicas para o usuário logado -->
-        <h2>Opções do Meu Perfil</h2>
-        <a href="/editar-perfil" class="btn">Editar Perfil</a>
-        <a href="/configuracoes" class="btn">Configurações</a>
+        <h2>Meu Perfil</h2>
+        <!-- Contêiner para os botões -->
+        <div class="btn-container">
+            <button class="btn">Editar Perfil</button>
+        </div>
     </section>
 
+    <!-- Seção com ações disponíveis para visualização de outros usuários -->
     <section th:if="${#authentication.name != usuario.login}">
-        <!-- Exibe ações específicas para quando o perfil visualizado não é do usuário logado -->
         <h2>Ações</h2>
-        <button class="btn">Enviar Mensagem</button>
-        <button class="btn">Adicionar aos Favoritos</button>
+        <!-- Contêiner para os botões -->
+        <div class="btn-container">
+            <button class="btn">Denunciar Perfil</button>
+            <button class="btn">Enviar Mensagem</button>
+        </div>
     </section>
+
 </main>
 
-<footer>
+<!-- Rodapé -->
+<footer class="footer">
+    <!-- Informações de direitos autorais -->
     <p>&copy; 2024 Systers</p>
 </footer>
 </body>

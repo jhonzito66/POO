@@ -1,0 +1,212 @@
+/* Estilos Globais */
+body {
+    margin: 0;
+    padding: 40px; /* Aumenta o espaço ao redor de todo o conteúdo */
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; /* Fundo claro */
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Barra Superior */
+header.top-bar {
+    background-color: #9568ad; /* Roxo */
+    color: #fff;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between; /* Espaça logo e navegação */
+    align-items: center; /* Alinha verticalmente */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.nav-bar {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-right: 50px; /* Garantia de afastamento da borda direita */
+}
+
+.nav-bar {
+    display: flex;
+    gap: 7px; /* Espaçamento entre os botões */
+}
+
+.nav-btn {
+    background-color: #fff;
+    color: #9568ad;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: #d9b3e6; /* Cor de fundo no hover */
+    color: #fff;
+}
+header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Conteúdo Principal */
+main.main-perfil {
+    max-width: 800px; /* Aumenta a largura do menu */
+    margin: 50px auto; /* Centraliza horizontalmente com mais espaço vertical */
+    padding: 40px; /* Adiciona mais espaço interno */
+    background-color: #fff;
+    border-radius: 15px; /* Mantém os cantos arredondados */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os itens horizontalmente */
+}
+
+/* Títulos das Seções */
+main.main-perfil h2 {
+    font-size: 24px; /* Título maior */
+    color: #444;
+    text-align: center;
+    border-bottom: 2px solid #9568ad;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+/* User Info */
+.user-info {
+    text-align: center; /* Centraliza o texto */
+    margin-bottom: 10px; /* Espaçamento maior abaixo */
+}
+
+.user-info span {
+    font-size: 26px; /* Texto maior para o nome */
+    font-weight: bold;
+    color: #9568ad;
+}
+
+.user-info p {
+    margin: 10px 0;
+    font-size: 18px; /* Texto maior para o username */
+    color: #777;
+}
+
+/* Botões de Ações */
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente */
+    margin-top: 20px;
+}
+
+section h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #444;
+    text-align: center;
+}
+
+section .btn-container {
+    display: flex; /* Configura o layout flexível */
+    justify-content: center; /* Centraliza os botões no centro horizontalmente */
+    align-items: center; /* Alinha verticalmente */
+    gap: 15px; /* Espaçamento horizontal entre os botões */
+    flex-wrap: nowrap; /* Evita quebra de linha */
+}
+
+/* Contêiner para alinhar os botões horizontalmente */
+.btn-container {
+    display: flex; /* Alinha os botões em linha */
+    justify-content: center; /* Centraliza os botões horizontalmente */
+    align-items: center; /* Alinha os botões verticalmente */
+    gap: 15px; /* Espaçamento entre os botões */
+    flex-wrap: nowrap; /* Evita quebra de linha */
+}
+
+/* Estilo básico dos botões */
+.btn {
+    display: inline-block; /* Garante que os botões sejam alinhados corretamente */
+    background-color: #9568ad; /* Cor de fundo */
+    color: #fff; /* Cor do texto */
+    border: none; /* Remove a borda */
+    border-radius: 10px; /* Cantos arredondados */
+    padding: 10px 20px; /* Ajusta o preenchimento interno */
+    text-align: center; /* Centraliza o texto */
+    font-size: 16px; /* Tamanho do texto */
+    font-weight: bold; /* Texto em negrito */
+    cursor: pointer; /* Indica clique */
+    transition: all 0.3s ease; /* Suaviza a transição ao passar o mouse */
+}
+
+.btn:hover {
+    background-color: #7a4f8c; /* Cor ao passar o mouse */
+}
+
+
+.btn:active {
+    transform: translateY(0); /* Remove o efeito ao clicar */
+}
+
+/* Rodapé */
+footer.footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    color: #9568ad;
+    background-color: transparent;
+    margin-top: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    header.top-bar {
+        flex-direction: column; /* Alinha elementos verticalmente */
+        align-items: flex-start;
+    }
+    section .btn-container {
+        flex-direction: column; /* Empilha os botões em telas menores */
+        gap: 15px;
+    }
+    .nav-bar {
+        margin-top: 10px;
+        gap: 10px;
+    }
+
+    main.main-perfil {
+        max-width: 95%; /* Ajusta a largura em telas menores */
+        padding: 20px; /* Reduz o espaço interno */
+    }
+
+    .btn {
+        width: 100%; /* Botões ocupam toda a largura em telas menores */
+    }
+
+}
+
+/* Foto do perfil */
+.profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 1%; /* Torna a foto redonda */
+    object-fit: cover; /* Garante que a foto se ajuste ao contêiner */
+    margin-bottom: 15px;
+    border: 3px solid #9568ad; /* Borda ao redor da foto */
+}
+
+/* Biografia */
+.bio {
+    font-size: 16px;
+    color: #555;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 1.4; /* Melhor espaçamento entre linhas */
+}
