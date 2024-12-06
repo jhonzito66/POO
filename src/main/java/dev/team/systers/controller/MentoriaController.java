@@ -1,82 +1,56 @@
 package dev.team.systers.controller;
 
-import dev.team.systers.model.Mentoria;
+import dev.team.systers.exception.GrupoException;
+import dev.team.systers.model.Grupo;
+import dev.team.systers.service.GrupoService;
+import dev.team.systers.model.Usuario;
+import dev.team.systers.exception.UsuarioException;
 import dev.team.systers.service.MentoriaService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import dev.team.systers.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-@RestController
-@RequestMapping("/mentorias")
+@Controller
 public class MentoriaController {
 
     private final MentoriaService mentoriaService;
+    private final UsuarioService usuarioService;
 
-    public MentoriaController(MentoriaService mentoriaService) {
+    @Autowired
+    public MentoriaController(MentoriaService mentoriaService, UsuarioService usuarioService) {
         this.mentoriaService = mentoriaService;
+        this.usuarioService = usuarioService;
     }
 
     /**
-     * Lista todas as mentorias disponíveis.
+     * Exibe a página de mentorias para o usuário autenticado.
      *
-     * @return Lista de mentorias.
+     * @param model Modelo para passar dados para a view.
+     * @return Nome da view correspondente.
      */
-    @GetMapping
-    public ResponseEntity<List<Mentoria>> listarTodasMentorias() {
-        return ResponseEntity.ok(mentoriaService.listarTodas());
-    }
+    @GetMapping("/mentorias")
+    public String exibirMentorias(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    /**
-     * Busca mentorias por status.
-     *
-     * @param status Status da mentoria (ex: "ativa", "concluída").
-     * @return Lista de mentorias com o status especificado.
-     */
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<Mentoria>> listarMentoriasPorStatus(@PathVariable String status) {
-        return ResponseEntity.ok(mentoriaService.listarPorStatus(status));
-    }
+        model.addAttribute("title", "Mentorias");
+        model.addAttribute("content", "mentorias");
+        model.addAttribute("sidebar", "perfil-template");
 
-    /**
-     * Busca mentorias pelo nome (parcial ou completo, ignorando maiúsculas/minúsculas).
-     *
-     * @param nome Nome ou parte do nome da mentoria.
-     * @return Lista de mentorias correspondentes.
-     */
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<List<Mentoria>> listarMentoriasPorNome(@PathVariable String nome) {
-        return ResponseEntity.ok(mentoriaService.listarPorNome(nome));
-    }
-
-    /**
-     * Busca mentorias que começam após uma data/hora específica.
-     *
-     * @param dataHoraInicio Data/hora de início (no formato ISO-8601).
-     * @return Lista de mentorias.
-     */
-    @GetMapping("/inicio-apartir/{dataHoraInicio}")
-    public ResponseEntity<List<Mentoria>> listarMentoriasPorInicio(@PathVariable String dataHoraInicio) {
-        LocalDateTime inicio = LocalDateTime.parse(dataHoraInicio);
-        return ResponseEntity.ok(mentoriaService.listarPorDataInicio(inicio));
-    }
-
-    /**
-     * Cria uma nova mentoria.
-     *
-     * @param mentoria Dados da mentoria a ser criada.
-     * @return Mentoria criada.
-     */
-    @PostMapping
-    public ResponseEntity<Mentoria> criarMentoria(@RequestBody Mentoria mentoria) {
-        try {
-            Mentoria novaMentoria = mentoriaService.salvarMentoria(mentoria);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaMentoria);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        if (auth == null ||
+                !auth.isAuthenticated() ||
+                auth.getName().equals("anonymousUser")) {
+            throw new UsuarioException("Usuário não autenticado");
         }
-    }
+        String username = auth.getName();
+        Usuario usuario = usuarioService.findByLogin(username);
+        model.addAttribute("usuario", usuario);
 
+        return "mentorias";
+    }
 }

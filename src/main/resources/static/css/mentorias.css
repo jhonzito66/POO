@@ -1,0 +1,206 @@
+/* Estilos Globais */
+body {
+    margin: 0;
+    padding: 40px;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Barra Superior */
+header.top-bar {
+    background-color: #9568ad;
+    color: #fff;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-bar {
+    display: flex;
+    gap: 10px;
+    margin-right: 30px;
+}
+
+.nav-btn {
+    background-color: #fff;
+    color: #9568ad;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: #d9b3e6;
+    color: #fff;
+}
+
+/* Conteúdo Principal */
+main.container {
+    margin-top: 80px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Título e Subtítulo */
+main.container h2 {
+    font-size: 24px;
+    color: #444;
+    border-bottom: 2px solid #9568ad;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+main.container p {
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+}
+
+/* Botão Criar Mentoria */
+.actions {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.btn-create-mentorship {
+    background-color: #9568ad;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-create-mentorship:hover {
+    background-color: #7a4f8c;
+    transform: translateY(-2px);
+}
+
+/* Tabela de Mentorías */
+.mentorships-table {
+    margin: 20px auto;
+    width: 90%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mentorships-table th,
+.mentorships-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.mentorships-table th {
+    background-color: #9568ad;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.mentorships-table td {
+    font-size: 14px;
+    color: #444;
+}
+
+.mentorships-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.mentorships-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Botões Ver e Participar */
+.mentorships-table .nav-btn {
+    background-color: #fff;
+    color: #9568ad;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid #9568ad;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    margin: 0 5px;
+}
+
+.mentorships-table .nav-btn:hover {
+    background-color: #9568ad;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.mentorships-table .nav-btn:active {
+    transform: translateY(0);
+}
+
+/* Mensagem de Nenhuma Mentoria */
+.mentorships-table td[colspan="4"] {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    padding: 20px;
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    color: #9568ad;
+    background-color: transparent;
+    border-top: 1px solid #dcdcdc;
+    margin-top: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    header.top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-bar {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    main.container {
+        padding: 15px;
+    }
+
+    .btn-create-mentorship {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}
