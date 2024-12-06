@@ -1,12 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Criar Grupo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Grupo</title>
+  <link rel="stylesheet" href="/css/criar-grupo.css">
 </head>
+<body>
+<!-- Barra superior -->
+<header class="top-bar">
+  <div class="logo">Systers</div>
+  <nav class="nav-bar">
+    <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
+    <button class="nav-btn" onclick="window.location.href='/perfil/me';">Meu Perfil</button>
+    <button class="nav-btn" onclick="window.location.href='/grupos';">Grupo</button>
+    <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
+    <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
+  </nav>
+  <!-- Formulário de Logout Global -->
+  <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+  </form>
+</header>
+
 <main class="main-compact">
-  <body>
   <form method="POST" th:action="@{/grupos/criar-grupo}" th:object="${grupo}">
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
     <h1>Criar Grupo</h1>
@@ -22,6 +39,13 @@
       <button type="submit" class="btn">Criar!</button>
     </div>
   </form>
-  </body>
+
 </main>
+
+<!-- Rodapé -->
+<footer class="footer">
+  <p>&copy; 2024 Systers</p>
+</footer>
+
+</body>
 </html>

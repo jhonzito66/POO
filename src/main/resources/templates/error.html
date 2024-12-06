@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Erro</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/error.css">
 </head>
 <body>
 <header class="top-bar">
@@ -18,14 +18,16 @@
     <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
     </form>
+
 </header>
 
-    <main>
-        <h1>Erro</h1>
-        <p th:text="${mensagemErro}">Um erro inesperado ocorreu.</p>
-    </main>
-    <footer>
-        <p>&copy; 2024 Systers</p>
-    </footer>
+<main>
+    <h1>Erro</h1>
+    <p th:text="${mensagemErro}">Um erro inesperado ocorreu.</p>
+</main>
+
+<footer>
+    <p>&copy; 2024 Systers</p>
+</footer>
 </body>
 </html>

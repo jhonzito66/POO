@@ -107,10 +107,10 @@ input:focus {
 /* Rodapé */
 footer {
     text-align: center;
-    padding: 20px;
+    padding: 15px;
     font-size: 14px;
     color: #9568ad;
     background-color: transparent;
-    width: 100%;
-    margin-top: 20px; /* Adiciona espaço entre o rodapé e o conteúdo */
+    border-top: 1px solid #dcdcdc;
+    margin-top: auto;
 }

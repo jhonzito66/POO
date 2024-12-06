@@ -1,0 +1,111 @@
+/* Estilo Global */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; /* Fundo claro */
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Altura mínima da tela */
+}
+
+/* Barra Superior */
+header.top-bar {
+    background-color: #9568ad;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-bar {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-right: 30px; /* Garantia de afastamento da borda direita */
+}
+
+.nav-btn {
+    background-color: #fff;
+    color: #9568ad;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: #d9b3e6;
+    color: #fff;
+}
+
+/* Conteúdo Principal */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    margin-top: 80px; /* Espaço para a barra superior */
+}
+
+main h1 {
+    font-size: 48px;
+    color: #9568ad;
+    margin-bottom: 20px;
+}
+
+main p {
+    font-size: 18px;
+    color: #555;
+    max-width: 600px; /* Limita a largura do texto */
+    line-height: 1.5;
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    color: #9568ad;
+    border-top: 1px solid #ddd;
+    margin-top: auto;
+    background-color: transparent;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    header.top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-bar {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    main h1 {
+        font-size: 36px;
+    }
+
+    main p {
+        font-size: 16px;
+    }
+}

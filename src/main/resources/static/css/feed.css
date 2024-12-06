@@ -34,7 +34,7 @@ header .logo {
 .nav-bar {
     display: flex;
     gap: 10px; /* Espaçamento entre os botões */
-    margin-right: 50px; /* Garantia de afastamento da borda direita */
+    margin-right: 30px; /* Garantia de afastamento da borda direita */
 }
 
 .nav-btn {
@@ -132,14 +132,14 @@ main.content {
 }
 
 /* Rodapé */
-footer.footer {
+footer {
     text-align: center;
     padding: 15px;
     font-size: 14px;
     color: #9568ad;
-    margin-top: auto;
     background-color: transparent;
-    width: 100%;
+    border-top: 1px solid #dcdcdc;
+    margin-top: auto;
 }
 
 /* Responsividade */

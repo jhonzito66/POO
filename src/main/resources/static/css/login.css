@@ -107,3 +107,13 @@ button.btn:hover {
 .register-link a:hover {
     text-decoration: underline;
 }
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    color: #9568ad;
+    background-color: transparent;
+    border-top: 1px solid #dcdcdc;
+    margin-top: auto;
+}

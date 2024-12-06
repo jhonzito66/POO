@@ -1,14 +1,71 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="title">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grupos</title>
+    <link rel="stylesheet" href="/css/grupos.css">
 </head>
-    <body>
-    <div th:fragment="content">
-        <h2>Grupos</h2>
-        <p>Conteúdo da página de grupos...</p>
-        <!-- botão para redirecionar à página de criação de grupo -->
-        <button onclick="window.location.href='/grupos/criar-grupo'">Criar Grupo</button>
+<body>
+<!-- Barra Superior -->
+<header class="top-bar">
+    <div class="logo">Systers</div>
+    <nav class="nav-bar">
+        <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
+        <button class="nav-btn" onclick="window.location.href='/perfil/me';">Meu Perfil</button>
+        <button class="nav-btn" onclick="window.location.href='/grupos';">Grupo</button>
+        <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
+        <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
+    </nav>
+    <!-- Formulário de Logout Global -->
+    <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    </form>
+</header>
+
+<!-- Conteúdo Principal -->
+<main class="container">
+    <h2>Grupos</h2>
+    <p>Encontre e participe de grupos que interessam a você.</p>
+
+    <!-- Botão de criar grupo -->
+    <div class="actions">
+        <button class="btn-create-group" onclick="window.location.href='/grupos/criar-grupo'">Criar Grupo</button>
     </div>
-    </body>
+
+    <!-- Tabela de Grupos -->
+    <table class="groups-table">
+        <thead>
+        <tr>
+            <th>Nome do Grupo</th>
+            <th>Descrição</th>
+            <th>Participantes</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Linha de Grupos -->
+        <tr th:each="grupo : ${grupos}">
+            <td th:text="${grupo.nome}">Nome do Grupo</td>
+            <td th:text="${grupo.descricao}">Descrição do grupo</td>
+            <td th:text="${grupo.participantes.size()}">Número de participantes</td>
+            <td>
+                <button class="nav-btn" onclick="window.location.href='/grupos/detalhes/';">Ver</button>
+                <button class="nav-btn" onclick="window.location.href='/grupos/entrar/';">Entrar</button>
+            </td>
+        </tr>
+        <!-- Caso não haja grupos -->
+        <tr th:if="${#lists.isEmpty(grupos)}">
+            <td colspan="4">Nenhum grupo encontrado.</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</main>
+
+<!-- Rodapé -->
+<footer class="footer">
+    <p>&copy; 2024 Systers</p>
+</footer>
+</body>
 </html>
