@@ -33,11 +33,9 @@
         <div class="container">
             <!-- Conteúdo principal -->
             <main>
-                <!-- Seções dos Usuários continuam iguais... -->
-
                 <!-- Posts -->
                 <div id="posts-container">
-                    <!-- As postagens serão carregadas aqui dinamicamente -->
+                    <!-- posagens carregadas com o script -->
                 </div>
             </main>
         </div>
@@ -52,24 +50,20 @@
 </html>
 
 <script>
-    // Simulação de dados das últimas 10 postagens
-    const mockPosts = [
-        { groupName: "Nome do Grupo 1", time: "15h", content: "Venho através desta publicação anunciar a aprovação." },
-        { groupName: "Eventos Especiais", time: "2h", content: "Participe do nosso evento exclusivo este fim de semana. Não perca!" },
-        { groupName: "Atualizações", time: "1h", content: "Confira as últimas novidades na nossa plataforma. Estamos trabalhando duro para melhorar sua experiência!" },
-        { groupName: "Grupo de Mentoria", time: "5h", content: "A mentoria foi um sucesso! Obrigado a todos os participantes." },
-        { groupName: "Aviso Importante", time: "10h", content: "Lembre-se de atualizar seu perfil para acessar novos recursos." },
-        { groupName: "Comunidade Tech", time: "30m", content: "Estamos iniciando um novo projeto colaborativo. Junte-se a nós!" },
-        { groupName: "Novidade no App", time: "3h", content: "Agora você pode filtrar mentorias por temas específicos." },
-        { groupName: "Grupo de Mulheres Empreendedoras", time: "8h", content: "Compartilhando dicas valiosas para iniciar sua startup." },
-        { groupName: "Sucesso em Grupo", time: "12h", content: "Alcançamos 100 novos membros! Parabéns a todos." },
-        { groupName: "Dica da Semana", time: "1d", content: "Organize sua agenda semanal com as novas ferramentas." },
-    ];
-
     // Função para carregar postagens no DOM
     function loadPosts(posts) {
         const postsContainer = document.getElementById("posts-container");
         postsContainer.innerHTML = ""; // Limpa postagens anteriores
+
+        if (posts.length === 0) {
+            // Exibe mensagem caso não haja postagens
+            const noPostsMessage = document.createElement("div");
+            noPostsMessage.className = "no-posts-message";
+            noPostsMessage.innerHTML = "<p>Não há postagens para exibir.</p>";
+            postsContainer.appendChild(noPostsMessage);
+            return; // Sai da função se não houver postagens
+        }
+
         posts.forEach(post => {
             const postElement = document.createElement("div");
             postElement.className = "post";
@@ -77,18 +71,33 @@
               <div class="post-header">
                   <div class="profile-pic"></div>
                   <div class="post-info">
-                      <h4>${post.groupName}</h4>
-                      <p>${post.time}</p>
+                      <h4>${post.grupo.nome}</h4>
+                      <p>${post.autor.usuario.login}</p>
+                      <p>${post.conteudo}</p>
                   </div>
               </div>
               <div class="post-content">
-                  <p>${post.content}</p>
+                  <p>${post.conteudo}</p>
               </div>
           `;
             postsContainer.appendChild(postElement);
         });
     }
 
-    // Carrega as postagens simuladas
-    loadPosts(mockPosts);
+    // Função para carregar postagens do servidor
+    async function loadPostsFromServer() {
+        try {
+            const response = await fetch('/api/postagens/ultimas');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const posts = await response.json();
+            loadPosts(posts); // Chama a função para carregar postagens no DOM
+        } catch (error) {
+            console.error('Erro ao carregar postagens:', error);
+        }
+    }
+
+    // Carrega as postagens do servidor
+    loadPostsFromServer();
 </script>

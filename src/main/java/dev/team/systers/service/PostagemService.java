@@ -1,22 +1,21 @@
 package dev.team.systers.service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import dev.team.systers.exception.PostagemException;
 import dev.team.systers.model.Grupo;
 import dev.team.systers.model.Membro;
 import dev.team.systers.model.Postagem;
+import dev.team.systers.model.Usuario;
 import dev.team.systers.repository.GrupoRepository;
 import dev.team.systers.repository.MembroRepository;
 import dev.team.systers.repository.PostagemRepository;
-import dev.team.systers.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import dev.team.systers.model.Usuario;
 
 @Service
 public class PostagemService {
@@ -90,26 +89,15 @@ public class PostagemService {
     }
 
     public List<Postagem> listarUltimas10PostagensDeTodosOsGruposDoUsuario(Usuario usuario) {
-        List<Postagem> postagens = new ArrayList<>(); // Lista para armazenar as postagens
-
-        if (!usuario.getMembros().isEmpty()) {
-            usuario.getMembros().forEach(membro -> {
-                Grupo grupo = membro.getGrupo();
-
-                // Busca todas as postagens do grupo, ordena por data e adiciona à lista
-                List<Postagem> postagensGrupo = postagemRepository.getAllByGrupo(grupo)
-                        .stream()
-                        .sorted(Comparator.comparing(Postagem::getDataCriacao).reversed()) // Ordena por data (mais recente primeiro)
-                        .toList();
-
-                postagens.addAll(postagensGrupo); // Adiciona à lista principal
-            });
+        if (usuario == null || usuario.getMembros() == null || usuario.getMembros().isEmpty()) {
+            return Collections.emptyList(); // Retorna uma lista vazia se não houver membros
         }
 
-        // Ordena todas as postagens e seleciona apenas as 10 mais recentes
-        return postagens.stream()
+        return usuario.getMembros().stream()
+                .map(Membro::getGrupo) // Obtém o grupo de cada membro
+                .flatMap(grupo -> postagemRepository.getAllByGrupo(grupo).stream()) // Achata as postagens de todos os grupos
                 .sorted(Comparator.comparing(Postagem::getDataCriacao).reversed()) // Ordena por data (mais recente primeiro)
                 .limit(10) // Limita a 10 postagens
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // Coleta em uma lista
     }
 }
