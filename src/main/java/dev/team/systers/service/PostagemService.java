@@ -1,6 +1,9 @@
 package dev.team.systers.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import dev.team.systers.exception.PostagemException;
 import dev.team.systers.model.Grupo;
@@ -9,6 +12,7 @@ import dev.team.systers.model.Postagem;
 import dev.team.systers.repository.GrupoRepository;
 import dev.team.systers.repository.MembroRepository;
 import dev.team.systers.repository.PostagemRepository;
+import dev.team.systers.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,5 +87,29 @@ public class PostagemService {
                 .orElseThrow(() -> new PostagemException("Grupo não encontrado"));
 
         return postagemRepository.findByGrupo(grupo);
+    }
+
+    public List<Postagem> listarUltimas10PostagensDeTodosOsGruposDoUsuario(Usuario usuario) {
+        List<Postagem> postagens = new ArrayList<>(); // Lista para armazenar as postagens
+
+        if (!usuario.getMembros().isEmpty()) {
+            usuario.getMembros().forEach(membro -> {
+                Grupo grupo = membro.getGrupo();
+
+                // Busca todas as postagens do grupo, ordena por data e adiciona à lista
+                List<Postagem> postagensGrupo = postagemRepository.getAllByGrupo(grupo)
+                        .stream()
+                        .sorted(Comparator.comparing(Postagem::getDataCriacao).reversed()) // Ordena por data (mais recente primeiro)
+                        .toList();
+
+                postagens.addAll(postagensGrupo); // Adiciona à lista principal
+            });
+        }
+
+        // Ordena todas as postagens e seleciona apenas as 10 mais recentes
+        return postagens.stream()
+                .sorted(Comparator.comparing(Postagem::getDataCriacao).reversed()) // Ordena por data (mais recente primeiro)
+                .limit(10) // Limita a 10 postagens
+                .collect(Collectors.toList());
     }
 }
