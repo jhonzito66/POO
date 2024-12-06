@@ -11,15 +11,15 @@ public class Perfil {
     private Long id;
 
     @Column(name = "perfil_nome", nullable = false)
-    private String perfil_nome;
+    private String perfilNome;
     @Column(name = "perfil_bio")
-    private String perfil_bio;
+    private String perfilBio;
     @Column(name = "perfil_foto")
-    private String perfil_foto;
+    private String perfilFoto;
 
     @OneToOne
     @JoinColumn(name = "usuario_id_perfil_fk", foreignKey = @ForeignKey(name = "usuario_id_perfil_fk"), nullable = false, unique = true)
-    private Usuario usuario_perfil;
+    private Usuario usuarioPerfil;
 
     public Perfil() {}
 
@@ -31,35 +31,35 @@ public class Perfil {
         this.id = id;
     }
 
-    public String getPerfil_nome() {
-        return perfil_nome;
+    public String getPerfilNome() {
+        return perfilNome;
     }
 
-    public void setPerfil_nome(String perfil_nome) {
-        this.perfil_nome = perfil_nome;
+    public void setPerfilNome(String perfilNome) {
+        this.perfilNome = perfilNome;
     }
 
-    public String getPerfil_bio() {
-        return perfil_bio;
+    public String getPerfilBio() {
+        return perfilBio;
     }
 
-    public void setPerfil_bio(String perfil_bio) {
-        this.perfil_bio = perfil_bio;
+    public void setPerfilBio(String perfilBio) {
+        this.perfilBio = perfilBio;
     }
 
-    public String getPerfil_foto() {
-        return perfil_foto;
+    public String getPerfilFoto() {
+        return perfilFoto;
     }
 
-    public void setPerfil_foto(String perfil_foto) {
-        this.perfil_foto = perfil_foto;
+    public void setPerfilFoto(String perfilFoto) {
+        this.perfilFoto = perfilFoto;
     }
 
-    public Usuario getUsuario_perfil() {
-        return usuario_perfil;
+    public Usuario getUsuarioPerfil() {
+        return usuarioPerfil;
     }
 
-    public void setUsuario_perfil(Usuario usuario_perfil) {
-        this.usuario_perfil = usuario_perfil;
+    public void setUsuarioPerfil(Usuario usuarioPerfil) {
+        this.usuarioPerfil = usuarioPerfil;
     }
 }

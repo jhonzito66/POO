@@ -35,16 +35,16 @@
             <div class="user-info">
                 <!-- Foto do perfil -->
 
-
                 <!-- Nome do usuário (ou mensagem padrão) -->
-                <span th:text="${usuario.nome ?: 'Usuário desconhecido'}">Usuário</span>
+                <p th:if="${perfil != null}" th:text="${perfil.getPerfilNome()}">Usuário</p>
+                <p th:if="${perfil == null}">Usuário desconhecido</p>
 
                 <!-- Nome de login do usuário (ou mensagem padrão) -->
-                <p><strong>@</strong><span th:text="${usuario.login ?: 'Login não informado'}">username</span></p>
+                <p><strong>@</strong><span th:text="${usuario.login ?: 'Login inexistente'}">username</span></p>
 
                 <!-- Biografia do usuário -->
-                <p class="bio" th:text="${usuario.bio ?: 'Nenhuma biografia disponível.'}">
-                    Este é um exemplo de biografia.
+                <p class="bio" th:text="${perfil != null && perfil.getPerfilBio() != null ? perfil.getPerfilBio() : 'Biografia vazia.'}">
+                    Biografia
                 </p>
             </div>
         </h1>
