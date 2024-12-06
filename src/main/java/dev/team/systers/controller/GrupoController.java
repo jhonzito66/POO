@@ -1,11 +1,7 @@
 package dev.team.systers.controller;
 
-import dev.team.systers.exception.GrupoException;
-import dev.team.systers.model.Grupo;
-import dev.team.systers.service.GrupoService;
-import dev.team.systers.model.Usuario;
-import dev.team.systers.exception.UsuarioException;
-import dev.team.systers.service.UsuarioService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import dev.team.systers.exception.GrupoException;
+import dev.team.systers.exception.UsuarioException;
+import dev.team.systers.model.Grupo;
+import dev.team.systers.model.Usuario;
+import dev.team.systers.service.GrupoService;
+import dev.team.systers.service.UsuarioService;
 
 @Controller
 public class GrupoController {
@@ -46,6 +49,9 @@ public class GrupoController {
             throw new UsuarioException("Usuário não encontrado");
         }
         model.addAttribute("usuario", usuario);
+
+        List<Grupo> grupos = grupoService.listarGruposPorUsuario(usuario);
+        model.addAttribute("grupos", grupos);
 
         return "grupos";
     }

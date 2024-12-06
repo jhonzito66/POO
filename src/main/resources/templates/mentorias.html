@@ -38,24 +38,34 @@
         <thead>
         <tr>
             <th>Título</th>
-            <th>Descrição</th>
-            <th>Mentor</th>
+            <th>Data de Início</th>
+            <th>Data de Fim</th>
+            <th th:text="${(usuario.getTipoMentor() != null && !usuario.getTipoMentor())
+                ? 'MENTORADO'
+                : 'MENTOR'}">
+                Nome do Mentor
+            </th>
             <th>Ações</th>
         </tr>
         </thead>
         <tbody>
         <!-- Linha de Mentorias -->
         <tr th:each="mentoria : ${mentorias}">
-            <td th:text="${mentoria.titulo}">Título da Mentoria</td>
-            <td th:text="${mentoria.descricao}">Descrição da mentoria</td>
-            <td th:text="${mentoria.mentor.nome}">Nome do Mentor</td>
+            <td th:text="${mentoria.getNome()}">Título da Mentoria</td>
+            <td th:text="${mentoria.getDataHoraInicio()}">Data de Início</td>
+            <td th:text="${mentoria.getDataHoraFim() != null ? mentoria.getDataHoraFim() : 'Não finalizada.'}">Data de Fim</td>
+            <td th:text="${mentoria.getParticipantes() != null && !#lists.isEmpty(mentoria.getParticipantes())
+                ? mentoria.getParticipantes().get(0).getNome()
+                : 'Sem mentor'}">
+                Nome do Mentor
+            </td>
             <td>
                 <button class="nav-btn" onclick="window.location.href='/mentorias/detalhes/';">Ver</button>
                 <button class="nav-btn" onclick="window.location.href='/mentorias/participar/';">Participar</button>
             </td>
         </tr>
         <!-- Caso não haja mentorias -->
-        <tr th:if="${#lists.isEmpty(mentorias)}">
+        <tr th:if="${mentorias.isEmpty()}">
             <td colspan="4">Nenhuma mentoria encontrada.</td>
         </tr>
         </tbody>

@@ -48,7 +48,7 @@
         <tr th:each="grupo : ${grupos}">
             <td th:text="${grupo.nome}">Nome do Grupo</td>
             <td th:text="${grupo.descricao}">Descrição do grupo</td>
-            <td th:text="${grupo.participantes.size()}">Número de participantes</td>
+            <td th:text="${grupo.membros.size()}">Número de participantes</td>
             <td>
                 <button class="nav-btn" onclick="window.location.href='/grupos/detalhes/';">Ver</button>
                 <button class="nav-btn" onclick="window.location.href='/grupos/entrar/';">Entrar</button>

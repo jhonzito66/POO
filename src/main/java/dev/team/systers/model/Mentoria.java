@@ -37,6 +37,18 @@ public class Mentoria {
     @OneToMany(mappedBy = "mentoriaAvaliada")
     private List<Avaliacao> avaliacoesMentoria;
 
+    public Mentoria() {}
+
+    public Mentoria(Long id, String nome, LocalDateTime dataHoraInicio, LocalDateTime dataHoraFim, String status, List<Participante> participantes, List<Avaliacao> avaliacoesMentoria) {
+        this.id = id;
+        this.nome = nome;
+        this.dataHoraInicio = dataHoraInicio;
+        this.dataHoraFim = dataHoraFim;
+        this.status = status;
+        this.participantes = participantes;
+        this.avaliacoesMentoria = avaliacoesMentoria;
+    }
+
     public Long getId() {
         return id;
     }

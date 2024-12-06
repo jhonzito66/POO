@@ -1,20 +1,20 @@
 package dev.team.systers.controller;
 
-import dev.team.systers.exception.GrupoException;
-import dev.team.systers.model.Grupo;
-import dev.team.systers.service.GrupoService;
-import dev.team.systers.model.Usuario;
-import dev.team.systers.exception.UsuarioException;
-import dev.team.systers.service.MentoriaService;
-import dev.team.systers.service.UsuarioService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+
+import dev.team.systers.exception.MentoriaException;
+import dev.team.systers.exception.UsuarioException;
+import dev.team.systers.model.Mentoria;
+import dev.team.systers.model.Usuario;
+import dev.team.systers.service.MentoriaService;
+import dev.team.systers.service.UsuarioService;
 
 @Controller
 public class MentoriaController {
@@ -38,18 +38,26 @@ public class MentoriaController {
     public String exibirMentorias(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        model.addAttribute("title", "Mentorias");
-        model.addAttribute("content", "mentorias");
-        model.addAttribute("sidebar", "perfil-template");
-
         if (auth == null ||
                 !auth.isAuthenticated() ||
                 auth.getName().equals("anonymousUser")) {
             throw new UsuarioException("Usuário não autenticado");
         }
+
         String username = auth.getName();
         Usuario usuario = usuarioService.findByLogin(username);
+        if (usuario == null) {
+            throw new UsuarioException("Usuário não encontrado");
+        }
         model.addAttribute("usuario", usuario);
+
+        // Obter mentorias do usuário
+        List<Mentoria> mentorias = mentoriaService.listarMentoriasPorUsuario(usuario);
+        if (mentorias == null) {
+            throw new MentoriaException("Erro ao recuperar mentorias.");
+        }
+
+        model.addAttribute("mentorias", mentorias);
 
         return "mentorias";
     }

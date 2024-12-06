@@ -26,6 +26,10 @@ public class PerfilService {
         this.grupoRepository = grupoRepository;
     }
 
+    public Perfil buscarPerfilPorIDUsuario(Long idUsuario) {
+        return perfilRepository.findById(idUsuario).orElse(null);
+    }
+
     public List<Grupo> buscarGruposDoUsuario(Long perfilId) {
         // Primeiro, busque o perfil pelo ID
         Perfil perfil = perfilRepository.findById(perfilId)

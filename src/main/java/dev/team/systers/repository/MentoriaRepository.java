@@ -1,6 +1,7 @@
 package dev.team.systers.repository;
 
 import dev.team.systers.model.Mentoria;
+import dev.team.systers.model.Participante;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -27,4 +28,6 @@ public interface MentoriaRepository extends JpaRepository<Mentoria, Long> {
 
     // Buscar mentorias com participantes específicos
     List<Mentoria> findByParticipantes_Id(Long participanteId);
+
+    List<Mentoria> findMentoriasByParticipantes(List<Participante> participantes);
 }

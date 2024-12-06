@@ -2,6 +2,7 @@ package dev.team.systers.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import dev.team.systers.exception.GrupoException;
 import dev.team.systers.exception.MembroException;
@@ -123,5 +124,13 @@ public class GrupoService {
         if (membro.getAutorizacao().ordinal() < autorizacaoNecessaria.ordinal()) {
             throw new GrupoException("Permissão negada");
         }
+    }
+
+    public List<Grupo> listarGruposPorUsuario(Usuario usuario) {
+        return membroRepository.findByUsuario(usuario)
+                .stream()
+                .map(Membro::getGrupo)
+                .distinct() // é pra evitar grupos duplicados!!
+                .collect(Collectors.toList());
     }
 }
