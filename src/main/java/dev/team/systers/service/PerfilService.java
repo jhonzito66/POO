@@ -32,7 +32,7 @@ public class PerfilService {
                 .orElseThrow(() -> new IllegalArgumentException("Perfil não encontrado com o ID: " + perfilId));
 
         // Obtenha o usuário associado ao perfil
-        Usuario usuario = perfil.getUsuario_perfil();
+        Usuario usuario = perfil.getUsuarioPerfil();
 
         // Agora, busque os grupos que o usuário pertence
         List<Object[]> gruposIds = usuarioRepository.findGruposDeUmUsuarioNativo(usuario.getId());

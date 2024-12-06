@@ -121,8 +121,8 @@ public class Usuario {
     /**
      * Associação com a tabela de perfil.
      */
-    @OneToOne(mappedBy = "usuario_perfil", cascade = CascadeType.ALL)
-    private Perfil perfil_usuario;
+    @OneToOne(mappedBy = "usuarioPerfil", cascade = CascadeType.ALL)
+    private Perfil perfilUsuario;
 
     /**
      * Avaliações associada ao usuário.
@@ -307,12 +307,12 @@ public class Usuario {
         this.notificacoesEnviadas = notificacoesEnviadas;
     }
 
-    public Perfil getPerfil_usuario() {
-        return perfil_usuario;
+    public Perfil getPerfilUsuario() {
+        return perfilUsuario;
     }
 
-    public void setPerfil_usuario(Perfil perfil_usuario) {
-        this.perfil_usuario = perfil_usuario;
-        perfil_usuario.setUsuario_perfil(this);
+    public void setPerfilUsuario(Perfil perfilUsuario) {
+        this.perfilUsuario = perfilUsuario;
+        perfilUsuario.setUsuarioPerfil(this);
     }
 }
