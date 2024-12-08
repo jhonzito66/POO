@@ -143,4 +143,14 @@ public class DenunciaController {
         LocalDateTime dataFim = LocalDateTime.parse(fim);
         return ResponseEntity.ok(denunciaService.listarPorDataHoraBetween(dataInicio, dataFim));
     }
+    @PutMapping("/resolver/{id}")
+    public ResponseEntity<String> resolverDenuncia(@PathVariable Long id) {
+        boolean resolvida = denunciaService.resolverDenuncia(id);
+        if (resolvida) {
+            return ResponseEntity.ok("Denúncia resolvida com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Denúncia não encontrada ou já resolvida.");
+        }
+    }
+
 }

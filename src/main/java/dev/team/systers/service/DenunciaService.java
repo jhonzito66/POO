@@ -127,5 +127,17 @@ public class DenunciaService {
         }
         return denunciaRepository.findByDataHoraBetween(inicio, fim);
     }
+    /**
+     * Marca uma denúncia como resolvida.
+     * @param id ID da denúncia.
+     * @return True se a denúncia foi resolvida com sucesso, false caso contrário.
+     */
+    public boolean resolverDenuncia(Long id) {
+        return denunciaRepository.findById(id).map(denuncia -> {
+            denuncia.setStatus(Denuncia.StatusDenuncia.ATENDIDA); // Atualiza o status
+            denunciaRepository.save(denuncia); // Persiste a alteração no banco
+            return true;
+        }).orElse(false); // Retorna false se a denúncia não foi encontrada
+    }
 
 }

@@ -187,6 +187,7 @@
         <span class="close" onclick="closeLeaveMentorPopup()">&times;</span>
         <h3>Deseja deixar de ser um mentor?</h3>
         <p>Ao deixar de ser um mentor, você não poderá mais oferecer mentorias para outras pessoas.</p>
+
         <form id="leaveMentorForm" th:action="@{/perfil/deixar-mentor}" method="post" onsubmit="return confirmLeaveMentor()">
             <button type="submit" class="btn-submit">Sim, quero deixar de ser mentor</button>
         </form>
@@ -267,9 +268,9 @@
             }
 
             container.innerHTML = denuncias.map(denuncia => {
-                const nomeReportado = denuncia.usuarioReportado ?
-                    `${denuncia.usuarioReportado.nome} (@${denuncia.usuarioReportado.login})` :
-                    'Usuário não disponível';
+                const nomeReportado = denuncia.usuarioReportado
+                    ? `${denuncia.usuarioReportado.nome} (@${denuncia.usuarioReportado.login})`
+                    : 'Usuário não disponível';
 
                 return `
                     <div class="report-card">
@@ -286,7 +287,7 @@
                         <p class="report-date">${formatDate(denuncia.dataHora)}</p>
                         ${
                     denuncia.status === 'PENDENTE'
-                        ? `<button class="btn-resolve" onclick="resolveDenuncia(${denuncia.id})">Resolver</button>`
+                        ? `<button class="btn-submit" onclick="resolverDenuncia(${denuncia.id})">Resolver</button>`
                         : `<p class="resolved-message">Esta denúncia já foi resolvida.</p>`
                 }
                     </div>
@@ -310,20 +311,27 @@
         });
     }
 
-    async function resolveDenuncia(id) {
+    async function resolverDenuncia(id) {
         try {
-            const response = await fetch(`/api/denuncias-perfil/resolver/${id}`, { method: 'POST' });
+            const response = await fetch(`/resolver/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
             if (!response.ok) {
-                throw new Error(`Erro ao resolver a denúncia: ${response.status}`);
+                const errorData = await response.json().catch(() => null);
+                const errorMessage = errorData?.message || response.statusText || 'Erro desconhecido';
+                throw new Error(errorMessage);
             }
 
             alert(`Denúncia #${id} resolvida com sucesso!`);
-            loadDenuncias(); // Atualiza a lista de denúncias
+            loadDenuncias(); // Recarrega a lista de denúncias
         } catch (error) {
             console.error('Erro ao resolver denúncia:', error);
             alert(`Erro ao resolver denúncia: ${error.message}`);
         }
     }
+
 
     function openSupportPopup() {
         document.getElementById("supportPopup").style.display = "block";
@@ -334,4 +342,5 @@
         document.getElementById("supportPopup").style.display = "none";
     }
 </script>
+
 
