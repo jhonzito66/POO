@@ -11,7 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class PerfilController {
@@ -19,24 +21,15 @@ public class PerfilController {
     private final PerfilService perfilService;
 
     @Autowired
-    public PerfilController(PerfilService perfilService, UsuarioService usuarioService, PerfilService perfilService1) {
+    public PerfilController(PerfilService perfilService, UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        this.perfilService = perfilService1;
+        this.perfilService = perfilService;
     }
 
     @GetMapping("/perfil/me")
     public String exibirPerfilAtual(Model model) {
-        Authentication(model, usuarioService);
+        Usuario usuario = obterUsuarioLogado(usuarioService);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null ||
-                !auth.isAuthenticated() ||
-                auth.getName().equals("anonymousUser")) {
-            throw new UsuarioException("Usuário não autenticado");
-        }
-
-        String username = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(username);
         if (usuario == null) {
             throw new UsuarioException("Usuário não encontrado");
         }
@@ -48,16 +41,7 @@ public class PerfilController {
     }
 
     static void Authentication(Model model, UsuarioService usuarioService) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null ||
-                !auth.isAuthenticated() ||
-                auth.getName().equals("anonymousUser")) {
-            throw new IllegalStateException("Usuário não autenticado");
-        }
-
-        String login = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(login);
+        Usuario usuario = obterUsuarioLogado(usuarioService);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
@@ -72,5 +56,54 @@ public class PerfilController {
         }
         model.addAttribute("usuario", usuario);
         return "perfil";
+    }
+
+    @PostMapping("/perfil/editar")
+    public String atualizarUsuarioEPerfil(
+            @ModelAttribute("usuario") Usuario usuarioUpdate,
+            @ModelAttribute("perfil") Perfil perfilUpdate,
+            Model model) {
+
+        Usuario existingUsuario = usuarioService.findById(usuarioUpdate.getId());
+        Perfil existingPerfil = perfilService.buscarPerfilPorIDUsuario(existingUsuario.getId());
+
+        if (usuarioUpdate.getNome() != null && !usuarioUpdate.getNome().isEmpty()) {
+            existingUsuario.setNome(usuarioUpdate.getNome());
+            existingPerfil.setPerfilNome(usuarioUpdate.getNome());
+        }
+        if (usuarioUpdate.getEmail() != null && !usuarioUpdate.getEmail().isEmpty()) {
+            existingUsuario.setEmail(usuarioUpdate.getEmail());
+        }
+
+        if (usuarioUpdate.getSenha() != null && !usuarioUpdate.getSenha().isBlank()) {
+            existingUsuario.setSenha(usuarioService.encriptarSenha(usuarioUpdate.getSenha()));
+        }
+
+        if (perfilUpdate.getPerfilNome() != null && !perfilUpdate.getPerfilNome().isEmpty()) {
+            existingPerfil.setPerfilNome(perfilUpdate.getPerfilNome());
+        }
+        if (perfilUpdate.getPerfilBio() != null && !perfilUpdate.getPerfilBio().isEmpty()) {
+            existingPerfil.setPerfilBio(perfilUpdate.getPerfilBio());
+        }
+
+        usuarioService.atualizar(existingUsuario);
+        perfilService.update(existingPerfil);
+
+        model.addAttribute("usuario", existingUsuario);
+        model.addAttribute("perfil", existingPerfil);
+        return "perfil";
+    }
+
+    private static Usuario obterUsuarioLogado(UsuarioService usuarioService) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null ||
+                !auth.isAuthenticated() ||
+                auth.getName().equals("anonymousUser")) {
+            throw new IllegalStateException("Usuário não autenticado");
+        }
+
+        String login = auth.getName();
+        return usuarioService.findByLogin(login);
     }
 }

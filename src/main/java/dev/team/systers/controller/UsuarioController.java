@@ -1,5 +1,6 @@
 package dev.team.systers.controller;
 
+import dev.team.systers.exception.UsuarioException;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import dev.team.systers.exception.GrupoException;
 
 @Controller
 public class UsuarioController {
@@ -54,7 +53,7 @@ public class UsuarioController {
             // Lógica de registro do usuário
             usuarioService.registrar(usuario.getLogin().toLowerCase(), usuario.getSenha(), usuario.getEmail().toLowerCase(),
                                       usuario.getNome(), usuario.getTelefone(), usuario.getFusoHorario());
-        } catch (GrupoException e) {
+        } catch (UsuarioException e) {
             // A mensagem de erro é adicionada ao modelo para ser exibida na página de registro,
             // permitindo que o usuário veja o que deu errado.
             model.addAttribute("mensagemErro", e.getMessage());

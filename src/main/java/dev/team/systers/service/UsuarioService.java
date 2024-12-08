@@ -74,4 +74,14 @@ public class UsuarioService {
         return usuarioRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + username));
     }
+
+    public void atualizar(Usuario usuarioUpdate) {
+        Usuario existingUsuario = usuarioRepository.findById(usuarioUpdate.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + usuarioUpdate.getId()));
+        usuarioRepository.save(existingUsuario);
+    }
+
+    public String encriptarSenha(String senha) {
+        return passwordEncoder.encode(senha);
+    }
 }

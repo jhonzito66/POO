@@ -3,15 +3,15 @@ package dev.team.systers.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dev.team.systers.model.Grupo;
 import dev.team.systers.model.Perfil;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.repository.GrupoRepository;
 import dev.team.systers.repository.PerfilRepository;
 import dev.team.systers.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import dev.team.systers.model.Grupo;
 
 @Service
 public class PerfilService {
@@ -51,5 +51,19 @@ public class PerfilService {
         }
 
         return grupos;
+    }
+
+    public void update(Perfil perfilUpdate) {
+        Perfil existingPerfil = perfilRepository.findById(perfilUpdate.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Perfil não encontrado para o usuário com ID: " + perfilUpdate.getId()));
+
+        if (perfilUpdate.getPerfilNome() != null) {
+            existingPerfil.setPerfilNome(perfilUpdate.getPerfilNome());
+        }
+        if (perfilUpdate.getPerfilBio() != null) {
+            existingPerfil.setPerfilBio(perfilUpdate.getPerfilBio());
+        }
+
+        perfilRepository.save(existingPerfil);
     }
 }
