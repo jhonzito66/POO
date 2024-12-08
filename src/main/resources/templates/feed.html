@@ -31,7 +31,7 @@
     <!-- Conteúdo principal -->
     <main>
         <!-- ADM -->
-        <section th:if="${usuario.Autorizacao == 'ADMINISTRADOR'}">
+        <section th:if="${usuario.autorizacao.toString == 'ADMINISTRADOR'}">
             <!-- Perfis Denunciados -->
             <h2>Perfis Denunciados</h2>
             <div id="reported-profiles-container" class="requests-container">

@@ -46,6 +46,12 @@
                 <p class="bio" th:text="${perfil != null && perfil.getPerfilBio() != null ? perfil.getPerfilBio() : 'Biografia vazia.'}">
                     Biografia
                 </p>
+
+                <!-- Exibição de tipo de mentor -->
+                <p>
+                    <strong>Mentor:</strong>
+                    <span th:text="${usuario.getTipoMentor() != null && usuario.getTipoMentor() ? 'Sim' : 'Não'}">Tipo de mentor</span>
+                </p>
             </div>
         </h1>
 
@@ -147,8 +153,7 @@
         <span class="close" onclick="closeBecomeMentorPopup()">&times;</span>
         <h3>Deseja se tornar um mentor?</h3>
         <p>Ao se tornar um mentor, você poderá compartilhar seu conhecimento e ajudar outras pessoas a alcançarem seus objetivos.</p>
-        <form th:action="@{/perfil/virar-mentor}" method="post">
-            <input type="hidden" name="tipoMentor" value="true" />
+        <form id="becomeMentorForm" th:action="@{/perfil/virar-mentor}" method="post" onsubmit="return confirmMentor()">
             <button type="submit" class="btn-submit">Sim, quero ser mentor</button>
         </form>
     </div>
@@ -161,6 +166,14 @@
 
     function closeBecomeMentorPopup() {
         document.getElementById('becomeMentorPopup').style.display = 'none';
+    }
+
+    function confirmMentor() {
+        // Exibe a mensagem de confirmação
+        alert("Você virou um mentor!");
+
+        // O formulário será enviado normalmente após exibir a mensagem
+        return true;
     }
 </script>
 
