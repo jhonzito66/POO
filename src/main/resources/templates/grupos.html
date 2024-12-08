@@ -51,7 +51,13 @@
             <td th:text="${grupo.membros.size()}">Número de participantes</td>
             <td>
                 <button class="nav-btn" onclick="window.location.href='/grupos/detalhes/';">Ver</button>
-                <button class="nav-btn" onclick="window.location.href='/grupos/entrar/';">Entrar</button>
+                <button class="nav-btn" onclick="sairDoGrupo()">Sair</button>
+
+                <!-- Formulário de Sair do Grupo -->
+                <form id="sairGrupoForm" th:action="@{/grupos/sair}" method="post" style="display: none;">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                </form>
+
             </td>
         </tr>
         <!-- Caso não haja grupos -->

@@ -30,8 +30,10 @@
 
     <!-- Botão de criar mentoria -->
     <div class="actions">
-        <button class="btn-create-mentorship" onclick="window.location.href='/mentorias/criar-mentoria'">Criar Mentoria</button>
+        <button class="btn-create-mentorship" onclick="openPopup()">Criar Mentoria</button>
     </div>
+
+
 
     <!-- Tabela de Mentorias -->
     <table class="mentorships-table">
@@ -61,7 +63,7 @@
             </td>
             <td>
                 <button class="nav-btn" onclick="window.location.href='/mentorias/detalhes/';">Ver</button>
-                <button class="nav-btn" onclick="window.location.href='/mentorias/participar/';">Participar</button>
+                <button class="nav-btn" onclick="window.location.href='/mentorias/participar/';">Finalizar</button>
             </td>
         </tr>
         <!-- Caso não haja mentorias -->
@@ -78,3 +80,43 @@
 </footer>
 </body>
 </html>
+
+<script>
+    // Abre o pop-up
+    function openPopup() {
+        document.getElementById("createMentorshipPopup").style.display = "block";
+    }
+
+    // Fecha o pop-up
+    function closePopup() {
+        document.getElementById("createMentorshipPopup").style.display = "none";
+    }
+
+    // Fecha o pop-up ao clicar fora do conteúdo
+    window.onclick = function(event) {
+        const popup = document.getElementById("createMentorshipPopup");
+        if (event.target === popup) {
+            popup.style.display = "none";
+        }
+    }
+</script>
+
+<!-- Pop-up de Criar Mentoria -->
+<div id="createMentorshipPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h3>Criar Nova Mentoria</h3>
+        <form action="/mentorias/criar-mentoria" method="post">
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" name="titulo" required>
+
+            <label for="dataInicio">Data de Início:</label>
+            <input type="datetime-local" id="dataInicio" name="dataInicio" required>
+
+            <label for="dataFim">Data de Fim:</label>
+            <input type="datetime-local" id="dataFim" name="dataFim">
+
+            <button type="submit" class="btn-submit">Criar</button>
+        </form>
+    </div>
+</div>

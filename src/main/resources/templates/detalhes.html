@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="title">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informações de Mentorias</title>
+  <link rel="stylesheet" href="/css/HomeMentoria.css">
+</head>
+<body>
+<!-- Barra superior -->
+<header class="top-bar">
+  <!-- Logo do sistema -->
+  <div class="logo">Systers</div>
+
+  <!-- Navegação principal -->
+  <nav class="nav-bar">
+    <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
+    <button class="nav-btn" onclick="window.location.href='/perfil/me';">Meu Perfil</button>
+    <button class="nav-btn" onclick="window.location.href='/grupos';">Grupos</button>
+    <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
+    <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
+  </nav>
+  <!-- Formulário de Logout Global -->
+  <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+  </form>
+</header>
+
+<!-- Conteúdo principal -->
+<main class="main-mentoria">
+  <!-- Seção de informações sobre mentorias -->
+  <section>
+    <h1 class="titulo">Mentorias</h1>
+
+    <!-- Lista de mentorias -->
+    <div class="mentoria-list">
+      <article th:each="mentoria : ${mentorias}" class="mentoria">
+        <!-- Nome da mentoria -->
+        <h2 th:text="${mentoria.nome}">Nome da Mentoria</h2>
+
+        <!-- Datas da mentoria -->
+        <p>
+          <strong>Início:</strong>
+          <span th:text="${#dates.format(mentoria.dataInicio, 'dd/MM/yyyy')}">Data de Início</span>
+        </p>
+        <p>
+          <strong>Fim:</strong>
+          <span th:text="${#dates.format(mentoria.dataFim, 'dd/MM/yyyy')}">Data Final</span>
+        </p>
+
+        <!-- Status da mentoria -->
+        <p>
+          <strong>Status:</strong>
+          <span th:text="${mentoria.status}">Status da Mentoria</span>
+        </p>
+
+        <!-- Avaliação -->
+        <p>
+          <strong>Avaliação:</strong>
+          <span th:text="${mentoria.avaliacao}">Avaliação da Mentoria</span>
+        </p>
+
+        <!-- Ações para os usuários -->
+        <div class="btn-container">
+          <button class="btn" th:if="${!isParticipante}" onclick="entrarNaMentoria()">Ver</button>
+          <button class="btn" th:if="${!isParticipante}" onclick="entrarNaMentoria()">Entrar</button>
+          <button class="btn" th:if="${isParticipante}" onclick="sairDaMentoria()">Sair</button>
+        </div>
+      </article>
+
+      <!-- Caso não haja mentorias -->
+      <p th:if="${#lists.isEmpty(mentorias)}">Nenhuma mentoria disponível.</p>
+    </div>
+  </section>
+</main>
+
+<!-- Rodapé -->
+<footer class="footer">
+  <!-- Informações de direitos autorais -->
+  <p>&copy; 2024 Systers</p>
+</footer>
+
+<script>
+  function entrarNaMentoria() {
+    window.location.href = '/mentorias/entrar/' + /* Inserir ID da mentoria */ '';
+  }
+
+  function sairDaMentoria() {
+    if (confirm("Tem certeza de que deseja sair da mentoria?")) {
+      window.location.href = '/mentorias/sair/' + /* Inserir ID da mentoria */ '';
+    }
+  }
+</script>
+</body>
+</html>

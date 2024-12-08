@@ -30,7 +30,7 @@ header.top-bar {
 .nav-bar {
     display: flex;
     gap: 10px; /* Espaçamento entre os botões */
-    margin-right: 50px; /* Garantia de afastamento da borda direita */
+    margin-right: 30px; /* Garantia de afastamento da borda direita */
 }
 
 .nav-bar {
@@ -192,22 +192,127 @@ footer {
     }
 
 }
-
-/* Foto do perfil */
-.profile-photo {
-    width: 120px;
-    height: 120px;
-    border-radius: 1%; /* Torna a foto redonda */
-    object-fit: cover; /* Garante que a foto se ajuste ao contêiner */
-    margin-bottom: 15px;
-    border: 3px solid #9568ad; /* Borda ao redor da foto */
+/* Estilo do Pop-up */
+.popup {
+    display: none; /* Oculto por padrão */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+    z-index: 1000;
 }
 
-/* Biografia */
-.bio {
-    font-size: 16px;
-    color: #555;
-    margin-top: 10px;
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    margin: 10% auto;
+    width: 90%;
+    max-width: 500px; /* Tamanho máximo */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup-content h3 {
+    color: #444;
+    font-size: 20px;
+    margin-bottom: 20px;
     text-align: center;
-    line-height: 1.4; /* Melhor espaçamento entre linhas */
+    border-bottom: 2px solid #9568ad;
+    padding-bottom: 10px;
+}
+
+.popup-content label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 5px;
+}
+
+.popup-content input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.popup-content .btn-submit {
+    background-color: #9568ad;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+}
+
+.popup-content .btn-submit:hover {
+    background-color: #7a4f8c;
+    transform: translateY(-2px);
+}
+
+.popup-content .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #9568ad;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.popup-content .close:hover {
+    color: #7a4f8c;
+}
+
+.popup-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box; /* Inclui padding na largura */
+    height: 100px; /* Altura fixa */
+    resize: none; /* Impede o redimensionamento */
+}
+
+/* Animação para o pop-up */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .popup-content {
+        width: 95%; /* O pop-up ocupa quase toda a largura */
+    }
+
+    .popup-content input {
+        font-size: 14px;
+        padding: 8px; /* Menor padding para dispositivos móveis */
+    }
+
+    .popup-content .btn-submit {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
 }
