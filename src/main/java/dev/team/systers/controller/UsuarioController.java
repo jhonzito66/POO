@@ -1,6 +1,7 @@
 package dev.team.systers.controller;
 
-import dev.team.systers.exception.UsuarioException;
+import dev.team.systers.model.Avaliacao;
+import dev.team.systers.model.Perfil;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import dev.team.systers.exception.GrupoException;
+
+import java.util.List;
 
 @Controller
 public class UsuarioController {
@@ -53,7 +59,7 @@ public class UsuarioController {
             // Lógica de registro do usuário
             usuarioService.registrar(usuario.getLogin().toLowerCase(), usuario.getSenha(), usuario.getEmail().toLowerCase(),
                                       usuario.getNome(), usuario.getTelefone(), usuario.getFusoHorario());
-        } catch (UsuarioException e) {
+        } catch (GrupoException e) {
             // A mensagem de erro é adicionada ao modelo para ser exibida na página de registro,
             // permitindo que o usuário veja o que deu errado.
             model.addAttribute("mensagemErro", e.getMessage());
@@ -74,4 +80,42 @@ public class UsuarioController {
     public String exibirFormularioLogin(Model model) {
         return "login"; // Retorna a página login.html
     }
+
+    @GetMapping("/perfil/{usuarioId}")
+    public String visualizarPerfil(@PathVariable Long usuarioId, Model model) {
+        try {
+            Perfil perfil = usuarioService.visualizarPerfil(usuarioId);
+            model.addAttribute("perfil", perfil);
+        } catch (Exception e) {
+            model.addAttribute("mensagemErro", "Erro ao visualizar perfil: " + e.getMessage());
+            return "erro"; // Página de erro
+        }
+        return "perfil"; // Página para exibir o perfil do usuário
+    }
+
+    @GetMapping("/perfil/editar/{usuarioId}")
+    public String exibirFormularioEditarPerfil(@PathVariable Long usuarioId, Model model) {
+        try {
+            Usuario usuario = usuarioService.findById(usuarioId);
+            model.addAttribute("usuario", usuario);
+        } catch (Exception e) {
+            model.addAttribute("mensagemErro", "Erro ao carregar perfil: " + e.getMessage());
+            return "erro";
+        }
+        return "editarPerfil"; // Página para editar o perfil
+    }
+
+    @PostMapping("/perfil/editar/{usuarioId}")
+    public String editarPerfil(@PathVariable Long usuarioId, @ModelAttribute Usuario usuarioAtualizado, Model model) {
+        try {
+            usuarioService.editarPerfil(usuarioId, usuarioAtualizado.getNome(), usuarioAtualizado.getEmail(), usuarioAtualizado.getTelefone());
+        } catch (Exception e) {
+            model.addAttribute("mensagemErro", "Erro ao atualizar perfil: " + e.getMessage());
+            return "editarPerfil";
+        }
+        return "redirect:/perfil/" + usuarioId; // Redireciona para o perfil atualizado
+    }
+
+
+
 }
