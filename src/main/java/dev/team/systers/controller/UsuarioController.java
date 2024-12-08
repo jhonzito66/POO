@@ -116,6 +116,4 @@ public class UsuarioController {
         return "redirect:/perfil/" + usuarioId; // Redireciona para o perfil atualizado
     }
 
-
-
 }

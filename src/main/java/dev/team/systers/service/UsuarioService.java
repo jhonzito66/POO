@@ -14,6 +14,8 @@ import dev.team.systers.model.Perfil;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.repository.PerfilRepository;
 import dev.team.systers.repository.UsuarioRepository;
+import dev.team.systers.repository.AvaliacaoRepository;
+
 
 @Service
 public class UsuarioService {
@@ -101,6 +103,7 @@ public class UsuarioService {
     public String encriptarSenha(String senha) {
         return passwordEncoder.encode(senha);
     }
+
 
 
 }
