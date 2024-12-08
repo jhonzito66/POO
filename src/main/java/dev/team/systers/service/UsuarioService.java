@@ -77,6 +77,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + username));
     }
 
+
     public Perfil visualizarPerfil(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o ID: " + usuarioId));
@@ -91,7 +92,15 @@ public class UsuarioService {
         if (telefone != null && !telefone.isEmpty()) usuario.setTelefone(telefone);
         usuarioRepository.save(usuario);
     }
+    public void atualizar(Usuario usuarioUpdate) {
+        Usuario existingUsuario = usuarioRepository.findById(usuarioUpdate.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + usuarioUpdate.getId()));
+        usuarioRepository.save(existingUsuario);
+    }
 
+    public String encriptarSenha(String senha) {
+        return passwordEncoder.encode(senha);
+    }
 
 
 }
