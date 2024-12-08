@@ -238,3 +238,159 @@ footer {
     background: #4CAF50;
     color: #fff;
 }
+
+.report-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.report {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.report h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.report p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.report strong {
+    color: #444;
+}
+
+.error-message {
+    color: #dc3545;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Estilos para o popup de suporte */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: #fff;
+    border-radius: 12px;
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-content h3 {
+    margin: 0;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.popup-content .close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+}
+
+.popup-scroll-area {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: calc(80vh - 140px); /* altura total - (header + footer) */
+}
+
+.popup-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+/* Estilos para os cartões de denúncia */
+.report-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 4px solid #9568ad;
+}
+
+.report-card h4 {
+    color: #333;
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.report-card p {
+    margin: 8px 0;
+    color: #666;
+    line-height: 1.4;
+}
+
+.report-card strong {
+    color: #444;
+}
+
+.report-card .report-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.report-card .status-pendente {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.report-card .status-atendida {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.report-date {
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 12px;
+    text-align: right;
+}
+
+/* Estiliza a barra de rolagem */
+.popup-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.popup-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.popup-content::-webkit-scrollbar-thumb {
+    background: #9568ad;
+    border-radius: 4px;
+}
+
+.popup-content::-webkit-scrollbar-thumb:hover {
+    background: #7b4a91;
+}

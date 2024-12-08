@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -46,8 +48,9 @@ public class Denuncia {
     /**
      * Status da denúncia (ex: Pendente, Em análise, Resolvida).
      */
-    @Column(name = "denuncia_status", nullable = false, length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "denuncia_status", nullable = false)
+    private StatusDenuncia status = StatusDenuncia.PENDENTE;
 
     /**
      * Data e hora da denúncia.
@@ -77,7 +80,8 @@ public class Denuncia {
 
     public Denuncia() {}
 
-    public Denuncia(String descricao, String categoria, String status, LocalDateTime dataHora, Usuario usuarioAutor, Usuario usuarioReportado) {
+    public Denuncia(Long id, String descricao, String categoria, StatusDenuncia status, LocalDateTime dataHora, Usuario usuarioAutor, Usuario usuarioReportado) {
+        this.id = id;
         this.descricao = descricao;
         this.categoria = categoria;
         this.status = status;
@@ -112,11 +116,11 @@ public class Denuncia {
         this.categoria = categoria;
     }
 
-    public String getStatus() {
+    public StatusDenuncia getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusDenuncia status) {
         this.status = status;
     }
 
@@ -146,11 +150,11 @@ public class Denuncia {
 
     // Método toString para facilitar a visualização
     
-    public enum status {
-        Pendente,
-        Analise,
-        Resolvida
+    public enum StatusDenuncia {
+        PENDENTE,
+        ATENDIDA
     }
+
     @Override
     public String toString() {
         return "Denuncia{" +

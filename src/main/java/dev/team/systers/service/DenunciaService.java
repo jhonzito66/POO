@@ -22,18 +22,18 @@ public class DenunciaService {
 
     // Listar todas as denúncias
     public List<Denuncia> listarTodas() {
-        return denunciaRepository.findAll();
+        return denunciaRepository.findAllWithUsuarios();
     }
 
     // Buscar denúncias por status
     public List<Denuncia> listarPorStatus(String status) {
         // Validar se o status é válido
         try {
-            Denuncia.status.valueOf(status);
+            Denuncia.StatusDenuncia.valueOf(status);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Status inválido: " + status);
         }
-        return denunciaRepository.findByStatus(status);
+        return denunciaRepository.findByStatus(Denuncia.StatusDenuncia.valueOf(status));
     }
 
     // Buscar denúncias por categoria
@@ -46,10 +46,7 @@ public class DenunciaService {
 
     // Buscar denúncias feitas por um usuário específico
     public List<Denuncia> listarPorUsuarioAutor(Long usuarioId) {
-        if (usuarioId == null) {
-            throw new IllegalArgumentException("ID do usuário autor não pode ser nulo");
-        }
-        return denunciaRepository.findByUsuarioAutor_Id(usuarioId);
+        return denunciaRepository.findByUsuarioAutorIdWithUsuarios(usuarioId);
     }
 
     // Buscar denúncias feitas contra um usuário específico
@@ -64,7 +61,7 @@ public class DenunciaService {
     public Denuncia salvarDenuncia(Denuncia denuncia) {
         validarDenuncia(denuncia);
         denuncia.setDataHora(LocalDateTime.now());
-        denuncia.setStatus(Denuncia.status.Pendente.toString()); // Status inicial sempre pendente
+        denuncia.setStatus(Denuncia.StatusDenuncia.PENDENTE); // Usando o enum diretamente
         return denunciaRepository.save(denuncia);
     }
 

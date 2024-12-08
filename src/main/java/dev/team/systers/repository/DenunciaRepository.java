@@ -9,12 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import dev.team.systers.model.Denuncia;
+import dev.team.systers.model.Denuncia.StatusDenuncia;
 
 @Repository
 public interface DenunciaRepository extends JpaRepository<Denuncia, Long> {
 
     // Buscar denúncias por status
-    List<Denuncia> findByStatus(String status);
+    List<Denuncia> findByStatus(StatusDenuncia status);
 
     // Buscar denúncias por categoria
     List<Denuncia> findByCategoria(String categoria);
@@ -35,9 +36,20 @@ public interface DenunciaRepository extends JpaRepository<Denuncia, Long> {
     List<Denuncia> findByCategoriaAndStatus(String categoria, String status);
 
     // Novos métodos úteis
-    @Query("SELECT d FROM Denuncia d WHERE d.usuarioReportado.id = :usuarioId AND d.status = 'Pendente'")
+    @Query("SELECT d FROM Denuncia d WHERE d.usuarioReportado.id = :usuarioId AND d.status = 'PENDENTE'")
     List<Denuncia> findPendingByReportedUser(@Param("usuarioId") Long usuarioId);
 
-    @Query("SELECT COUNT(d) FROM Denuncia d WHERE d.usuarioReportado.id = :usuarioId AND d.status IN ('Pendente', 'Analise')")
+    @Query("SELECT COUNT(d) FROM Denuncia d WHERE d.usuarioReportado.id = :usuarioId AND d.status = 'PENDENTE'")
     long countActiveReportsByUser(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT d FROM Denuncia d " +
+           "LEFT JOIN FETCH d.usuarioAutor " +
+           "LEFT JOIN FETCH d.usuarioReportado")
+    List<Denuncia> findAllWithUsuarios();
+
+    @Query("SELECT d FROM Denuncia d " +
+           "LEFT JOIN FETCH d.usuarioAutor " +
+           "LEFT JOIN FETCH d.usuarioReportado " +
+           "WHERE d.usuarioAutor.id = :usuarioId")
+    List<Denuncia> findByUsuarioAutorIdWithUsuarios(@Param("usuarioId") Long usuarioId);
 }

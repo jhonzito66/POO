@@ -26,8 +26,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByLogin(String login);
 
     /**
-     * Busca usuários que possuem denúncias.
+     * Busca usuários que possuem denúncias pendentes.
      */
-    @Query("SELECT DISTINCT u FROM Usuario u LEFT JOIN FETCH u.denunciasRecebidas WHERE SIZE(u.denunciasRecebidas) > 0")
+    @Query("SELECT DISTINCT u FROM Usuario u " +
+           "JOIN FETCH u.denunciasRecebidas d " +
+           "WHERE d.status = dev.team.systers.model.Denuncia$StatusDenuncia.PENDENTE")
     List<Usuario> findUsuariosComDenuncias();
 }

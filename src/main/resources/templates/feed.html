@@ -63,7 +63,6 @@
 <script>
     // Função para carregar postagens no DOM
     function loadPosts(posts) {
-        console.log('Posts recebidos:', posts);
         const postsContainer = document.getElementById("posts-container");
         postsContainer.innerHTML = ""; 
 
@@ -117,7 +116,6 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const posts = await response.json();
-            console.log('Posts recebidos do servidor:', posts);
             loadPosts(posts);
         } catch (error) {
             console.error('Erro ao carregar postagens:', error);
@@ -136,15 +134,21 @@
         const container = document.getElementById("reported-profiles-container");
         container.innerHTML = "";
 
-        if (profiles.length === 0) {
+        if (!profiles || profiles.length === 0) {
             container.innerHTML = "<p>Nenhum perfil denunciado encontrado.</p>";
             return;
         }
 
         profiles.forEach(profile => {
-            const denunciasAtivas = profile.denunciasRecebidas.filter(d => 
-                d.status === 'PENDENTE' || d.status === 'EM_ANALISE'
-            ).length;
+            console.log('Profile completo:', profile); // Debug do objeto completo
+            console.log('Denúncias recebidas:', profile.denunciasRecebidas); // Debug das denúncias
+
+            const denunciasPendentes = profile.denunciasRecebidas ? 
+                profile.denunciasRecebidas.filter(d => 
+                    String(d.status).toUpperCase() === 'PENDENTE'
+                ).length : 0;
+
+            console.log('Total de denúncias pendentes:', denunciasPendentes); // Debug do total
 
             const profileElement = document.createElement("div");
             profileElement.className = "profile-card";
@@ -153,8 +157,7 @@
                     <h4>${profile.nome}</h4>
                     <p>@${profile.login}</p>
                     <p><strong>Status:</strong> ${profile.statusConta}</p>
-                    <p><strong>Denúncias ativas:</strong> ${denunciasAtivas}</p>
-                    <p><strong>Total de denúncias:</strong> ${profile.denunciasRecebidas.length}</p>
+                    <p><strong>Denúncias pendentes contra este usuário:</strong> ${denunciasPendentes}</p>
                 </div>
                 <div class="profile-actions">
                     <button onclick="handleProfileAction(${profile.id}, 'SUSPENDER')" 
@@ -197,22 +200,31 @@
     // Função para lidar com as ações nos perfis
     async function handleProfileAction(userId, action) {
         try {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+            
             const response = await fetch(`/api/usuarios/${userId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Adicione o token CSRF se necessário
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+                    [csrfHeader]: csrfToken
                 },
-                body: JSON.stringify({ status: action })
+                body: JSON.stringify({ 
+                    status: action === 'SUSPENDER' ? 'SUSPENSO' : 
+                            action === 'BANIR' ? 'BANIDO' : 'NORMAL'
+                })
             });
 
             if (!response.ok) {
-                throw new Error('Falha ao atualizar status do usuário');
+                const errorText = await response.text();
+                throw new Error(errorText || 'Falha ao atualizar status do usuário');
             }
 
             // Recarrega a lista de perfis denunciados
-            loadReportedProfilesFromServer();
+            await loadReportedProfilesFromServer();
+            
+            // Mostra mensagem de sucesso
+            alert(`Status do usuário atualizado com sucesso para ${action}`);
         } catch (error) {
             console.error('Erro ao executar ação:', error);
             alert('Erro ao executar ação: ' + error.message);

@@ -79,6 +79,11 @@
         </div>
     </section>
 
+    <!-- Seção para administradores -->
+    <section th:if="${usuario.autorizacao.toString == 'ADMINISTRADOR'}" data-role="ADMINISTRADOR">
+        <!-- ... resto do código ... -->
+    </section>
+
 </main>
 
 <!-- Rodapé -->
@@ -231,46 +236,85 @@
 <div id="supportPopup" class="popup">
     <div class="popup-content">
         <span class="close" onclick="closeSupportPopup()">&times;</span>
-        <h3>Suporte - Situação das Suas Denúncias</h3>
-        <div id="user-reports" class="report-list">
-            <!-- As denúncias serão carregadas dinamicamente aqui -->
+        <h3>Suas Denúncias</h3>
+        <div class="popup-scroll-area">
+            <div id="user-reports">
+                <!-- As denúncias serão carregadas dinamicamente aqui -->
+            </div>
         </div>
-        <button class="btn-submit" onclick="closeSupportPopup()">Fechar</button>
+        <div class="popup-footer">
+            <button class="btn-submit" onclick="closeSupportPopup()">Fechar</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // Simulação de Dados de Denúncias
-    const userReports = [
-        { id: 1, status: "Em análise", reason: "Comportamento inadequado", date: "2024-01-01" },
-        { id: 2, status: "Resolvido", reason: "Spam", date: "2024-01-05" },
-        { id: 3, status: "Pendente", reason: "Ofensa verbal", date: "2024-01-10" },
-    ];
+    async function loadDenuncias() {
+        const container = document.getElementById("user-reports");
+        try {
+            const isAdmin = document.querySelector('[data-role="ADMINISTRADOR"]') !== null;
+            const url = isAdmin ? '/api/denuncias-perfil/todas' : '/api/denuncias-perfil/minhas';
+            
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const denuncias = await response.json();
+            console.log('Denúncias recebidas:', denuncias); // Para debug
+            
+            if (!denuncias || denuncias.length === 0) {
+                container.innerHTML = "<p>Nenhuma denúncia encontrada.</p>";
+                return;
+            }
 
-    // Abrir o Pop-up de Suporte
-    function openSupportPopup() {
-        const reportContainer = document.getElementById("user-reports");
-        reportContainer.innerHTML = ""; // Limpa os relatórios anteriores
+            container.innerHTML = denuncias.map(denuncia => {
+                // Verificar se usuarioReportado existe antes de acessar suas propriedades
+                const nomeReportado = denuncia.usuarioReportado ? 
+                    `${denuncia.usuarioReportado.nome} (@${denuncia.usuarioReportado.login})` : 
+                    'Usuário não disponível';
 
-        // Adiciona cada denúncia dinamicamente
-        userReports.forEach(report => {
-            const reportElement = document.createElement("div");
-            reportElement.classList.add("report");
-            reportElement.innerHTML = `
-                <h4>Denúncia #${report.id}</h4>
-                <p><strong>Status:</strong> ${report.status}</p>
-                <p><strong>Motivo:</strong> ${report.reason}</p>
-                <p><strong>Data:</strong> ${report.date}</p>
-            `;
-            reportContainer.appendChild(reportElement);
-        });
+                return `
+                    <div class="report-card">
+                        <h4>Denúncia #${denuncia.id}</h4>
+                        <p><strong>Reportado:</strong> ${nomeReportado}</p>
+                        <p><strong>Categoria:</strong> ${denuncia.categoria}</p>
+                        <p><strong>Descrição:</strong> ${denuncia.descricao}</p>
+                        <p>
+                            <strong>Status:</strong> 
+                            <span class="report-status ${denuncia.status === 'PENDENTE' ? 'status-pendente' : 'status-atendida'}">
+                                ${denuncia.status}
+                            </span>
+                        </p>
+                        <p class="report-date">${formatDate(denuncia.dataHora)}</p>
+                    </div>
+                `;
+            }).join('');
 
-        document.getElementById("supportPopup").style.display = "block";
+        } catch (error) {
+            console.error('Erro ao carregar denúncias:', error);
+            container.innerHTML = `<p class="error-message">Erro ao carregar denúncias: ${error.message}</p>`;
+        }
     }
 
-    // Fechar o Pop-up de Suporte
+    // Adicionar a função formatDate
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function openSupportPopup() {
+        document.getElementById("supportPopup").style.display = "block";
+        loadDenuncias();
+    }
+
     function closeSupportPopup() {
         document.getElementById("supportPopup").style.display = "none";
     }
-
 </script>

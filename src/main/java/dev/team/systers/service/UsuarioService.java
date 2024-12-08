@@ -109,4 +109,26 @@ public class UsuarioService {
     public List<Usuario> listarUsuariosDenunciados() {
         return usuarioRepository.findUsuariosComDenuncias();
     }
+
+    /**
+     * Atualiza o status de um usuário
+     * @param usuarioId ID do usuário a ser atualizado
+     * @param novoStatus Novo status do usuário
+     * @return Usuário atualizado
+     * @throws IllegalArgumentException se o usuário não for encontrado
+     */
+    public Usuario atualizarStatusUsuario(Long usuarioId, Usuario.StatusConta novoStatus) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        
+        // Validar transição de status
+        if (usuario.getStatusConta() == novoStatus) {
+            throw new IllegalArgumentException("Usuário já está com este status");
+        }
+        
+        // Atualizar status
+        usuario.setStatusConta(novoStatus);
+        
+        return usuarioRepository.save(usuario);
+    }
 }
