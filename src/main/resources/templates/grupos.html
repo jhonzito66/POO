@@ -55,6 +55,12 @@
                 <!-- Botão para Excluir Grupo -->
                 <button class="nav-btn" onclick="confirmarExcluirGrupo()">Excluir Grupo</button>
 
+                <!-- Formulário de Exclusão do Grupo -->
+                <form id="excluirGrupoForm" th:action="@{/grupos/excluir}" method="post" style="display: none;">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <input type="hidden" name="grupoId" th:value="${grupo.id}" /> <!-- Inclua o ID do grupo -->
+                </form>
+
             </td>
         </tr>
         <!-- Caso não haja grupos -->
@@ -73,16 +79,3 @@
 </body>
 </html>
 
-<script>
-    function confirmarExcluirGrupo() {
-        if (confirm("Tem certeza de que deseja excluir este grupo? Esta ação não pode ser desfeita.")) {
-            document.getElementById('excluirGrupoForm').submit();
-        }
-    }
-</script>
-
-<!-- Formulário de Exclusão do Grupo -->
-<form id="excluirGrupoForm" th:action="@{/grupos/excluir}" method="post" style="display: none;">
-    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-    <input type="hidden" name="grupoId" th:value="${grupo.id}" /> <!-- Inclua o ID do grupo -->
-</form>
