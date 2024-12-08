@@ -58,6 +58,7 @@
         <div class="btn-container">
             <button class="btn" onclick="openEditProfilePopup()">Editar Perfil</button>
             <button class="btn" onclick="openBecomeMentorPopup()">Virar Mentor</button>
+            <button class="btn" onclick="openSupportPopup()">Suporte</button>
         </div>
     </section>
 
@@ -66,8 +67,8 @@
         <h2>Ações</h2>
         <!-- Contêiner para os botões -->
         <div class="btn-container">
-            <button class="btn">Denunciar Perfil</button>
-            <button class="btn">Enviar Mensagem</button>
+            <!-- Botão para Denunciar Perfil -->
+            <button class="btn" onclick="openReportPopup()">Denunciar Perfil</button>
         </div>
     </section>
 
@@ -89,7 +90,7 @@
             <!-- Campo Nome -->
             <div class="form-group">
                 <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" th:value="${usuario.nome}" required>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" th:value="${usuario.nome}">
             </div>
 
             <!-- Campo E-mail -->
@@ -165,3 +166,72 @@
     }
 </script>
 
+<div id="reportPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closeReportPopup()">&times;</span>
+        <h3>Denunciar Perfil</h3>
+        <form th:action="@{/perfil/denunciar}" method="post">
+            <label for="reason">Motivo da Denúncia:</label>
+            <textarea id="reason" name="reason" placeholder="Descreva o motivo da denúncia..." rows="4" required></textarea>
+
+            <button type="submit" class="btn-submit">Enviar Denúncia</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openReportPopup() {
+        document.getElementById('reportPopup').style.display = 'block';
+    }
+
+    function closeReportPopup() {
+        document.getElementById('reportPopup').style.display = 'none';
+    }
+</script>
+
+<div id="supportPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closeSupportPopup()">&times;</span>
+        <h3>Suporte - Situação das Suas Denúncias</h3>
+        <div id="user-reports" class="report-list">
+            <!-- As denúncias serão carregadas dinamicamente aqui -->
+        </div>
+        <button class="btn-submit" onclick="closeSupportPopup()">Fechar</button>
+    </div>
+</div>
+
+<script>
+    // Simulação de Dados de Denúncias
+    const userReports = [
+        { id: 1, status: "Em análise", reason: "Comportamento inadequado", date: "2024-01-01" },
+        { id: 2, status: "Resolvido", reason: "Spam", date: "2024-01-05" },
+        { id: 3, status: "Pendente", reason: "Ofensa verbal", date: "2024-01-10" },
+    ];
+
+    // Abrir o Pop-up de Suporte
+    function openSupportPopup() {
+        const reportContainer = document.getElementById("user-reports");
+        reportContainer.innerHTML = ""; // Limpa os relatórios anteriores
+
+        // Adiciona cada denúncia dinamicamente
+        userReports.forEach(report => {
+            const reportElement = document.createElement("div");
+            reportElement.classList.add("report");
+            reportElement.innerHTML = `
+                <h4>Denúncia #${report.id}</h4>
+                <p><strong>Status:</strong> ${report.status}</p>
+                <p><strong>Motivo:</strong> ${report.reason}</p>
+                <p><strong>Data:</strong> ${report.date}</p>
+            `;
+            reportContainer.appendChild(reportElement);
+        });
+
+        document.getElementById("supportPopup").style.display = "block";
+    }
+
+    // Fechar o Pop-up de Suporte
+    function closeSupportPopup() {
+        document.getElementById("supportPopup").style.display = "none";
+    }
+
+</script>

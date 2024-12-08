@@ -29,7 +29,7 @@
     <p>Encontre e gerencie mentorias disponíveis.</p>
 
     <!-- Botão de criar mentoria -->
-    <div class="actions">
+    <div class="actions" th:if="${usuario.getTipoMentor == 'MENTOR'}">
         <button class="btn-create-mentorship" onclick="openPopup()">Criar Mentoria</button>
     </div>
 

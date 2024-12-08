@@ -1,0 +1,186 @@
+/* Estilos Globais */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Barra Superior */
+header.top-bar {
+    background-color: #9568ad;
+    color: #fff;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-bar {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-btn {
+    background-color: #fff;
+    color: #9568ad;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: #d9b3e6;
+    color: #fff;
+}
+
+/* Conteúdo Principal */
+main {
+    margin-top: 80px; /* Espaço para a barra superior fixa */
+    padding: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 20px;
+    border-bottom: 2px solid #9568ad;
+    padding-bottom: 10px;
+}
+
+.request, .profile {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.request:hover, .profile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.request h4, .profile h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #444;
+}
+
+.request p, .profile p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.request-actions, .profile-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Botões de Ação */
+.btn {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn.approve-btn {
+    background-color: #4CAF50; /* Verde para Aprovar */
+    color: #fff;
+}
+
+.btn.approve-btn:hover {
+    background-color: #45A049;
+}
+
+.btn.reject-btn {
+    background-color: #F44336; /* Vermelho para Rejeitar */
+    color: #fff;
+}
+
+.btn.reject-btn:hover {
+    background-color: #D32F2F;
+}
+
+.btn.suspend-btn {
+    background-color: #FFC107; /* Amarelo para Suspender */
+    color: #fff;
+}
+
+.btn.suspend-btn:hover {
+    background-color: #FFB300;
+}
+
+.btn.activate-btn {
+    background-color: #2196F3; /* Azul para Ativar */
+    color: #fff;
+}
+
+.btn.activate-btn:hover {
+    background-color: #1976D2;
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    color: #9568ad;
+    background-color: transparent;
+    border-top: 1px solid #dcdcdc;
+    margin-top: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .request, .profile {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .request-actions, .profile-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

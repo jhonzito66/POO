@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Systers Feed</title>
     <link rel="stylesheet" href="css/feed.css">
+    <link rel="stylesheet" href="css/adm.css">
+
 </head>
 <body>
 <!-- Barra superior -->
@@ -28,14 +30,27 @@
 <div class="container">
     <!-- Conteúdo principal -->
     <main>
+        <!-- ADM -->
+        <section th:if="${usuario.Autorizacao == 'ADMINISTRADOR'}">
+            <!-- Solicitações para se Tornar Mentor -->
+            <h2>Solicitações para se Tornar Mentor</h2>
+            <div id="mentor-requests-container" class="requests-container">
+                <!-- Solicitações serão carregadas dinamicamente aqui -->
+            </div>
 
-        <!-- Posts -->
-        <div class="container">
-            <!-- Conteúdo principal -->
+            <!-- Perfis Denunciados -->
+            <h2>Perfis Denunciados</h2>
+            <div id="reported-profiles-container" class="requests-container">
+                <!-- Perfis denunciados serão carregados dinamicamente aqui -->
+            </div>
+        </section>
+
+        <div class="container" th:if="${usuario.Autorizacao != 'ADMINISTRADOR'}">
             <main>
+                <h1>Feed de Postagens</h1>
                 <!-- Posts -->
-                <div id="posts-container">
-                    <!-- posagens carregadas com o script -->
+                <div id="posts-container" class="posts-container">
+                    <!-- Postagens serão carregadas dinamicamente aqui -->
                 </div>
             </main>
         </div>
@@ -100,4 +115,77 @@
 
     // Carrega as postagens do servidor
     loadPostsFromServer();
+</script>
+
+<script>
+    // Simulação de dados das solicitações para se tornar mentor
+    const mentorRequests = [
+        { userName: "João Silva", status: "Pendente", expertise: "Tecnologia" },
+        { userName: "Maria Oliveira", status: "Aprovado", expertise: "Educação" },
+        { userName: "Carlos Santos", status: "Recusado", expertise: "Saúde" },
+    ];
+
+    // Simulação de dados dos perfis denunciados
+    const reportedProfiles = [
+        { userName: "Ana Paula", status: "Ativo", reason: "Comportamento inadequado" },
+        { userName: "Bruno Costa", status: "Suspenso", reason: "Linguagem ofensiva" },
+        { userName: "Fernanda Lima", status: "Pendente", reason: "Spam" },
+    ];
+
+    // Função para carregar solicitações de mentores
+    function loadMentorRequests(requests) {
+        const container = document.getElementById("mentor-requests-container");
+        container.innerHTML = ""; // Limpa dados anteriores
+        requests.forEach(request => {
+            const requestElement = document.createElement("div");
+            requestElement.className = "request";
+            requestElement.innerHTML = `
+              <div class="request-info">
+                  <h4>${request.userName}</h4>
+                  <p><strong>Especialização:</strong> ${request.expertise}</p>
+                  <p><strong>Status:</strong> ${request.status}</p>
+              </div>
+              <div class="request-actions">
+                  <button class="btn approve-btn" onclick="handleRequestAction('${request.userName}', 'Aprovar')">Aprovar</button>
+                  <button class="btn reject-btn" onclick="handleRequestAction('${request.userName}', 'Recusar')">Recusar</button>
+              </div>
+          `;
+            container.appendChild(requestElement);
+        });
+    }
+
+    // Função para carregar perfis denunciados
+    function loadReportedProfiles(profiles) {
+        const container = document.getElementById("reported-profiles-container");
+        container.innerHTML = ""; // Limpa dados anteriores
+        profiles.forEach(profile => {
+            const profileElement = document.createElement("div");
+            profileElement.className = "profile";
+            profileElement.innerHTML = `
+              <div class="profile-info">
+                  <h4>${profile.userName}</h4>
+                  <p><strong>Motivo:</strong> ${profile.reason}</p>
+                  <p><strong>Status:</strong> ${profile.status}</p>
+              </div>
+              <div class="profile-actions">
+                  <button class="btn suspend-btn" onclick="handleProfileAction('${profile.userName}', 'Suspender')">Suspender</button>
+                  <button class="btn activate-btn" onclick="handleProfileAction('${profile.userName}', 'Ativar')">Ativar</button>
+              </div>
+          `;
+            container.appendChild(profileElement);
+        });
+    }
+
+    // Funções para tratar ações
+    function handleRequestAction(userName, action) {
+        alert(`Ação "${action}" realizada para o usuário ${userName}`);
+    }
+
+    function handleProfileAction(userName, action) {
+        alert(`Ação "${action}" realizada para o usuário ${userName}`);
+    }
+
+    // Carregar os dados simulados
+    loadMentorRequests(mentorRequests);
+    loadReportedProfiles(reportedProfiles);
 </script>
