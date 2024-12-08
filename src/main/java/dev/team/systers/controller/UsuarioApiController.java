@@ -3,36 +3,37 @@ package dev.team.systers.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.team.systers.model.Postagem;
 import dev.team.systers.model.Usuario;
-import dev.team.systers.service.PostagemService;
 import dev.team.systers.service.UsuarioService;
 
 @RestController
-@RequestMapping("/api/postagens")
-public class PostagemController {
-
-    private final PostagemService postagemService;
+@RequestMapping("/api/usuarios")
+public class UsuarioApiController {
+    
     private final UsuarioService usuarioService;
 
     @Autowired
-    public PostagemController(PostagemService postagemService, UsuarioService usuarioService) {
-        this.postagemService = postagemService;
+    public UsuarioApiController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/ultimas")
-    public List<Postagem> listarUltimasPostagens() {
+    @GetMapping("/denunciados")
+    public List<Usuario> listarUsuariosDenunciados() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(login);
+        Usuario admin = usuarioService.findByLogin(login);
         
-        return postagemService.listarUltimas10PostagensDeTodosOsGruposDoUsuario(usuario);
+        if (admin.getAutorizacao() != Usuario.Autorizacao.ADMINISTRADOR) {
+            throw new AccessDeniedException("Apenas administradores podem ver usuários denunciados");
+        }
+        
+        return usuarioService.listarUsuariosDenunciados();
     }
 } 

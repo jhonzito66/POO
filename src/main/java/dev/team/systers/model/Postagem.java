@@ -1,8 +1,17 @@
 package dev.team.systers.model;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Postagem {
@@ -13,16 +22,28 @@ public class Postagem {
     @Column(nullable = false, length = 1000)
     private String conteudo;
 
+    @JsonManagedReference(value = "postagem-membro")
     @ManyToOne
     @JoinColumn(name = "autor_id", nullable = false)
     private Membro autor;
 
+    @JsonBackReference(value = "grupo-postagem")
     @ManyToOne
     @JoinColumn(name = "grupo_id", nullable = false)
     private Grupo grupo;
 
     @Column(nullable = false)
     private LocalDateTime dataCriacao = LocalDateTime.now();
+
+    public Postagem() {}
+
+    public Postagem(Long id, String conteudo, Membro autor, Grupo grupo, LocalDateTime dataCriacao) {
+        this.id = id;
+        this.conteudo = conteudo;
+        this.autor = autor;
+        this.grupo = grupo;
+        this.dataCriacao = dataCriacao;
+    }
 
     // Getters e Setters
     public Long getId() {

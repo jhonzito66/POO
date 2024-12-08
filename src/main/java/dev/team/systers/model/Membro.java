@@ -1,6 +1,19 @@
 package dev.team.systers.model;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Representa um membro de um grupo.
@@ -55,6 +68,7 @@ public class Membro {
     /**
      * Usuário associado ao membro do grupo.
      */
+    @JsonBackReference(value = "usuario-membro")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id_membro_fk", foreignKey = @ForeignKey(name = "usuario_id_fk"), nullable = false)
     private Usuario usuario;
@@ -62,6 +76,7 @@ public class Membro {
     /**
      * Grupo associado ao membro.
      */
+    @JsonBackReference(value = "grupo-membro")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grupo_id_membro_fk", foreignKey = @ForeignKey(name = "grupo_id_fk"), nullable = false)
     private Grupo grupo;

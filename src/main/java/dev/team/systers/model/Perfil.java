@@ -1,6 +1,16 @@
 package dev.team.systers.model;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "perfil")
@@ -17,6 +27,7 @@ public class Perfil {
     @Column(name = "perfil_foto")
     private String perfilFoto;
 
+    @JsonBackReference(value = "usuario-perfil")
     @OneToOne
     @JoinColumn(name = "usuario_id_perfil_fk", foreignKey = @ForeignKey(name = "usuario_id_perfil_fk"), nullable = false, unique = true)
     private Usuario usuarioPerfil;

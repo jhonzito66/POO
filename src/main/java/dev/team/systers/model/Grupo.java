@@ -1,8 +1,18 @@
 package dev.team.systers.model;
 
-import jakarta.persistence.*;
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "grupo")
@@ -18,8 +28,13 @@ public class Grupo {
     @Column(name = "grupo_status_ativo")
     private Boolean statusAtivo;
 
+    @JsonManagedReference(value = "grupo-membro")
     @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Membro> membros;
+
+    @JsonManagedReference(value = "grupo-postagem")
+    @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL)
+    private List<Postagem> postagens;
 
     /**
      * Construtor sem parâmetros.

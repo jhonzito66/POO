@@ -1,9 +1,22 @@
 package dev.team.systers.model;
 
-import jakarta.persistence.*;
-
 import java.util.List;
 import java.util.TimeZone;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 /**
  * Representa um usuário do sistema.
@@ -91,18 +104,21 @@ public class Usuario {
     /**
      * Associação com a tabela de membros.
      */
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "usuario-membro")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Membro> membros;
 
     /**
      * Associação com a tabela de denúncia para a relação de autor.
      */
+    @JsonManagedReference(value = "usuario-denuncia-autor")
     @OneToMany(mappedBy = "usuarioAutor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasCriadas;
 
     /**
      * Associação com a tabela de denúncia para a relação de reportado.
      */
+    @JsonManagedReference(value = "usuario-denuncia-reportado")
     @OneToMany(mappedBy = "usuarioReportado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasRecebidas;
 

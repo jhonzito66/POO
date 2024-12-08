@@ -1,13 +1,14 @@
 package dev.team.systers.repository;
 
-import dev.team.systers.model.Usuario;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import dev.team.systers.model.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
@@ -23,4 +24,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     List<Object[]> findGruposDeUmUsuarioNativo(@Param("usuarioId") Long usuarioId);
 
     Optional<Usuario> findByLogin(String login);
+
+    /**
+     * Busca usuários que possuem denúncias.
+     */
+    @Query("SELECT DISTINCT u FROM Usuario u LEFT JOIN FETCH u.denunciasRecebidas WHERE SIZE(u.denunciasRecebidas) > 0")
+    List<Usuario> findUsuariosComDenuncias();
 }

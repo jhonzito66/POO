@@ -1,11 +1,14 @@
 package dev.team.systers.repository;
 
-import dev.team.systers.model.Denuncia;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import dev.team.systers.model.Denuncia;
 
 @Repository
 public interface DenunciaRepository extends JpaRepository<Denuncia, Long> {
@@ -30,4 +33,11 @@ public interface DenunciaRepository extends JpaRepository<Denuncia, Long> {
 
     // Buscar denúncias de uma categoria e com status específico
     List<Denuncia> findByCategoriaAndStatus(String categoria, String status);
+
+    // Novos métodos úteis
+    @Query("SELECT d FROM Denuncia d WHERE d.usuarioReportado.id = :usuarioId AND d.status = 'Pendente'")
+    List<Denuncia> findPendingByReportedUser(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT COUNT(d) FROM Denuncia d WHERE d.usuarioReportado.id = :usuarioId AND d.status IN ('Pendente', 'Analise')")
+    long countActiveReportsByUser(@Param("usuarioId") Long usuarioId);
 }

@@ -1,7 +1,8 @@
 package dev.team.systers.controller;
 
 import dev.team.systers.model.Denuncia;
-import dev.team.systers.repository.DenunciaRepository;
+import dev.team.systers.service.DenunciaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/denuncias")
+@RequestMapping("/api/denuncias")
 public class DenunciaController {
 
-    private final DenunciaRepository denunciaRepository;
+    private final DenunciaService denunciaService;
 
-    public DenunciaController(DenunciaRepository denunciaRepository) {
-        this.denunciaRepository = denunciaRepository;
+    @Autowired
+    public DenunciaController(DenunciaService denunciaService) {
+        this.denunciaService = denunciaService;
     }
 
     /**
@@ -25,7 +27,7 @@ public class DenunciaController {
      */
     @GetMapping
     public ResponseEntity<List<Denuncia>> listarDenuncias() {
-        return ResponseEntity.ok(denunciaRepository.findAll());
+        return ResponseEntity.ok(denunciaService.listarTodas());
     }
 
     /**
@@ -35,7 +37,7 @@ public class DenunciaController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Denuncia> buscarPorId(@PathVariable Long id) {
-        return denunciaRepository.findById(id)
+        return denunciaService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -47,9 +49,12 @@ public class DenunciaController {
      */
     @PostMapping
     public ResponseEntity<Denuncia> criarDenuncia(@RequestBody Denuncia denuncia) {
-        denuncia.setDataHora(LocalDateTime.now());
-        Denuncia novaDenuncia = denunciaRepository.save(denuncia);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaDenuncia);
+        try {
+            Denuncia novaDenuncia = denunciaService.salvarDenuncia(denuncia);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaDenuncia);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -60,13 +65,10 @@ public class DenunciaController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<Denuncia> atualizarDenuncia(@PathVariable Long id, @RequestBody Denuncia denuncia) {
-        return denunciaRepository.findById(id).map(denunciaExistente -> {
-            denuncia.setId(denunciaExistente.getId());
-            Denuncia denunciaAtualizada = denunciaRepository.save(denuncia);
-            return ResponseEntity.ok(denunciaAtualizada);
-        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return denunciaService.atualizarDenuncia(id, denuncia)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
 
     /**
      * Busca denúncias por status.
@@ -75,7 +77,7 @@ public class DenunciaController {
      */
     @GetMapping("/status/{status}")
     public ResponseEntity<List<Denuncia>> buscarPorStatus(@PathVariable String status) {
-        return ResponseEntity.ok(denunciaRepository.findByStatus(status));
+        return ResponseEntity.ok(denunciaService.listarPorStatus(status));
     }
 
     /**
@@ -85,7 +87,7 @@ public class DenunciaController {
      */
     @GetMapping("/categoria/{categoria}")
     public ResponseEntity<List<Denuncia>> buscarPorCategoria(@PathVariable String categoria) {
-        return ResponseEntity.ok(denunciaRepository.findByCategoria(categoria));
+        return ResponseEntity.ok(denunciaService.listarPorCategoria(categoria));
     }
 
     /**
@@ -95,7 +97,7 @@ public class DenunciaController {
      */
     @GetMapping("/autor/{usuarioId}")
     public ResponseEntity<List<Denuncia>> buscarPorUsuarioAutor(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(denunciaRepository.findByUsuarioAutor_Id(usuarioId));
+        return ResponseEntity.ok(denunciaService.listarPorUsuarioAutor(usuarioId));
     }
 
     /**
@@ -105,7 +107,7 @@ public class DenunciaController {
      */
     @GetMapping("/reportado/{usuarioId}")
     public ResponseEntity<List<Denuncia>> buscarPorUsuarioReportado(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(denunciaRepository.findByUsuarioReportado_Id(usuarioId));
+        return ResponseEntity.ok(denunciaService.listarPorUsuarioReportado(usuarioId));
     }
 
     /**
@@ -116,7 +118,7 @@ public class DenunciaController {
     @GetMapping("/depois/{data}")
     public ResponseEntity<List<Denuncia>> buscarPorDataDepois(@PathVariable String data) {
         LocalDateTime dataHora = LocalDateTime.parse(data);
-        return ResponseEntity.ok(denunciaRepository.findByDataHoraAfter(dataHora));
+        return ResponseEntity.ok(denunciaService.listarPorDataHoraAfter(dataHora));
     }
 
     /**
@@ -131,6 +133,6 @@ public class DenunciaController {
             @RequestParam String fim) {
         LocalDateTime dataInicio = LocalDateTime.parse(inicio);
         LocalDateTime dataFim = LocalDateTime.parse(fim);
-        return ResponseEntity.ok(denunciaRepository.findByDataHoraBetween(dataInicio, dataFim));
+        return ResponseEntity.ok(denunciaService.listarPorDataHoraBetween(dataInicio, dataFim));
     }
 }

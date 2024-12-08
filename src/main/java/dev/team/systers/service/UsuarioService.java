@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 
-import dev.team.systers.model.Avaliacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +13,6 @@ import dev.team.systers.model.Perfil;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.repository.PerfilRepository;
 import dev.team.systers.repository.UsuarioRepository;
-import dev.team.systers.repository.AvaliacaoRepository;
 
 
 @Service
@@ -94,16 +92,21 @@ public class UsuarioService {
         if (telefone != null && !telefone.isEmpty()) usuario.setTelefone(telefone);
         usuarioRepository.save(usuario);
     }
-    public void atualizar(Usuario usuarioUpdate) {
-        Usuario existingUsuario = usuarioRepository.findById(usuarioUpdate.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + usuarioUpdate.getId()));
-        usuarioRepository.save(existingUsuario);
+    public void atualizar(Usuario usuarioAtualizar) {
+        Usuario usuarioExistente = usuarioRepository.findById(usuarioAtualizar.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + usuarioAtualizar.getId()));
+        usuarioRepository.save(usuarioExistente);
     }
 
     public String encriptarSenha(String senha) {
         return passwordEncoder.encode(senha);
     }
 
-
-
+    /**
+     * Lista todos os usuários que possuem denúncias.
+     * @return Lista de usuários que possuem denúncias
+     */
+    public List<Usuario> listarUsuariosDenunciados() {
+        return usuarioRepository.findUsuariosComDenuncias();
+    }
 }

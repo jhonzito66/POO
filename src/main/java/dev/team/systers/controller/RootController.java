@@ -1,7 +1,6 @@
 package dev.team.systers.controller;
 
 import dev.team.systers.service.UsuarioService;
-import dev.team.systers.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +24,7 @@ public class RootController {
     }
 
     @GetMapping("/")
-    public String redirectToAnotherHttp() {
+    public String redirecionarParaOutroHTTP() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null ||
