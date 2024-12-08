@@ -57,6 +57,7 @@
         <!-- Contêiner para os botões -->
         <div class="btn-container">
             <button class="btn" onclick="openEditProfilePopup()">Editar Perfil</button>
+            <button class="btn" onclick="openBecomeMentorPopup()">Virar Mentor</button>
         </div>
     </section>
 
@@ -94,7 +95,7 @@
             <!-- Campo E-mail -->
             <div class="form-group">
                 <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" th:value="${usuario.email}" required>
+                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" th:value="${usuario.email}">
             </div>
 
             <!-- Campo Biografia
@@ -137,3 +138,30 @@
         }
     }
 </script>
+
+<div id="becomeMentorPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closeBecomeMentorPopup()">&times;</span>
+        <h3>Solicitação para Virar Mentor</h3>
+        <form th:action="@{/perfil/virar-mentor}" method="post">
+            <label for="expertise">Área de Especialização:</label>
+            <input type="text" id="expertise" name="expertise" placeholder="Ex.: Tecnologia, Educação, etc." required>
+
+            <label for="description">Descrição Breve:</label>
+            <textarea id="description" name="description" placeholder="Explique por que deseja ser mentor." rows="4" required></textarea>
+
+            <button type="submit" class="btn-submit">Enviar Solicitação</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openBecomeMentorPopup() {
+        document.getElementById('becomeMentorPopup').style.display = 'block';
+    }
+
+    function closeBecomeMentorPopup() {
+        document.getElementById('becomeMentorPopup').style.display = 'none';
+    }
+</script>
+
