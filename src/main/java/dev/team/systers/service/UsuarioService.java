@@ -1,8 +1,10 @@
 package dev.team.systers.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import dev.team.systers.model.Avaliacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,13 +77,21 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + username));
     }
 
-    public void atualizar(Usuario usuarioUpdate) {
-        Usuario existingUsuario = usuarioRepository.findById(usuarioUpdate.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + usuarioUpdate.getId()));
-        usuarioRepository.save(existingUsuario);
+    public Perfil visualizarPerfil(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o ID: " + usuarioId));
+        return usuario.getPerfilUsuario();
     }
 
-    public String encriptarSenha(String senha) {
-        return passwordEncoder.encode(senha);
+    public void editarPerfil(Long usuarioId, String nome, String email, String telefone) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o ID: " + usuarioId));
+        if (nome != null && !nome.isEmpty()) usuario.setNome(nome);
+        if (email != null && !email.isEmpty()) usuario.setEmail(email);
+        if (telefone != null && !telefone.isEmpty()) usuario.setTelefone(telefone);
+        usuarioRepository.save(usuario);
     }
+
+
+
 }
