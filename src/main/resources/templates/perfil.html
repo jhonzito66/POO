@@ -90,13 +90,13 @@
             <!-- Campo Nome -->
             <div class="form-group">
                 <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" th:value="${usuario.nome}">
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" th:value="${usuario.nome}" required>
             </div>
 
             <!-- Campo E-mail -->
             <div class="form-group">
                 <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" th:value="${usuario.email}">
+                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" th:value="${usuario.email}" required>
             </div>
 
             <!-- Campo Biografia
@@ -143,15 +143,10 @@
 <div id="becomeMentorPopup" class="popup">
     <div class="popup-content">
         <span class="close" onclick="closeBecomeMentorPopup()">&times;</span>
-        <h3>Solicitação para Virar Mentor</h3>
+        <h3>Deseja se tornar um mentor?</h3>
+        <p>Ao se tornar um mentor, você poderá compartilhar seu conhecimento e ajudar outras pessoas a alcançarem seus objetivos.</p>
         <form th:action="@{/perfil/virar-mentor}" method="post">
-            <label for="expertise">Área de Especialização:</label>
-            <input type="text" id="expertise" name="expertise" placeholder="Ex.: Tecnologia, Educação, etc." required>
-
-            <label for="description">Descrição Breve:</label>
-            <textarea id="description" name="description" placeholder="Explique por que deseja ser mentor." rows="4" required></textarea>
-
-            <button type="submit" class="btn-submit">Enviar Solicitação</button>
+            <button type="submit" class="btn-submit">Sim, quero ser mentor</button>
         </form>
     </div>
 </div>

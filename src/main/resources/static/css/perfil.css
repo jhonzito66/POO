@@ -156,7 +156,6 @@ section .btn-container {
     transform: translateY(0); /* Remove o efeito ao clicar */
 }
 
-/* Rodapé */
 footer {
     text-align: center;
     padding: 15px;
