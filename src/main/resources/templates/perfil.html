@@ -254,24 +254,22 @@
         try {
             const isAdmin = document.querySelector('[data-role="ADMINISTRADOR"]') !== null;
             const url = isAdmin ? '/api/denuncias-perfil/todas' : '/api/denuncias-perfil/minhas';
-            
+
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const denuncias = await response.json();
-            console.log('Denúncias recebidas:', denuncias); // Para debug
-            
+
             if (!denuncias || denuncias.length === 0) {
                 container.innerHTML = "<p>Nenhuma denúncia encontrada.</p>";
                 return;
             }
 
             container.innerHTML = denuncias.map(denuncia => {
-                // Verificar se usuarioReportado existe antes de acessar suas propriedades
-                const nomeReportado = denuncia.usuarioReportado ? 
-                    `${denuncia.usuarioReportado.nome} (@${denuncia.usuarioReportado.login})` : 
+                const nomeReportado = denuncia.usuarioReportado ?
+                    `${denuncia.usuarioReportado.nome} (@${denuncia.usuarioReportado.login})` :
                     'Usuário não disponível';
 
                 return `
@@ -281,12 +279,17 @@
                         <p><strong>Categoria:</strong> ${denuncia.categoria}</p>
                         <p><strong>Descrição:</strong> ${denuncia.descricao}</p>
                         <p>
-                            <strong>Status:</strong> 
+                            <strong>Status:</strong>
                             <span class="report-status ${denuncia.status === 'PENDENTE' ? 'status-pendente' : 'status-atendida'}">
                                 ${denuncia.status}
                             </span>
                         </p>
                         <p class="report-date">${formatDate(denuncia.dataHora)}</p>
+                        ${
+                    denuncia.status === 'PENDENTE'
+                        ? `<button class="btn-resolve" onclick="resolveDenuncia(${denuncia.id})">Resolver</button>`
+                        : `<p class="resolved-message">Esta denúncia já foi resolvida.</p>`
+                }
                     </div>
                 `;
             }).join('');
@@ -297,7 +300,6 @@
         }
     }
 
-    // Adicionar a função formatDate
     function formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR', {
@@ -307,6 +309,21 @@
             hour: '2-digit',
             minute: '2-digit'
         });
+    }
+
+    async function resolveDenuncia(id) {
+        try {
+            const response = await fetch(`/api/denuncias-perfil/resolver/${id}`, { method: 'POST' });
+            if (!response.ok) {
+                throw new Error(`Erro ao resolver a denúncia: ${response.status}`);
+            }
+
+            alert(`Denúncia #${id} resolvida com sucesso!`);
+            loadDenuncias(); // Atualiza a lista de denúncias
+        } catch (error) {
+            console.error('Erro ao resolver denúncia:', error);
+            alert(`Erro ao resolver denúncia: ${error.message}`);
+        }
     }
 
     function openSupportPopup() {

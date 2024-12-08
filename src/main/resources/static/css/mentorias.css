@@ -330,3 +330,22 @@ footer {
         font-size: 14px; /* Botão com texto menor em telas pequenas */
     }
 }
+/* Sistema de Avaliação com Estrelas */
+.star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0;
+}
+
+.star {
+    font-size: 30px;
+    cursor: pointer;
+    color: #ddd; /* Cor inicial */
+    transition: color 0.3s ease;
+}
+
+.star:hover,
+.star.selected {
+    color: #ffcc00; /* Cor amarela para estrelas selecionadas */
+}

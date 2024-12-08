@@ -315,3 +315,38 @@ footer {
         font-size: 14px;
     }
 }
+/* Botão Resolver */
+.btn-resolve {
+    background-color: #28a745; /* Fundo verde */
+    color: white; /* Texto branco */
+    padding: 10px 20px; /* Tamanho do botão */
+    font-size: 16px; /* Tamanho do texto */
+    font-weight: bold; /* Negrito */
+    border: none; /* Sem borda */
+    border-radius: 10px; /* Cantos arredondados */
+    cursor: pointer; /* Cursor de clique */
+    text-align: center; /* Centraliza o texto */
+    display: inline-block; /* Garante alinhamento correto */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Suaviza transições */
+}
+
+/* Efeito de hover */
+.btn-resolve:hover {
+    background-color: #218838; /* Fundo verde escuro */
+    transform: translateY(-2px); /* Efeito de elevação */
+}
+
+/* Efeito de clique */
+.btn-resolve:active {
+    transform: translateY(0); /* Remove o efeito de elevação ao clicar */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .btn-resolve {
+        width: 100%; /* O botão ocupa toda a largura em telas menores */
+        font-size: 14px; /* Texto menor */
+        padding: 10px 15px; /* Reduz o padding */
+    }
+}
+

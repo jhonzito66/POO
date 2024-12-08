@@ -25,18 +25,27 @@
 
 <!-- Conteúdo Principal -->
 <main class="container">
-    <h2>Mentorias</h2>
-    <p>Encontre mentorias disponíveis.</p>
+
 
     <!-- Botão de criar mentoria -->
-    <div class="actions" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}">
+    <div class="actions" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}"> <!-- MENTOR -->
+        <h2>Mentorias</h2>
+        <p>Gerencie e crie mentorias para compartilhar conhecimento e auxiliar no desenvolvimento de outros usuários.</p>
         <button class="btn-create-mentorship" onclick="openPopup()">Criar Mentoria</button>
+    </div>
+
+    <div class="actions" th:if="${usuario.getTipoMentor() != null && !usuario.getTipoMentor()}"> <!-- MENTEE -->
+        <h2>Mentorias</h2>
+        <p>Encontre e solicite mentorias para aprimorar suas habilidades e alcançar seus objetivos com o apoio de especialistas.</p>
+        <button class="btn-create-mentorship" onclick="solicitarMentoria()">Solicitar Mentoria</button>
     </div>
 
 
 
     <!-- Tabela de Mentorias -->
     <table class="mentorships-table">
+        <h2>Mentorias disponíveis</h2>
+        <p>Encontre mentorias disponíveis.</p>
         <thead>
         <tr>
             <th>Título</th>
@@ -62,7 +71,45 @@
                 Nome do Mentor
             </td>
             <td>
-                <button class="nav-btn" onclick="window.location.href='/mentorias/detalhes/';">Ver</button>
+                <button class="nav-btn" onclick="window.location.href='/mentorias/detalhes/';">Dialogo</button>
+                <button th:if="${usuario.getTipoMentor() != null && !usuario.getTipoMentor()}" class="nav-btn" onclick="openRatingPopup()">Avaliar</button>
+                <button th:if="${usuario.getTipoMentor() != null && !usuario.getTipoMentor()}" class="nav-btn" onclick="window.location.href='/mentorias/participar/';">Sair</button>
+                <button th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}" class="nav-btn" onclick="window.location.href='/mentorias/participar/';">Finalizar</button>
+            </td>
+        </tr>
+        <!-- Caso não haja mentorias -->
+        <tr th:if="${mentorias.isEmpty()}">
+            <td colspan="4">Nenhuma mentoria encontrada.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Gerencia de Mentorias -->
+    <table class="mentorships-table" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}">
+        <h2>Gerenciar Solicitações de Mentoria</h2>
+        <p>Encontre solicitações de mentorias.</p>
+        <thead>
+        <tr>
+            <th>Título</th>
+            <th th:text="${(usuario.getTipoMentor() != null && !usuario.getTipoMentor())
+                ? 'Mentorado'
+                : 'Mentor'}">
+                Nome do Mentor
+            </th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Linha de Mentorias -->
+        <tr th:each="mentoria : ${mentorias}">
+            <td th:text="${mentoria.getNome()}">Título da Mentoria</td>
+            <td th:text="${mentoria.getParticipantes() != null && !#lists.isEmpty(mentoria.getParticipantes())
+                ? mentoria.getParticipantes().get(0).getNome()
+                : 'Sem mentor'}">
+                Nome do Mentor
+            </td>
+            <td>
+                <button class="nav-btn" onclick="window.location.href='/mentorias/detalhes/';">Mentorar</button>
                 <button class="nav-btn" onclick="window.location.href='/mentorias/participar/';">Finalizar</button>
             </td>
         </tr>
@@ -120,3 +167,85 @@
         </form>
     </div>
 </div>
+
+<div id="requestMentorshipPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closeRequestMentorshipPopup()">&times;</span>
+        <h3>Solicitar Mentoria</h3>
+        <form th:action="@{/mentorias/solicitar}" method="post">
+            <label for="mentorshipTopic">Título da Mentoria:</label>
+            <input type="text" id="mentorshipTopic" name="mentorshipTopic" placeholder="Insira o título..." required />
+
+            <button type="submit" class="btn-submit">Enviar Solicitação</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function solicitarMentoria() {
+        document.getElementById("requestMentorshipPopup").style.display = "block";
+    }
+
+    function closeRequestMentorshipPopup() {
+        document.getElementById("requestMentorshipPopup").style.display = "none";
+    }
+</script>
+
+<!-- Estrutura do Pop-Up -->
+<div id="ratingPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closeRatingPopup()">&times;</span>
+        <h3>Avaliar Mentoria</h3>
+        <p>Por favor, avalie a mentoria utilizando as estrelas abaixo:</p>
+
+        <!-- Sistema de Avaliação com Estrelas -->
+        <div class="star-rating">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+        </div>
+
+        <!-- Botão Enviar Avaliação -->
+        <button type="submit" class="btn-submit" onclick="submitRating()">Enviar Avaliação</button>
+    </div>
+</div>
+
+<script>
+    // Abre o pop-up
+    function openRatingPopup() {
+        document.getElementById('ratingPopup').style.display = 'block';
+    }
+
+    // Fecha o pop-up
+    function closeRatingPopup() {
+        document.getElementById('ratingPopup').style.display = 'none';
+    }
+
+    // Lida com seleção de estrelas
+    document.querySelectorAll('.star').forEach((star) => {
+        star.addEventListener('click', (event) => {
+            const value = event.target.getAttribute('data-value');
+            document.querySelectorAll('.star').forEach((s) => {
+                s.classList.remove('selected');
+                if (s.getAttribute('data-value') <= value) {
+                    s.classList.add('selected');
+                }
+            });
+        });
+    });
+
+    // Envia a avaliação
+    function submitRating() {
+        const selectedStars = document.querySelectorAll('.star.selected').length;
+        const comment = document.getElementById('ratingComment').value;
+        if (selectedStars === 0) {
+            alert('Por favor, selecione uma quantidade de estrelas para avaliar.');
+            return;
+        }
+        alert(`Avaliação enviada com ${selectedStars} estrelas e comentário: "${comment}"`);
+        closeRatingPopup();
+    }
+
+</script>
