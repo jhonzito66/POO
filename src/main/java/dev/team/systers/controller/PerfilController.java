@@ -51,11 +51,14 @@ public class PerfilController {
 
     @GetMapping("/perfil/{login}")
     public String exibirPerfilUsuario(@PathVariable String login, Model model) {
-        Usuario usuario = usuarioService.findByLogin(login);
+        Usuario usuario = usuarioService.encontrarPorLogin(login);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
+        Perfil perfil = perfilService.buscarPerfilPorIDUsuario(usuario.getId());
+        
         model.addAttribute("usuario", usuario);
+        model.addAttribute("perfil", perfil);
         return "perfil";
     }
 
@@ -65,7 +68,7 @@ public class PerfilController {
             @ModelAttribute("perfil") Perfil perfilUpdate,
             Model model) {
 
-        Usuario existingUsuario = usuarioService.findById(usuarioUpdate.getId());
+        Usuario existingUsuario = usuarioService.encontrarPorID(usuarioUpdate.getId());
         Perfil existingPerfil = perfilService.buscarPerfilPorIDUsuario(existingUsuario.getId());
 
         if (usuarioUpdate.getNome() != null && !usuarioUpdate.getNome().isEmpty()) {
@@ -119,7 +122,7 @@ public class PerfilController {
         }
 
         String login = auth.getName();
-        return usuarioService.findByLogin(login);
+        return usuarioService.encontrarPorLogin(login);
     }
     @PostMapping("perfil/deixar-mentor")
     public String deixarMentor(Model model) {

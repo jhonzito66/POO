@@ -64,7 +64,7 @@ public class UsuarioController {
     @GetMapping("/perfil/editar/{usuarioId}")
     public String exibirFormularioEditarPerfil(@PathVariable Long usuarioId, Model model) {
         try {
-            Usuario usuario = usuarioService.findById(usuarioId);
+            Usuario usuario = usuarioService.encontrarPorID(usuarioId);
             model.addAttribute("usuario", usuario);
             return "editarPerfil";
         } catch (Exception e) {

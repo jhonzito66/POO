@@ -36,7 +36,7 @@ public class DenunciaPerfilController {
     public ResponseEntity<List<Denuncia>> listarMinhasDenuncias() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(login);
+        Usuario usuario = usuarioService.encontrarPorLogin(login);
         
         List<Denuncia> denuncias = denunciaService.listarPorUsuarioAutor(usuario.getId());
         return ResponseEntity.ok(denuncias);
@@ -49,7 +49,7 @@ public class DenunciaPerfilController {
     public ResponseEntity<List<Denuncia>> listarTodasDenuncias() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
-        Usuario admin = usuarioService.findByLogin(login);
+        Usuario admin = usuarioService.encontrarPorLogin(login);
         
         if (admin.getAutorizacao() != Usuario.Autorizacao.ADMINISTRADOR) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

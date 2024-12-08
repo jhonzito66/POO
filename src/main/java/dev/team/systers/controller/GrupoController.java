@@ -44,7 +44,7 @@ public class GrupoController {
         }
 
         String username = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(username);
+        Usuario usuario = usuarioService.encontrarPorLogin(username);
         if (usuario == null) {
             throw new UsuarioException("Usuário não encontrado");
         }
@@ -76,7 +76,7 @@ public class GrupoController {
             }
 
             String username = auth.getName();
-            Usuario usuario = usuarioService.findByLogin(username);
+            Usuario usuario = usuarioService.encontrarPorLogin(username);
 
             if (usuario == null) {
                 throw new UsuarioException("Usuário não encontrado");

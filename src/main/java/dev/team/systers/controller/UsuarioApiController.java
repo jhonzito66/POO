@@ -35,7 +35,7 @@ public class UsuarioApiController {
     public List<Usuario> listarUsuariosDenunciados() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
-        Usuario admin = usuarioService.findByLogin(login);
+        Usuario admin = usuarioService.encontrarPorLogin(login);
         
         if (admin.getAutorizacao() != Usuario.Autorizacao.ADMINISTRADOR) {
             throw new AccessDeniedException("Apenas administradores podem ver usuários denunciados");
@@ -51,7 +51,7 @@ public class UsuarioApiController {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String login = auth.getName();
-            Usuario admin = usuarioService.findByLogin(login);
+            Usuario admin = usuarioService.encontrarPorLogin(login);
             
             if (admin.getAutorizacao() != Usuario.Autorizacao.ADMINISTRADOR) {
                 throw new AccessDeniedException("Apenas administradores podem alterar status de usuários");

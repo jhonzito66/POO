@@ -31,7 +31,7 @@ public class PostagemController {
     public List<Postagem> listarUltimasPostagens() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
-        Usuario usuario = usuarioService.findByLogin(login);
+        Usuario usuario = usuarioService.encontrarPorLogin(login);
         
         return postagemService.listarUltimas10PostagensDeTodosOsGruposDoUsuario(usuario);
     }

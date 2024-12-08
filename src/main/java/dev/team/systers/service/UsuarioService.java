@@ -67,12 +67,12 @@ public class UsuarioService {
         perfilRepository.save(perfil);
     }
 
-    public Usuario findById(Long id) {
+    public Usuario encontrarPorID(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o ID: " + id));
     }
 
-    public Usuario findByLogin(String username) {
+    public Usuario encontrarPorLogin(String username) {
         return usuarioRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + username));
     }
