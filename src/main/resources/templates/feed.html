@@ -19,7 +19,6 @@
         <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
         <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
     </nav>
-    <!-- Formulário de Logout Global -->
     <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
     </form>
@@ -31,7 +30,7 @@
     <!-- Conteúdo principal -->
     <main>
         <!-- ADM -->
-        <section th:if="${usuario.Autorizacao == 'ADMINISTRADOR'}">
+        <section th:if="${usuario.autorizacao.toString() == 'ADMINISTRADOR'}">
             <!-- Perfis Denunciados -->
             <h2>Perfis Denunciados</h2>
             <div id="reported-profiles-container" class="requests-container">
