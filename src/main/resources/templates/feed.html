@@ -112,17 +112,16 @@
 </script>
 
 <script>
-    // Simulação de dados dos perfis denunciados
-    const reportedProfiles = [
-        { userName: "Ana Paula", status: "Ativo", reason: "Comportamento inadequado" },
-        { userName: "Bruno Costa", status: "Suspenso", reason: "Linguagem ofensiva" },
-        { userName: "Fernanda Lima", status: "Pendente", reason: "Spam" },
-    ];
-
-    // Função para carregar perfis denunciados
+    // Função para carregar perfis denunciados no DOM
     function loadReportedProfiles(profiles) {
         const container = document.getElementById("reported-profiles-container");
         container.innerHTML = ""; // Limpa dados anteriores
+
+        if (profiles.length === 0) {
+            container.innerHTML = "<p>Nenhum perfil denunciado encontrado.</p>";
+            return;
+        }
+
         profiles.forEach(profile => {
             const profileElement = document.createElement("div");
             profileElement.className = "profile";
@@ -130,7 +129,7 @@
               <div class="profile-info">
                   <h4>${profile.userName}</h4>
                   <p><strong>Motivo:</strong> ${profile.reason}</p>
-                  <p><strong>Status:</strong> ${profile.status}</p>
+                  <p><strong>Status:</strong> <span class="status-label">${profile.status}</span></p>
               </div>
               <div class="profile-actions">
                   <button class="btn suspend-btn" onclick="handleProfileAction('${profile.userName}', 'Suspender')">Suspender</button>
@@ -141,15 +140,29 @@
         });
     }
 
-    // Funções para tratar ações
-    function handleRequestAction(userName, action) {
-        alert(`Ação "${action}" realizada para o usuário ${userName}`);
-    }
-
+    // Função para manipular ações (Suspender/Ativar)
     function handleProfileAction(userName, action) {
-        alert(`Ação "${action}" realizada para o usuário ${userName}`);
+        const profile = reportedProfiles.find(p => p.userName === userName);
+
+        if (!profile) {
+            alert("Usuário não encontrado.");
+            return;
+        }
+
+        if (action === "Suspender" && profile.status !== "Suspenso") {
+            profile.status = "Suspenso";
+            alert(`O usuário ${userName} foi suspenso.`);
+        } else if (action === "Ativar" && profile.status !== "Ativo") {
+            profile.status = "Ativo";
+            alert(`O usuário ${userName} foi ativado.`);
+        } else {
+            alert(`O usuário ${userName} já está com o status "${profile.status}".`);
+        }
+
+        // Atualiza a interface com o novo status
+        loadReportedProfiles(reportedProfiles);
     }
 
-    // Carregar os dados simulados
+    // Carregar os dados simulados ao iniciar
     loadReportedProfiles(reportedProfiles);
 </script>
