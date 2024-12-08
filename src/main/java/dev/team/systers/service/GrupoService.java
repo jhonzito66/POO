@@ -133,4 +133,47 @@ public class GrupoService {
                 .distinct() // é pra evitar grupos duplicados!!
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Visualiza os membros de um grupo.
+     *
+     * @param grupoId ID do grupo
+     * @return Lista de membros do grupo
+     */
+    public List<Membro> visualizarMembros(Long grupoId) {
+        Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new GrupoException("Grupo não encontrado"));
+        return grupo.getMembros();
+    }
+
+    /**
+     * Visualiza as postagens de um grupo.
+     *
+     * @param grupoId ID do grupo
+     * @return Lista de postagens do grupo
+     */
+    public List<Postagem> visualizarPostagens(Long grupoId) {
+        Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new GrupoException("Grupo não encontrado"));
+        return listarPostagens(grupo);
+    }
+
+    /**
+     * Permite que um usuário deixe um grupo.
+     *
+     * @param grupoId ID do grupo
+     * @param usuarioId ID do usuário
+     */
+    public void deixarGrupo(Long grupoId, Long usuarioId) {
+        Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new GrupoException("Grupo não encontrado"));
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(() -> new GrupoException("Usuário não encontrado"));
+
+        Membro membro = membroRepository.findByUsuarioAndGrupo(usuario, grupo)
+                .orElseThrow(() -> new GrupoException("Usuário não é membro do grupo"));
+
+        if (membro.getAutorizacao() == Membro.Autorizacao.DONO) {
+            throw new GrupoException("O dono do grupo não pode sair sem transferir a posse.");
+        }
+
+        membroRepository.delete(membro);
+    }
+
 }
