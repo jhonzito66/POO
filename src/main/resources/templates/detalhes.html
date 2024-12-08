@@ -3,8 +3,8 @@
 <head th:fragment="title">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Informações de Mentorias</title>
-  <link rel="stylesheet" href="/css/HomeMentoria.css">
+  <title>Informações do Grupo</title>
+  <link rel="stylesheet" href="/css/gruposHome.css">
 </head>
 <body>
 <!-- Barra superior -->
@@ -17,6 +17,7 @@
     <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
     <button class="nav-btn" onclick="window.location.href='/perfil/me';">Meu Perfil</button>
     <button class="nav-btn" onclick="window.location.href='/grupos';">Grupos</button>
+    <button class="nav-btn" onclick="window.location.href='/feed';">Denucias</button>
     <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
     <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
   </nav>
@@ -24,55 +25,93 @@
   <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
   </form>
+
 </header>
 
 <!-- Conteúdo principal -->
-<main class="main-mentoria">
-  <!-- Seção de informações sobre mentorias -->
+<main class="main-grupo">
+  <!-- Seção de informações do grupo -->
   <section>
-    <h1 class="titulo">Mentorias</h1>
+    <h1>
+      <div class="grupo-info">
+        <!-- Nome do grup -->
+        <h2 th:if="${grupo != null}" th:text="${grupo.nome}">Nome do Grupo</h2>
 
-    <!-- Lista de mentorias -->
-    <div class="mentoria-list">
-      <article th:each="mentoria : ${mentorias}" class="mentoria">
-        <!-- Nome da mentoria -->
-        <h2 th:text="${mentoria.nome}">Nome da Mentoria</h2>
-
-        <!-- Datas da mentoria -->
-        <p>
-          <strong>Início:</strong>
-          <span th:text="${#dates.format(mentoria.dataInicio, 'dd/MM/yyyy')}">Data de Início</span>
+        <!-- Descrição do grupo -->
+        <p class = "descricao" :text="${grupo != null ? grupo.descricao : 'Sem descrição disponível.'}">
+          Descrição do Grupo
         </p>
-        <p>
-          <strong>Fim:</strong>
-          <span th:text="${#dates.format(mentoria.dataFim, 'dd/MM/yyyy')}">Data Final</span>
-        </p>
+      </div>
+    </h1>
+  </section>
 
-        <!-- Status da mentoria -->
-        <p>
-          <strong>Status:</strong>
-          <span th:text="${mentoria.status}">Status da Mentoria</span>
-        </p>
+  <!-- Seção com opções disponíveis apenas para o administrador do grupo -->
+  <section th:if="${grupo.admin.login == #authentication.name}">
+    <h2 class="titulo"> Gerenciamento do Grupo </h2>
+    <div class="btn-container">
+      <button class="btn" onclick="window.location.href='/grupos/editar/';">Editar Grupo</button>
+      <button class="btn" onclick="excluirGrupo()">Excluir Grupo</button>
+    </div>
+  </section>
 
-        <!-- Avaliação -->
-        <p>
-          <strong>Avaliação:</strong>
-          <span th:text="${mentoria.avaliacao}">Avaliação da Mentoria</span>
-        </p>
+  <!-- Seção com ações para membros e não-membros -->
+  <section th:if="${grupo.admin.login != #authentication.name}">
+    <h2 class="titulo"> Ações</h2>
+    <div class="btn-container">
+      <button class="btn" th:if="${!isMembro}" onclick="entrarNoGrupo()">Entrar no Grupo</button>
+      <button class="btn" th:if="${isMembro}" onclick="sairDoGrupo()">Sair do Grupo</button>
 
-        <!-- Ações para os usuários -->
-        <div class="btn-container">
-          <button class="btn" th:if="${!isParticipante}" onclick="entrarNaMentoria()">Ver</button>
-          <button class="btn" th:if="${!isParticipante}" onclick="entrarNaMentoria()">Entrar</button>
-          <button class="btn" th:if="${isParticipante}" onclick="sairDaMentoria()">Sair</button>
+    </div>
+  </section>
+
+  <!-- Seção de postagens -->
+  <section class="posts">
+    <h2 class="titulo"> Postagens</h2>
+
+    <!-- Formulário para criar uma nova postagem -->
+    <div class="post-form">
+      <form th:action="@{/grupos/{grupoId}/postar(grupoId=${grupo.id})}" method="post">
+        <textarea name="conteudo" rows="3" placeholder="Escreva algo..." required></textarea>
+        <button type="submit" class="btn">Postar</button>
+      </form>
+    </div>
+
+    <!-- Lista de postagens -->
+    <div class="post-list">
+      <article th:each="post : ${grupo.postagens}" class="post">
+        <!-- Conteúdo da postagem -->
+        <p th:text="${post.conteudo}">Conteúdo da postagem</p>
+        <span class="post-author" th:text="${post.autor}">Autor</span>
+        <span class="post-date" th:text="${#dates.format(post.dataCriacao, 'dd/MM/yyyy HH:mm')}">
+                    Data da postagem
+                </span>
+
+        <!-- Formulário para adicionar comentários -->
+        <div class="comment-form">
+          <form th:action="@{/grupos/postagens/{postId}/comentar(postId=${post.id})}" method="post">
+            <input type="text" name="comentario" placeholder="Escreva um comentário..." required />
+            <button type="submit" class="btn">Comentar</button>
+          </form>
+        </div>
+
+        <!-- Lista de comentários -->
+        <div class="comment-list">
+          <div th:each="comentario : ${post.comentarios}" class="comment">
+            <p th:text="${comentario.texto}">Texto do comentário</p>
+            <span class="comment-author" th:text="${comentario.autor}">Autor do comentário</span>
+            <span class="comment-date" th:text="${#dates.format(comentario.dataCriacao, 'dd/MM/yyyy HH:mm')}">
+                            Data do comentário
+                        </span>
+          </div>
         </div>
       </article>
 
-      <!-- Caso não haja mentorias -->
-      <p th:if="${#lists.isEmpty(mentorias)}">Nenhuma mentoria disponível.</p>
+      <!-- Caso não haja postagens -->
+      <p th:if="${#lists.isEmpty(grupo.postagens)}">Nenhuma postagem disponível.</p>
     </div>
   </section>
 </main>
+
 
 <!-- Rodapé -->
 <footer class="footer">
@@ -81,14 +120,20 @@
 </footer>
 
 <script>
-  function entrarNaMentoria() {
-    window.location.href = '/mentorias/entrar/' + /* Inserir ID da mentoria */ '';
+  function excluirGrupo() {
+    if (confirm("Tem certeza de que deseja excluir este grupo?")) {
+      window.location.href = '/grupos/excluir/' + /* Inserir ID do grupo */ '';
+    }
   }
 
-  function sairDaMentoria() {
-    if (confirm("Tem certeza de que deseja sair da mentoria?")) {
-      window.location.href = '/mentorias/sair/' + /* Inserir ID da mentoria */ '';
+  function sairDoGrupo() {
+    if (confirm("Tem certeza de que deseja sair do grupo?")) {
+      window.location.href = '/grupos/sair/' + /* Inserir ID do grupo */ '';
     }
+  }
+
+  function entrarNoGrupo() {
+    window.location.href = '/grupos/entrar/' + /* Inserir ID do grupo */ '';
   }
 </script>
 </body>

@@ -121,4 +121,18 @@ public class PerfilController {
         String login = auth.getName();
         return usuarioService.findByLogin(login);
     }
+    @PostMapping("perfil/deixar-mentor")
+    public String deixarMentor(Model model) {
+        Usuario usuario = obterUsuarioLogado(usuarioService);
+
+        usuario.setTipoMentor(false);
+
+        usuarioService.atualizar(usuario);
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("perfil", perfilService.buscarPerfilPorIDUsuario(usuario.getId()));
+
+        return "redirect:/perfil/me";
+    }
+
 }

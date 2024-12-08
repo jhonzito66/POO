@@ -62,8 +62,9 @@
         <h2>Meu Perfil</h2>
         <!-- Contêiner para os botões -->
         <div class="btn-container">
-            <button class="btn" onclick="openEditProfilePopup()">Editar Perfil</button>
-            <button class="btn" onclick="openBecomeMentorPopup()">Virar Mentor</button>
+            <button class="btn" onclick="openEditProfilePopup()" >Editar Perfil</button>
+            <button class="btn" onclick="openBecomeMentorPopup()" th:if="${usuario.getTipoMentor() != null && !usuario.getTipoMentor()}" >Virar Mentor</button>
+            <button class="btn" onclick="openLeaveMentorPopup()" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}">Abandonar a mentoria</button>
             <button class="btn" onclick="openSupportPopup()">Suporte</button>
         </div>
     </section>
@@ -175,6 +176,33 @@
         // O formulário será enviado normalmente após exibir a mensagem
         return true;
     }
+</script>
+
+<div id="leaveMentorPopup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closeLeaveMentorPopup()">&times;</span>
+        <h3>Deseja deixar de ser um mentor?</h3>
+        <p>Ao deixar de ser um mentor, você não poderá mais oferecer mentorias para outras pessoas.</p>
+        <form id="leaveMentorForm" th:action="@{/perfil/deixar-mentor}" method="post" onsubmit="return confirmLeaveMentor()">
+            <button type="submit" class="btn-submit">Sim, quero deixar de ser mentor</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openLeaveMentorPopup() {
+        document.getElementById('leaveMentorPopup').style.display = 'block';
+    }
+
+    function closeLeaveMentorPopup() {
+        document.getElementById('leaveMentorPopup').style.display = 'none';
+    }
+
+    function confirmLeaveMentor() {
+        alert("Você deixou de ser mentor!");
+        return true; // Permite o envio do formulário
+    }
+
 </script>
 
 <div id="reportPopup" class="popup">
