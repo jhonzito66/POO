@@ -1,10 +1,5 @@
 package dev.team.systers.controller;
 
-import dev.team.systers.exception.UsuarioException;
-import dev.team.systers.model.Perfil;
-import dev.team.systers.model.Usuario;
-import dev.team.systers.service.PerfilService;
-import dev.team.systers.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import dev.team.systers.exception.UsuarioException;
+import dev.team.systers.model.Perfil;
+import dev.team.systers.model.Usuario;
+import dev.team.systers.service.PerfilService;
+import dev.team.systers.service.UsuarioService;
 
 @Controller
 public class PerfilController {
@@ -92,6 +93,20 @@ public class PerfilController {
         model.addAttribute("usuario", existingUsuario);
         model.addAttribute("perfil", existingPerfil);
         return "perfil";
+    }
+
+    @PostMapping("perfil/virar-mentor")
+    public String virarMentor(Model model) {
+        Usuario usuario = obterUsuarioLogado(usuarioService);
+        
+        usuario.setTipoMentor(true);
+        
+        usuarioService.atualizar(usuario);
+        
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("perfil", perfilService.buscarPerfilPorIDUsuario(usuario.getId()));
+        
+        return "redirect:/perfil/me";
     }
 
     private static Usuario obterUsuarioLogado(UsuarioService usuarioService) {

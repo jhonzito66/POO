@@ -148,6 +148,7 @@
         <h3>Deseja se tornar um mentor?</h3>
         <p>Ao se tornar um mentor, você poderá compartilhar seu conhecimento e ajudar outras pessoas a alcançarem seus objetivos.</p>
         <form th:action="@{/perfil/virar-mentor}" method="post">
+            <input type="hidden" name="tipoMentor" value="true" />
             <button type="submit" class="btn-submit">Sim, quero ser mentor</button>
         </form>
     </div>
