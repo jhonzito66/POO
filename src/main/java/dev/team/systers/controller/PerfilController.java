@@ -57,6 +57,10 @@ public class PerfilController {
         }
         Perfil perfil = perfilService.buscarPerfilPorIDUsuario(usuario.getId());
         
+        if (perfil == null) {
+            throw new IllegalArgumentException("Perfil não encontrado para o usuário: " + login);
+        }
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("perfil", perfil);
         return "perfil";
@@ -138,4 +142,29 @@ public class PerfilController {
         return "redirect:/perfil/me";
     }
 
+    @GetMapping("/perfil/editar/{usuarioId}")
+    public String exibirFormularioEditarPerfil(@PathVariable Long usuarioId, Model model) {
+        try {
+            Usuario usuario = usuarioService.encontrarPorID(usuarioId);
+            model.addAttribute("usuario", usuario);
+            return "editarPerfil";
+        } catch (Exception e) {
+            model.addAttribute("mensagemErro", "Erro ao carregar perfil: " + e.getMessage());
+            return "erro";
+        }
+    }
+
+    @PostMapping("/perfil/editar/{usuarioId}")
+    public String editarPerfil(@PathVariable Long usuarioId, @ModelAttribute Usuario usuarioAtualizado, Model model) {
+        try {
+            usuarioService.editarPerfil(usuarioId,
+                    usuarioAtualizado.getNome(),
+                    usuarioAtualizado.getEmail(),
+                    usuarioAtualizado.getTelefone());
+            return "redirect:/perfil/" + usuarioId;
+        } catch (Exception e) {
+            model.addAttribute("mensagemErro", "Erro ao atualizar perfil: " + e.getMessage());
+            return "editarPerfil";
+        }
+    }
 }
