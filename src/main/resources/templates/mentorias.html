@@ -26,10 +26,10 @@
 <!-- Conteúdo Principal -->
 <main class="container">
     <h2>Mentorias</h2>
-    <p>Encontre e gerencie mentorias disponíveis.</p>
+    <p>Encontre mentorias disponíveis.</p>
 
     <!-- Botão de criar mentoria -->
-    <div class="actions" th:if="${usuario.getTipoMentor == 'MENTOR'}">
+    <div class="actions" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}">
         <button class="btn-create-mentorship" onclick="openPopup()">Criar Mentoria</button>
     </div>
 
