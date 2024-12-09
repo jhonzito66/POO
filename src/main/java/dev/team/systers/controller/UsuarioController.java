@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import dev.team.systers.model.Perfil;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.service.UsuarioService;
 

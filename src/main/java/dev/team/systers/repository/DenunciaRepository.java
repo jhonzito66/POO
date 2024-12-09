@@ -67,7 +67,7 @@ public interface DenunciaRepository extends JpaRepository<Denuncia, Long> {
      * @param status Status da denúncia
      * @return Lista de denúncias que atendem aos critérios
      */
-    List<Denuncia> findByCategoriaAndStatus(String categoria, String status);
+    List<Denuncia> findByCategoriaAndStatus(String categoria, StatusDenuncia status);
 
     /**
      * Busca denúncias pendentes contra um usuário específico.
