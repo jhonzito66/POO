@@ -3,6 +3,7 @@ package dev.team.systers.model;
 import java.util.List;
 import java.util.TimeZone;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -111,14 +112,14 @@ public class Usuario {
     /**
      * Associação com a tabela de denúncia para a relação de autor.
      */
-    @JsonManagedReference(value = "usuario-denuncia-autor")
+    @JsonIgnoreProperties({"usuarioAutor", "usuarioReportado"})
     @OneToMany(mappedBy = "usuarioAutor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasCriadas;
 
     /**
      * Associação com a tabela de denúncia para a relação de reportado.
      */
-    @JsonManagedReference(value = "usuario-denuncia-reportado")
+    @JsonIgnoreProperties({"usuarioAutor", "usuarioReportado"})
     @OneToMany(mappedBy = "usuarioReportado", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Denuncia> denunciasRecebidas;
 

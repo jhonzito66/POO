@@ -131,4 +131,8 @@ public class UsuarioService {
         
         return usuarioRepository.save(usuario);
     }
+
+    public Usuario buscarPorLogin(String name) {
+        return usuarioRepository.findUsuarioByLogin(name);
+    }
 }

@@ -17,7 +17,7 @@ import dev.team.systers.service.DenunciaService;
 import dev.team.systers.service.UsuarioService;
 
 @RestController
-@RequestMapping("/api/denuncias-perfil")
+@RequestMapping("/api/denuncias")
 public class DenunciaPerfilController {
     
     private final DenunciaService denunciaService;
@@ -38,7 +38,13 @@ public class DenunciaPerfilController {
         String login = auth.getName();
         Usuario usuario = usuarioService.encontrarPorLogin(login);
         
-        List<Denuncia> denuncias = denunciaService.listarPorUsuarioAutor(usuario.getId());
+        List<Denuncia> denuncias;
+        if (usuario.getAutorizacao() == Usuario.Autorizacao.ADMINISTRADOR) {
+            denuncias = denunciaService.listarPendentes(); // Lista apenas pendentes para admin
+        } else {
+            denuncias = denunciaService.listarPorUsuarioAutor(usuario.getId()); // Lista próprias denúncias
+        }
+        
         return ResponseEntity.ok(denuncias);
     }
 

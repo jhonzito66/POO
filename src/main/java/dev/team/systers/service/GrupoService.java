@@ -3,16 +3,20 @@ package dev.team.systers.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dev.team.systers.exception.GrupoException;
 import dev.team.systers.exception.MembroException;
 import dev.team.systers.model.Grupo;
 import dev.team.systers.model.Membro;
 import dev.team.systers.model.Postagem;
-import dev.team.systers.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import dev.team.systers.model.Usuario;
+import dev.team.systers.repository.ComentarioRepository;
+import dev.team.systers.repository.GrupoRepository;
+import dev.team.systers.repository.MembroRepository;
+import dev.team.systers.repository.PostagemRepository;
+import dev.team.systers.repository.UsuarioRepository;
 
 @Service
 public class GrupoService {
@@ -58,8 +62,16 @@ public class GrupoService {
     }
 
     public void participarGrupo(Long grupoId, Long usuarioId) {
-        Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new GrupoException("Grupo não encontrado"));
-        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(() -> new GrupoException("Usuário não encontrado"));
+        Grupo grupo = grupoRepository.findById(grupoId)
+                .orElseThrow(() -> new GrupoException("Grupo não encontrado"));
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new GrupoException("Usuário não encontrado"));
+
+        // Verificar se o usuário já é membro
+        boolean jaMembro = membroRepository.findByUsuarioAndGrupo(usuario, grupo).isPresent();
+        if (jaMembro) {
+            throw new GrupoException("Você já é membro deste grupo");
+        }
 
         Membro membro = new Membro();
         membro.setTag(usuario.getLogin());
@@ -196,5 +208,13 @@ public class GrupoService {
 
     public Grupo buscarGrupoPorId(Long id) {
         return grupoRepository.findGrupoById(id);
+    }
+
+    public List<Grupo> buscarGruposPorNome(String nome) {
+        return grupoRepository.findByNomeContainingIgnoreCaseOrderByMembrosDesc(nome);
+    }
+
+    public List<Grupo> listarTodosGruposOrdenadosPorMembros() {
+        return grupoRepository.findAllByOrderByMembrosDesc();
     }
 }

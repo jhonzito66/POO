@@ -1,6 +1,7 @@
 package dev.team.systers.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -107,40 +108,26 @@ public class GrupoController {
     }
 
     @GetMapping("/grupos/grupo/{id}")
-    public String exibirGrupo(@PathVariable Long id, Model model) {
+    public String visualizarGrupo(@PathVariable Long id, Model model) {
         try {
-            // Obter usuário autenticado
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || auth.getName().equals("anonymousUser")) {
-                throw new UsuarioException("Usuário não autenticado");
-            }
-
-            String username = auth.getName();
-            Usuario usuarioAutenticado = usuarioService.encontrarPorLogin(username);
-            if (usuarioAutenticado == null) {
-                throw new UsuarioException("Usuário não encontrado");
-            }
-
-            // Buscar o grupo pelo id
+            Usuario usuario = usuarioService.buscarPorLogin(auth.getName());
             Grupo grupo = grupoService.buscarGrupoPorId(id);
-            if (grupo == null) {
-                throw new GrupoException("Grupo não encontrado");
-            }
-
-            // Verificar se o usuário é membro do grupo
-            Membro membroAtual = membroService.buscarMembroPorUsuarioEGrupo(usuarioAutenticado.getId(), grupo.getId());
-            if (membroAtual == null) {
-                throw new GrupoException("Você não é membro deste grupo");
-            }
-
-            // Buscar postagens do grupo
-            List<Postagem> postagens = postagemService.listarPostagensPorGrupo(grupo.getId());
-
-            // Adicionar dados ao modelo
+            
+            // Verificar se o usuário é membro
+            boolean isMembro = grupo.getMembros().stream()
+                    .anyMatch(m -> m.getUsuario().getId().equals(usuario.getId()));
+            
             model.addAttribute("grupo", grupo);
-            model.addAttribute("membro", membroAtual);
-            model.addAttribute("postagens", postagens);
-            model.addAttribute("novaPostagem", new Postagem());
+            model.addAttribute("isMembro", isMembro);
+            
+            if (isMembro) {
+                Membro membroAtual = membroService.buscarMembroPorUsuarioEGrupo(usuario.getId(), grupo.getId());
+                List<Postagem> postagens = grupoService.visualizarPostagens(id);
+                
+                model.addAttribute("membro", membroAtual);
+                model.addAttribute("postagens", postagens);
+            }
             
             return "grupo";
         } catch (Exception e) {
@@ -270,5 +257,51 @@ public class GrupoController {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao excluir comentário: " + e.getMessage());
         }
         return "redirect:/grupos/grupo/" + grupoId;
+    }
+
+    @PostMapping("/grupos/participar/{id}")
+    public String participarGrupo(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || auth.getName().equals("anonymousUser")) {
+                throw new UsuarioException("Usuário não autenticado");
+            }
+
+            Usuario usuario = usuarioService.buscarPorLogin(auth.getName());
+            grupoService.participarGrupo(id, usuario.getId());
+            
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Você agora é membro do grupo!");
+            return "redirect:/grupos/grupo/" + id;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao participar do grupo: " + e.getMessage());
+            return "redirect:/grupos";
+        }
+    }
+
+    @GetMapping("/grupos/pesquisar")
+    public String pesquisarGrupos(@RequestParam(required = false) String q, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Usuario usuarioLogado = usuarioService.buscarPorLogin(auth.getName());
+        List<Grupo> todosGrupos;
+        
+        if (q != null && !q.trim().isEmpty()) {
+            todosGrupos = grupoService.buscarGruposPorNome(q);
+        } else {
+            todosGrupos = grupoService.listarTodosGruposOrdenadosPorMembros();
+        }
+        
+        // Busca os grupos do usuário
+        List<Grupo> gruposDoUsuario = grupoService.listarGruposPorUsuario(usuarioLogado);
+        
+        // Filtra os grupos que o usuário não participa
+        List<Grupo> gruposNaoParticipa = todosGrupos.stream()
+            .filter(grupo -> !gruposDoUsuario.contains(grupo))
+            .collect(Collectors.toList());
+        
+        model.addAttribute("grupos", gruposNaoParticipa);
+        model.addAttribute("usuario", usuarioLogado);
+        model.addAttribute("title", "Pesquisar Grupos");
+        model.addAttribute("content", "pesquisar-grupos");
+        return "pesquisar-grupos";
     }
 }

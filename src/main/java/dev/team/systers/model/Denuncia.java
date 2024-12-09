@@ -2,7 +2,7 @@ package dev.team.systers.model;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -62,18 +62,18 @@ public class Denuncia {
      * Usuário autor da denúncia.
      * Relacionamento de muitos para um com a entidade Usuario.
      */
-    @JsonBackReference(value = "usuario-denuncia-autor")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_autor_fk", foreignKey = @ForeignKey(name = "usuario_autor_fk"), nullable = false)
+    @JsonIgnoreProperties({"denunciasCriadas", "denunciasRecebidas"})
     private Usuario usuarioAutor;
 
     /**
      * Usuário reportado na denúncia.
      * Relacionamento de muitos para um com a entidade Usuario.
      */
-    @JsonBackReference(value = "usuario-denuncia-reportado")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_reportado_fk", foreignKey = @ForeignKey(name = "usuario_reportado_fk"), nullable = false)
+    @JsonIgnoreProperties({"denunciasCriadas", "denunciasRecebidas"})
     private Usuario usuarioReportado;
 
     // Construtores

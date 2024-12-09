@@ -47,9 +47,9 @@ public interface DenunciaRepository extends JpaRepository<Denuncia, Long> {
            "LEFT JOIN FETCH d.usuarioReportado")
     List<Denuncia> findAllWithUsuarios();
 
-    @Query("SELECT d FROM Denuncia d " +
-           "LEFT JOIN FETCH d.usuarioAutor " +
-           "LEFT JOIN FETCH d.usuarioReportado " +
-           "WHERE d.usuarioAutor.id = :usuarioId")
-    List<Denuncia> findByUsuarioAutorIdWithUsuarios(@Param("usuarioId") Long usuarioId);
+    @Query("SELECT d FROM Denuncia d LEFT JOIN FETCH d.usuarioReportado LEFT JOIN FETCH d.usuarioAutor WHERE d.usuarioAutor.id = :autorId")
+    List<Denuncia> findByUsuarioAutorIdWithUsuarios(@Param("autorId") Long autorId);
+
+    @Query("SELECT d FROM Denuncia d LEFT JOIN FETCH d.usuarioReportado LEFT JOIN FETCH d.usuarioAutor WHERE d.status = :status")
+    List<Denuncia> findByStatusWithUsuarios(@Param("status") StatusDenuncia status);
 }

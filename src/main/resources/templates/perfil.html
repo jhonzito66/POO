@@ -8,7 +8,7 @@
     <title>Perfil do Usuário</title>
     <link rel="stylesheet" href="/css/perfil.css">
 </head>
-<body>
+<body th:data-user-login="${#authentication.name}">
 <!-- Barra superior -->
 <header class="top-bar">
     <!-- Logo do sistema -->
@@ -85,7 +85,26 @@
 
     <!-- Seção para administradores -->
     <section th:if="${usuario.autorizacao.toString == 'ADMINISTRADOR'}" data-role="ADMINISTRADOR">
-        <!-- ... resto do código ... -->
+        <!-- Listagem de denúncias -->
+        <div class="denuncias-list">
+            <!-- Para usuários administradores, mostra todas as denúncias -->
+            <div th:if="${usuario.isAdmin()}" th:each="denuncia : ${denuncias}" class="denuncia-item">
+                <p th:text="${denuncia.descricao}">Descrição da denúncia</p>
+                <p th:text="'Autor: @' + ${denuncia.autor.login}">Autor</p>
+                <p th:text="'Status: ' + ${denuncia.status}">Status</p>
+                <button th:if="${denuncia.status != 'RESOLVIDA'}" 
+                        th:onclick="'resolverDenuncia(' + ${denuncia.id} + ')'" 
+                        class="btn-resolver">Resolver</button>
+            </div>
+            
+            <!-- Para usuários padrão, mostra apenas suas denúncias -->
+            <div th:unless="${usuario.isAdmin()}" th:each="denuncia : ${denuncias}" 
+                 th:if="${denuncia.autor.login == #authentication.principal.username}" 
+                 class="denuncia-item">
+                <p th:text="${denuncia.descricao}">Descrição da denúncia</p>
+                <p th:text="'Status: ' + ${denuncia.status}">Status</p>
+            </div>
+        </div>
     </section>
 
 </main>
@@ -269,10 +288,27 @@
 
     async function loadUserReports() {
         try {
-            const response = await fetch('/api/denuncias');
+            const csrf = getCsrfToken();
+            const response = await fetch('/api/denuncias/minhas', {
+                method: 'GET',
+                headers: {
+                    [csrf.header]: csrf.token
+                },
+                credentials: 'same-origin'
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erro ao carregar denúncias');
+            }
+            
             const denuncias = await response.json();
             const reportsContainer = document.getElementById('user-reports');
-            reportsContainer.innerHTML = ''; // Limpa o conteúdo anterior
+            reportsContainer.innerHTML = '';
+
+            if (denuncias.length === 0) {
+                reportsContainer.innerHTML = '<div class="no-reports">Nenhuma denúncia encontrada.</div>';
+                return;
+            }
 
             denuncias.forEach(denuncia => {
                 const denunciaElement = document.createElement('div');
@@ -281,8 +317,8 @@
                     <p><strong>Categoria:</strong> ${denuncia.categoria}</p>
                     <p><strong>Descrição:</strong> ${denuncia.descricao}</p>
                     <p><strong>Status:</strong> ${denuncia.status}</p>
-                    <p><strong>Data:</strong> ${new Date(denuncia.dataHora).toLocaleString()}</p>
-                    ${denuncia.status === 'PENDENTE' ? `
+                    <p><strong>Usuário Reportado:</strong> ${denuncia.usuarioReportado ? '@' + denuncia.usuarioReportado.login : 'Usuário não disponível'}</p>
+                    ${isAdmin() && denuncia.status === 'PENDENTE' ? `
                         <button onclick="resolverDenuncia(${denuncia.id})" class="btn-resolve">
                             Resolver Denúncia
                         </button>
@@ -292,7 +328,14 @@
             });
         } catch (error) {
             console.error('Erro ao carregar denúncias:', error);
+            document.getElementById('user-reports').innerHTML = 
+                '<div class="error-message">Erro ao carregar denúncias. Tente novamente mais tarde.</div>';
         }
+    }
+
+    // Função auxiliar para verificar se o usuário é admin
+    function isAdmin() {
+        return document.querySelector('[data-role="ADMINISTRADOR"]') !== null;
     }
 
     // Função para obter o token CSRF e o nome do header
@@ -340,6 +383,10 @@
         margin-bottom: 10px;
     }
 
+    .report-item p {
+        margin: 5px 0;
+    }
+
     .btn-resolve {
         background-color: #28a745;
         color: white;
@@ -348,6 +395,7 @@
         border-radius: 4px;
         cursor: pointer;
         margin-top: 10px;
+        transition: background-color 0.2s;
     }
 
     .btn-resolve:hover {
@@ -358,6 +406,13 @@
         max-height: 400px;
         overflow-y: auto;
         padding: 10px;
+    }
+
+    .no-reports {
+        text-align: center;
+        color: #666;
+        padding: 20px;
+        font-style: italic;
     }
 </style>
 

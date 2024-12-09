@@ -32,4 +32,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
            "JOIN FETCH u.denunciasRecebidas d " +
            "WHERE d.status = dev.team.systers.model.Denuncia$StatusDenuncia.PENDENTE")
     List<Usuario> findUsuariosComDenuncias();
+
+    Usuario findUsuarioByLogin(String name);
 }

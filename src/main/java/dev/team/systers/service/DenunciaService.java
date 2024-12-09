@@ -47,8 +47,8 @@ public class DenunciaService {
     }
 
     // Buscar denúncias feitas por um usuário específico
-    public List<Denuncia> listarPorUsuarioAutor(Long usuarioId) {
-        return denunciaRepository.findByUsuarioAutorIdWithUsuarios(usuarioId);
+    public List<Denuncia> listarPorUsuarioAutor(Long autorId) {
+        return denunciaRepository.findByUsuarioAutorIdWithUsuarios(autorId);
     }
 
     // Buscar denúncias feitas contra um usuário específico
@@ -154,5 +154,9 @@ public class DenunciaService {
 
     public void salvarDenunciaSimples(Denuncia denuncia) {
         denunciaRepository.save(denuncia);
+    }
+
+    public List<Denuncia> listarPendentes() {
+        return denunciaRepository.findByStatusWithUsuarios(Denuncia.StatusDenuncia.PENDENTE);
     }
 }

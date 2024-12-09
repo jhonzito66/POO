@@ -49,5 +49,8 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
     List<Grupo> findGruposComMaisDeMembros(@Param("quantidade") int quantidade);
 
     Grupo findGrupoById(Long id);
+
+    List<Grupo> findByNomeContainingIgnoreCaseOrderByMembrosDesc(String nome);
+    List<Grupo> findAllByOrderByMembrosDesc();
 }
 
