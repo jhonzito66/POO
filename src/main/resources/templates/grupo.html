@@ -1,10 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${grupo.nome}">Nome do Grupo</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/grupo.css}">
 </head>
 <body>
+<!-- Barra Superior -->
+<header class="top-bar">
+    <div class="logo">Systers</div>
+    <nav class="nav-bar">
+        <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
+        <button class="nav-btn" onclick="window.location.href='/perfil/me';">Meu Perfil</button>
+        <button class="nav-btn" onclick="window.location.href='/grupos';">Grupo</button>
+        <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
+        <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
+    </nav>
+    <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    </form>
+</header>
 
+<main class="container">
+    <!-- Cabeçalho do Grupo -->
+    <section class="grupo-header">
+        <h1 th:text="${grupo.nome}">Nome do Grupo</h1>
+        <p th:text="${grupo.descricao}">Descrição do grupo</p>
+    </section>
+
+    <!-- Formulário para Nova Postagem -->
+    <section class="nova-postagem">
+        <form th:action="@{/grupos/grupo/{id}/postagem(id=${grupo.id})}" method="post">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+            <textarea name="conteudo" placeholder="O que você quer compartilhar?" required></textarea>
+            <button type="submit" class="btn-postar">Postar</button>
+        </form>
+    </section>
+
+    <!-- Lista de Postagens -->
+    <section class="postagens">
+        <div th:each="postagem : ${postagens}" class="postagem">
+            <div class="postagem-header">
+                <span th:text="${postagem.autor.usuario.login}">Autor</span>
+                <span th:text="${#temporals.format(postagem.dataCriacao, 'dd/MM/yyyy HH:mm')}">Data</span>
+            </div>
+            
+            <div class="postagem-conteudo" th:text="${postagem.conteudo}">
+                Conteúdo da postagem
+            </div>
+
+            <!-- Ações da Postagem (Excluir para DONO/MODERADOR) -->
+            <div class="postagem-acoes" 
+                 th:if="${membro.autorizacao.name() == 'DONO' or membro.autorizacao.name() == 'MODERADOR' or postagem.autor.usuario.login == #authentication.principal.username}">
+                <form th:action="@{/grupos/grupo/{grupoId}/postagem/{postagemId}/excluir(grupoId=${grupo.id},postagemId=${postagem.id})}" 
+                      method="post" 
+                      style="display: inline;">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn-excluir"
+                            onclick="return confirm('Tem certeza que deseja excluir esta postagem?')">
+                        Excluir
+                    </button>
+                </form>
+            </div>
+
+            <!-- Comentários -->
+            <div class="comentarios">
+                <div th:each="comentario : ${postagem.comentarios}" class="comentario">
+                    <div class="comentario-header">
+                        <span th:text="${comentario.autor.login}">Autor do comentário</span>
+                        <span th:text="${#temporals.format(comentario.dataCriacao, 'dd/MM/yyyy HH:mm')}">Data</span>
+                    </div>
+                    <div class="comentario-conteudo" th:text="${comentario.conteudo}">
+                        Conteúdo do comentário
+                    </div>
+                    <!-- Ações do Comentário (Excluir para DONO/MODERADOR) -->
+                    <div class="comentario-acoes" 
+                         th:if="${membro.autorizacao.name() == 'DONO' or membro.autorizacao.name() == 'MODERADOR' or comentario.autor.usuario.login == #authentication.principal.username}">
+                        <form th:action="@{/grupos/grupo/{grupoId}/comentario/{comentarioId}/excluir(grupoId=${grupo.id},comentarioId=${comentario.id})}" 
+                              method="post" 
+                              style="display: inline;">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn-excluir"
+                                    onclick="return confirm('Tem certeza que deseja excluir este comentário?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Formulário para Novo Comentário -->
+                <form th:action="@{/grupos/grupo/{grupoId}/postagem/{postagemId}/comentario(grupoId=${grupo.id},postagemId=${postagem.id})}" 
+                      method="post" 
+                      class="novo-comentario">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <textarea name="conteudo" placeholder="Escreva um comentário..." required></textarea>
+                    <button type="submit" class="btn-comentar">Comentar</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <p>&copy; 2024 Systers</p>
+</footer>
 </body>
 </html>

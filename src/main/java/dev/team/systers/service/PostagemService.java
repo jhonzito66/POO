@@ -84,8 +84,7 @@ public class PostagemService {
     public List<Postagem> listarPostagensPorGrupo(Long grupoId) {
         Grupo grupo = grupoRepository.findById(grupoId)
                 .orElseThrow(() -> new PostagemException("Grupo não encontrado"));
-
-        return postagemRepository.findByGrupo(grupo);
+        return postagemRepository.findByGrupoOrderByDataCriacaoDesc(grupo);
     }
 
     public List<Postagem> listarUltimas10PostagensDeTodosOsGruposDoUsuario(Usuario usuario) {
@@ -99,5 +98,22 @@ public class PostagemService {
                 .sorted(Comparator.comparing(Postagem::getDataCriacao).reversed()) // Ordena por data (mais recente primeiro)
                 .limit(10) // Limita a 10 postagens
                 .collect(Collectors.toList()); // Coleta em uma lista
+    }
+
+    public void excluirPostagem(Long postagemId, Usuario usuario) {
+        Postagem postagem = postagemRepository.findById(postagemId)
+                .orElseThrow(() -> new PostagemException("Postagem não encontrada"));
+
+        Membro membro = membroRepository.findByUsuarioAndGrupo(usuario, postagem.getGrupo())
+                .orElseThrow(() -> new PostagemException("Usuário não é membro do grupo"));
+
+        // Verifica se o usuário é o autor da postagem ou tem permissão para excluir
+        if (!postagem.getAutor().equals(membro) && 
+            membro.getAutorizacao() != Membro.Autorizacao.DONO && 
+            membro.getAutorizacao() != Membro.Autorizacao.MODERADOR) {
+            throw new PostagemException("Permissão negada: apenas o autor, moderadores ou dono podem excluir esta postagem");
+        }
+
+        postagemRepository.delete(postagem);
     }
 }

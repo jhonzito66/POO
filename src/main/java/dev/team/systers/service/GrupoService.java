@@ -11,7 +11,6 @@ import dev.team.systers.model.Postagem;
 import dev.team.systers.repository.GrupoRepository;
 import dev.team.systers.repository.MembroRepository;
 import dev.team.systers.repository.PostagemRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -178,5 +177,9 @@ public class GrupoService {
     public Grupo buscarGrupoPorNome(String nome) {
         return grupoRepository.findByNome(nome)
                 .orElseThrow(() -> new IllegalArgumentException("Grupo não encontrado com o nome: " + nome));
+    }
+
+    public Grupo buscarGrupoPorId(Long id) {
+        return grupoRepository.findGrupoById(id);
     }
 }

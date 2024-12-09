@@ -2,15 +2,15 @@ package dev.team.systers.service;
 
 import java.util.List;
 
-import dev.team.systers.exception.MembroException;
-import dev.team.systers.model.Grupo;
-import dev.team.systers.model.Membro;
-import dev.team.systers.repository.GrupoRepository;
-import dev.team.systers.repository.MembroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dev.team.systers.exception.MembroException;
+import dev.team.systers.model.Grupo;
+import dev.team.systers.model.Membro;
 import dev.team.systers.model.Usuario;
+import dev.team.systers.repository.GrupoRepository;
+import dev.team.systers.repository.MembroRepository;
 import dev.team.systers.repository.UsuarioRepository;
 
 @Service
@@ -94,14 +94,7 @@ public class MembroService {
         membroRepository.save(membro);
     }
 
-    public Membro buscarMembroPorUsuarioEGrupo(Long grupoId, Long usuarioId) {
-        Grupo grupo = grupoRepository.findById(grupoId)
-                .orElseThrow(() -> new MembroException("Grupo não encontrado"));
-
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new MembroException("Usuário não encontrado"));
-
-        return membroRepository.findByUsuarioAndGrupo(usuario, grupo)
-                .orElseThrow(() -> new MembroException("Usuário não é membro do grupo"));
+    public Membro buscarMembroPorUsuarioEGrupo(Long usuarioId, Long grupoId) {
+        return membroRepository.findByUsuarioIdAndGrupoId(usuarioId, grupoId);
     }
 }

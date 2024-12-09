@@ -47,5 +47,7 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
      */
     @Query("SELECT g FROM Grupo g WHERE SIZE(g.membros) > :quantidade")
     List<Grupo> findGruposComMaisDeMembros(@Param("quantidade") int quantidade);
+
+    Grupo findGrupoById(Long id);
 }
 

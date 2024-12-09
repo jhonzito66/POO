@@ -21,7 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/registrar", "/registrar_usuario", "/css/**", "/js/**").permitAll() // Páginas públicas
+                        .requestMatchers("/login", "/registrar", "/registrar_usuario", "/css/**", "/js/**", "/images/**").permitAll() // Páginas públicas
                         .requestMatchers("/api/denuncias/resolver/**").hasRole("ADMIN") // Apenas admin pode resolver denúncias
                         .requestMatchers("/perfil/denunciar").authenticated()
                         .anyRequest().authenticated() // Protege outras páginas

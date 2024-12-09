@@ -59,7 +59,7 @@
             <td th:text="${grupo.descricao}">Descrição do grupo</td>
             <td th:text="${grupo.membros.size()}">Número de participantes</td>
             <td>
-                <a th:href="@{/grupos/grupo/{id}(id=${grupo.id})}" class="nav-btn">Ver Detalhes</a>
+                <a th:href="@{/grupos/grupo/{id}(id=${grupo.id})}" class="nav-btn">Ver</a>
 
                 <!-- Botão para Excluir Grupo (apenas para donos) -->
                 <form th:with="currentUser=${#authentication.principal.username}"

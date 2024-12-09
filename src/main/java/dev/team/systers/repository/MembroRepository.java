@@ -1,6 +1,5 @@
 package dev.team.systers.repository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +19,6 @@ public interface MembroRepository extends JpaRepository<Membro, Long>{
     List<Membro> findByGrupo(Grupo grupo);
 
     List<Membro> findByUsuario(Usuario usuario);
+
+    Membro findByUsuarioIdAndGrupoId(Long id, Long grupo);
 }
