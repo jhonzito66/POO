@@ -17,12 +17,6 @@ public class RootController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/feed")
-    public String feed(Model model) {
-        PerfilController.Authentication(model, usuarioService);
-        return "feed";
-    }
-
     @GetMapping("/")
     public String redirecionarParaOutroHTTP() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

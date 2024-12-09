@@ -6,9 +6,6 @@
     <title>Systers Feed</title>
     <link rel="stylesheet" href="css/feed.css">
     <link rel="stylesheet" href="css/adm.css">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
 </head>
 <body>
 <!-- Barra superior -->
@@ -21,32 +18,81 @@
         <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
         <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
     </nav>
-    <!-- Formulário de Logout Global -->
     <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
     </form>
 </header>
 
-
 <!-- Container principal -->
 <div class="container">
-    <!-- Conteúdo principal -->
     <main>
         <!-- ADM -->
         <section th:if="${usuario.autorizacao.toString == 'ADMINISTRADOR'}">
-            <!-- Perfis Denunciados -->
-            <h2>Perfis Denunciados</h2>
-            <div id="reported-profiles-container" class="requests-container">
-                <!-- Perfis denunciados serão carregados dinamicamente aqui -->
+            <h1>Perfis Denunciados</h1>
+            <div th:if="${mensagem}" class="alert alert-success" th:text="${mensagem}"></div>
+            <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+            <div class="requests-container">
+                <div th:each="perfil : ${usuariosDenunciados}" class="profile-card">
+                    <div class="profile-info">
+                        <h4 th:text="${perfil.nome}">Nome do Usuário</h4>
+                        <p th:text="'@' + ${perfil.login}">@usuario</p>
+                        <p><strong>Status:</strong> <span th:text="${perfil.statusConta}">Status</span></p>
+                        <p><strong>Denúncias pendentes:</strong> 
+                            <span th:text="${#lists.size(perfil.denunciasRecebidas)}">0</span>
+                        </p>
+                    </div>
+                    <div class="profile-actions">
+                        <form th:action="@{/admin/usuarios/{id}/status(id=${perfil.id})}" method="post" style="display: inline;">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                            
+                            <button type="submit" name="status" value="SUSPENSO" 
+                                    th:disabled="${perfil.statusConta == 'SUSPENSO'}"
+                                    class="btn-warning">
+                                Suspender
+                            </button>
+                            
+                            <button type="submit" name="status" value="BANIDO"
+                                    th:disabled="${perfil.statusConta == 'BANIDO'}"
+                                    class="btn-danger">
+                                Banir
+                            </button>
+                            
+                            <button type="submit" name="status" value="NORMAL"
+                                    th:disabled="${perfil.statusConta == 'NORMAL'}"
+                                    class="btn-primary">
+                                Ativar
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </section>
 
+        <!-- Feed de Postagens -->
         <div class="container">
             <main>
                 <h1>Feed de Postagens</h1>
-                <!-- Posts -->
-                <div id="posts-container" class="posts-container">
-                    <!-- Postagens serão carregadas dinamicamente aqui -->
+                <div class="posts-container">
+                    <div th:if="${#lists.isEmpty(postagens)}" class="no-posts-message">
+                        <p>Não há postagens para exibir.</p>
+                    </div>
+                    
+                    <div th:each="post : ${postagens}" class="post">
+                        <div class="post-header">
+                            <div class="profile-pic"></div>
+                            <div class="post-info">
+                                <h4 th:text="${post.autor.usuario.nome}">Nome do Autor</h4>
+                                <p th:text="'@' + ${post.autor.usuario.login}">@usuario</p>
+                                <p class="post-date" 
+                                   th:text="${#temporals.format(post.dataCriacao, 'dd/MM/yyyy HH:mm')}">
+                                   Data
+                                </p>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p th:text="${post.conteudo}">Conteúdo do post</p>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>
@@ -59,180 +105,3 @@
 </footer>
 </body>
 </html>
-
-<script>
-    // Função para carregar postagens no DOM
-    function loadPosts(posts) {
-        const postsContainer = document.getElementById("posts-container");
-        postsContainer.innerHTML = ""; 
-
-        if (posts.length === 0) {
-            const noPostsMessage = document.createElement("div");
-            noPostsMessage.className = "no-posts-message";
-            noPostsMessage.innerHTML = "<p>Não há postagens para exibir.</p>";
-            postsContainer.appendChild(noPostsMessage);
-            return;
-        }
-
-        posts.forEach(post => {
-            const postElement = document.createElement("div");
-            postElement.className = "post";
-            postElement.innerHTML = `
-                <div class="post-header">
-                    <div class="profile-pic"></div>
-                    <div class="post-info">
-                        <h4>${post.autor.nome}</h4>
-                        <p>@${post.autor.tag}</p>
-                        <p class="post-date">${formatDate(post.dataCriacao)}</p>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <p>${post.conteudo}</p>
-                </div>
-            `;
-            postsContainer.appendChild(postElement);
-        });
-    }
-
-    // Adicionar função auxiliar para formatar a data
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
-
-    // Função para carregar postagens do servidor
-    async function loadPostsFromServer() {
-        try {
-            const response = await fetch('/api/postagens/ultimas');
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Erro na resposta:', response.status, errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const posts = await response.json();
-            loadPosts(posts);
-        } catch (error) {
-            console.error('Erro ao carregar postagens:', error);
-            const postsContainer = document.getElementById("posts-container");
-            postsContainer.innerHTML = `<p class="error-message">Erro ao carregar postagens: ${error.message}</p>`;
-        }
-    }
-
-    // Carrega as postagens do servidor
-    loadPostsFromServer();
-</script>
-
-<script>
-    // Função para carregar perfis denunciados no DOM
-    function loadReportedProfiles(profiles) {
-        const container = document.getElementById("reported-profiles-container");
-        container.innerHTML = "";
-
-        if (!profiles || profiles.length === 0) {
-            container.innerHTML = "<p>Nenhum perfil denunciado encontrado.</p>";
-            return;
-        }
-
-        profiles.forEach(profile => {
-            console.log('Profile completo:', profile); // Debug do objeto completo
-            console.log('Denúncias recebidas:', profile.denunciasRecebidas); // Debug das denúncias
-
-            const denunciasPendentes = profile.denunciasRecebidas ? 
-                profile.denunciasRecebidas.filter(d => 
-                    String(d.status).toUpperCase() === 'PENDENTE'
-                ).length : 0;
-
-            console.log('Total de denúncias pendentes:', denunciasPendentes); // Debug do total
-
-            const profileElement = document.createElement("div");
-            profileElement.className = "profile-card";
-            profileElement.innerHTML = `
-                <div class="profile-info">
-                    <h4>${profile.nome}</h4>
-                    <p>@${profile.login}</p>
-                    <p><strong>Status:</strong> ${profile.statusConta}</p>
-                    <p><strong>Denúncias pendentes contra este usuário:</strong> ${denunciasPendentes}</p>
-                </div>
-                <div class="profile-actions">
-                    <button onclick="handleProfileAction(${profile.id}, 'SUSPENDER')" 
-                        ${profile.statusConta === 'SUSPENSO' ? 'disabled' : ''}>
-                        Suspender
-                    </button>
-                    <button onclick="handleProfileAction(${profile.id}, 'BANIR')"
-                        ${profile.statusConta === 'BANIDO' ? 'disabled' : ''}>
-                        Banir
-                    </button>
-                    <button onclick="handleProfileAction(${profile.id}, 'ATIVAR')"
-                        ${profile.statusConta === 'NORMAL' ? 'disabled' : ''}>
-                        Ativar
-                    </button>
-                </div>
-            `;
-            container.appendChild(profileElement);
-        });
-    }
-
-    // Função para carregar os perfis denunciados do servidor
-    async function loadReportedProfilesFromServer() {
-        try {
-            const response = await fetch('/api/usuarios/denunciados');
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Erro na resposta:', response.status, errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const profiles = await response.json();
-            console.log('Perfis denunciados recebidos:', profiles);
-            loadReportedProfiles(profiles);
-        } catch (error) {
-            console.error('Erro ao carregar perfis denunciados:', error);
-            const container = document.getElementById("reported-profiles-container");
-            container.innerHTML = `<p class="error-message">Erro ao carregar perfis denunciados: ${error.message}</p>`;
-        }
-    }
-
-    // Função para lidar com as ações nos perfis
-    async function handleProfileAction(userId, action) {
-        try {
-            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-            
-            const response = await fetch(`/api/usuarios/${userId}/status`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    [csrfHeader]: csrfToken
-                },
-                body: JSON.stringify({ 
-                    status: action === 'SUSPENDER' ? 'SUSPENSO' : 
-                            action === 'BANIR' ? 'BANIDO' : 'NORMAL'
-                })
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Falha ao atualizar status do usuário');
-            }
-
-            // Recarrega a lista de perfis denunciados
-            await loadReportedProfilesFromServer();
-            
-            // Mostra mensagem de sucesso
-            alert(`Status do usuário atualizado com sucesso para ${action}`);
-        } catch (error) {
-            console.error('Erro ao executar ação:', error);
-            alert('Erro ao executar ação: ' + error.message);
-        }
-    }
-
-    // Carrega os perfis denunciados se o usuário for administrador
-    if (document.getElementById('reported-profiles-container')) {
-        loadReportedProfilesFromServer();
-    }
-</script>
