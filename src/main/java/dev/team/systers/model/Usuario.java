@@ -20,9 +20,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 /**
- * Representa um usuário do sistema.
- * Esta classe é responsável por armazenar todas as informações relacionadas a um usuário,
- * incluindo seus dados pessoais, permissões e relacionamentos com outras entidades do sistema.
+ * Representa um usuário no sistema Systers.
+ * Esta classe contém todas as informações básicas de um usuário,
+ * incluindo suas credenciais de acesso e informações pessoais.
  */
 @Entity
 @Table(name = "usuario")
@@ -218,9 +218,23 @@ public class Usuario {
         BANIDO
     }
 
+    /**
+     * Retorna o ID único do usuário.
+     * @return O ID do usuário
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Define o ID do usuário.
+     * @param id O novo ID a ser definido
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
     public String getLogin() { return login; }
     public void setLogin(String login) { this.login = login; }
     public String getSenha() { return senha; }
