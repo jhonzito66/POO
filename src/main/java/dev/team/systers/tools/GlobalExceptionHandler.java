@@ -1,39 +1,32 @@
 package dev.team.systers.tools;
 
-import dev.team.systers.exception.ComentarioException;
-import dev.team.systers.exception.MembroException;
-import dev.team.systers.exception.PostagemException;
-import dev.team.systers.exception.DialogoMentoriaException;
-import dev.team.systers.exception.MentoriaException;
-import dev.team.systers.exception.DenunciaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import dev.team.systers.exception.ComentarioException;
+import dev.team.systers.exception.DenunciaException;
+import dev.team.systers.exception.DialogoMentoriaException;
 import dev.team.systers.exception.GrupoException;
+import dev.team.systers.exception.MembroException;
+import dev.team.systers.exception.MentoriaException;
+import dev.team.systers.exception.PostagemException;
 import dev.team.systers.exception.UsuarioException;
 
 /**
  * Controlador global de exceções para a aplicação.
- * <p>
  * Esta classe é responsável por capturar e tratar exceções lançadas em qualquer parte da aplicação,
- * permitindo que mensagens de erro apropriadas sejam retornadas ao cliente.
- * <p>
- * As exceções tratadas incluem:
- * - IllegalArgumentException
- * - RuntimeException
- * - GrupoException
- * - Exception (exceção genérica)
+ * fornecendo respostas HTTP apropriadas e mensagens de erro consistentes.
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * Trata exceções do tipo IllegalArgumentException.
-     * 
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     * Trata exceções de argumentos inválidos.
+     * Retorna status 400 (Bad Request) para dados inválidos ou malformados.
+     * @param ex A exceção de argumento inválido
+     * @return Resposta com mensagem de erro
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -41,42 +34,45 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Trata exceções do tipo RuntimeException.
-     * 
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 500 (Internal Server Error) e uma mensagem genérica de erro.
+     * Trata exceções de tempo de execução.
+     * Retorna status 500 (Internal Server Error) para erros inesperados.
+     * @param ex A exceção de runtime
+     * @return Resposta com mensagem genérica
      */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
     }
 
     /**
-     * Trata exceções genéricas.
-     * 
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 500 (Internal Server Error) e uma mensagem genérica de erro.
+     * Trata exceções genéricas não especificadas.
+     * Retorna status 500 (Internal Server Error) para qualquer erro não tratado.
+     * @param ex A exceção genérica
+     * @return Resposta com mensagem genérica
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ocorreu um erro inesperado. Tente novamente mais tarde.");
     }
 
     /**
-     * Trata exceções do tipo UsuarioException (exceções de Usuario).
-     * @param ex
-     * @return
+     * Trata exceções específicas de usuário.
+     * Retorna status 404 (Not Found) para recursos de usuário não encontrados.
+     * @param ex A exceção de usuário
+     * @return Resposta com mensagem específica
      */
     @ExceptionHandler(UsuarioException.class)
-    public ResponseEntity<String> handleUsuarioxception(UsuarioException ex) {
+    public ResponseEntity<String> handleUsuarioException(UsuarioException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     /**
-     * Trata exceções do tipo GrupoException (exceções de Grupo).
-     *
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     * Trata exceções específicas de grupo.
+     * Retorna status 400 (Bad Request) para operações inválidas em grupos.
+     * @param ex A exceção de grupo
+     * @return Resposta com mensagem específica
      */
     @ExceptionHandler(GrupoException.class)
     public ResponseEntity<String> handleGrupoException(GrupoException ex) {
@@ -84,10 +80,10 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Trata exceções do tipo PostagemException (exceções de Postagem).
-     *
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     * Trata exceções específicas de postagem.
+     * Retorna status 400 (Bad Request) para operações inválidas em postagens.
+     * @param ex A exceção de postagem
+     * @return Resposta com mensagem específica
      */
     @ExceptionHandler(PostagemException.class)
     public ResponseEntity<String> handlePostagemException(PostagemException ex) {
@@ -95,109 +91,57 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Trata exceções do tipo MembroException (exceções de Membro).
-     *
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     * Trata exceções específicas de membro.
+     * Retorna status 400 (Bad Request) para operações inválidas com membros.
+     * @param ex A exceção de membro
+     * @return Resposta com mensagem específica
      */
     @ExceptionHandler(MembroException.class)
-    public ResponseEntity<String> handlePostagemException(MembroException ex) {
+    public ResponseEntity<String> handleMembroException(MembroException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     /**
-     * Trata exceções do tipo ComentarioException (exceções de Comentario).
-     *
-     * @param ex A exceção lançada.
-     * @return Uma resposta com status 400 (Bad Request) e a mensagem da exceção.
+     * Trata exceções específicas de comentário.
+     * Retorna status 400 (Bad Request) para operações inválidas em comentários.
+     * @param ex A exceção de comentário
+     * @return Resposta com mensagem específica
      */
     @ExceptionHandler(ComentarioException.class)
-    public ResponseEntity<String> handlePostagemException(ComentarioException ex) {
+    public ResponseEntity<String> handleComentarioException(ComentarioException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    /**
+     * Trata exceções específicas de mentoria.
+     * Retorna status 400 (Bad Request) para operações inválidas em mentorias.
+     * @param ex A exceção de mentoria
+     * @return Resposta com mensagem específica
+     */
     @ExceptionHandler(MentoriaException.class)
     public ResponseEntity<String> handleMentoriaException(MentoriaException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    /**
+     * Trata exceções específicas de diálogo de mentoria.
+     * Retorna status 400 (Bad Request) para operações inválidas em diálogos.
+     * @param ex A exceção de diálogo
+     * @return Resposta com mensagem específica
+     */
     @ExceptionHandler(DialogoMentoriaException.class)
     public ResponseEntity<String> handleDialogoMentoriaException(DialogoMentoriaException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    /**
+     * Trata exceções específicas de denúncia.
+     * Retorna status 400 (Bad Request) para operações inválidas em denúncias.
+     * @param ex A exceção de denúncia
+     * @return Resposta com mensagem específica
+     */
     @ExceptionHandler(DenunciaException.class)
     public ResponseEntity<String> handleDenunciaException(DenunciaException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
-
-    /**
-     * Exemplo de como criar e implementar uma nova exceção personalizada.
-     * 
-     * 1. Crie uma nova classe de exceção que estenda a classe Exception ou RuntimeException.
-     * 
-     * Exemplo:
-     * public class MinhaNovaExcecao extends RuntimeException {
-     *     public MinhaNovaExcecao(String message) {
-     *         super(message);
-     *     }
-     * }
-     * 
-     * 2. Adicione um novo metodo de tratamento na classe GlobalExceptionHandler.
-     * 
-     * Exemplo:
-     * @ExceptionHandler(MinhaNovaExcecao.class)
-     * public ResponseEntity<String> handleMinhaNovaExcecao(MinhaNovaExcecao ex) {
-     *     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-     * }
-     * 
-     * <p>
-     * Tipos comuns de exceções e quando geralmente são usadas:
-     * 
-     * 1. IllegalArgumentException:
-     *    - Usada quando um metodo recebe um argumento inválido.
-     *    - Exemplo: Passar um valor nulo ou fora do intervalo esperado.
-     * 
-     * 2. NullPointerException:
-     *    - Usada quando uma operação é realizada em uma referência nula.
-     *    - Exemplo: Tentar acessar um metodo ou propriedade de um objeto que não foi inicializado.
-     * 
-     * 3. RuntimeException:
-     *    - Classe base para exceções que podem ocorrer durante a execução do programa.
-     *    - Usada para indicar erros que não são esperados e que não podem ser recuperados.
-     * 
-     * 4. Exception:
-     *    - Classe base para todas as exceções.
-     *    - Usada para capturar erros genéricos que não se enquadram em outras categorias.
-     * 
-     * <p>
-     * Status HTTP mais usados para erros:
-     * 
-     * 1. 400 Bad Request:
-     *    - Indica que a solicitação do cliente contém dados inválidos ou malformados.
-     *    - Usado frequentemente com IllegalArgumentException e GrupoException.
-     * 
-     * 2. 404 Not Found:
-     *    - Indica que o recurso solicitado não foi encontrado no servidor.
-     *    - Usado quando um endpoint não corresponde a nenhum recurso existente.
-     * 
-     * 3. 500 Internal Server Error:
-     *    - Indica que ocorreu um erro inesperado no servidor.
-     *    - Usado frequentemente com RuntimeException e Exception genérica.
-     * 
-     * 4. 403 Forbidden:
-     *    - Indica que o servidor entendeu a solicitação, mas se recusa a autorizá-la.
-     *    - Usado em casos de falta de permissões para acessar um recurso.
-     * 
-     * 5. 401 Unauthorized:
-     *    - Indica que a autenticação é necessária e falhou ou não foi fornecida.
-     *    - Usado quando o usuário não está autenticado para acessar um recurso protegido.
-     * 
-     * <p>
-     * Quando uma nova exceção personalizada é lançada em qualquer parte da aplicação, 
-     * o Spring irá automaticamente capturá-la e direcioná-la para o metodo de tratamento
-     * correspondente na classe GlobalExceptionHandler. Isso permite que você forneça 
-     * respostas apropriadas e consistentes para o cliente, melhorando a experiência do usuário 
-     * e facilitando a depuração.
-     */
 }

@@ -13,30 +13,43 @@ import org.springframework.security.web.SecurityFilterChain;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.repository.UsuarioRepository;
 
+/**
+ * Configuração de segurança da aplicação.
+ * Esta classe gerencia a configuração do Spring Security,
+ * definindo regras de autenticação, autorização e proteção contra ataques.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Configura a cadeia de filtros de segurança.
+     * Define as regras de acesso, autenticação e proteção para cada endpoint da aplicação.
+     * 
+     * @param http Configuração do HttpSecurity
+     * @return Cadeia de filtros de segurança configurada
+     * @throws Exception Se houver erro na configuração
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/registrar", "/registrar_usuario", "/css/**", "/js/**", "/images/**").permitAll() // Páginas públicas
-                        .requestMatchers("/api/denuncias/resolver/**").hasRole("ADMIN") // Apenas admin pode resolver denúncias
+                        .requestMatchers("/login", "/registrar", "/registrar_usuario", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/api/denuncias/resolver/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/perfil/denunciar").authenticated()
-                        .anyRequest().authenticated() // Protege outras páginas
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Página personalizada de login
+                        .loginPage("/login")
                         .usernameParameter("login")
                         .passwordParameter("senha")
-                        .defaultSuccessUrl("/feed", true) // Redireciona à página de feed após o login
+                        .defaultSuccessUrl("/feed", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login") // Redireciona à tela de login após logout
-                        .invalidateHttpSession(true) // Invalidar sessão
-                        .deleteCookies("JSESSIONID") // Deletar cookies
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/css/**", "/js/**")
@@ -46,13 +59,21 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configura o serviço de detalhes do usuário.
+     * Responsável por carregar os dados do usuário durante a autenticação,
+     * incluindo permissões e status da conta.
+     * 
+     * @param usuarioRepository Repositório para acesso aos dados do usuário
+     * @return Serviço de detalhes do usuário configurado
+     */
     @Bean
     public UserDetailsService userDetailsService(UsuarioRepository usuarioRepository) {
         return username -> {
             Usuario usuario = usuarioRepository.findByLogin(username)
                     .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
-            String role = usuario.getAutorizacao() == Usuario.Autorizacao.ADMINISTRADOR ? "ADMIN" : "USER";
+            String role = usuario.getAutorizacao().name();
 
             return org.springframework.security.core.userdetails.User.builder()
                     .username(usuario.getLogin())
@@ -64,6 +85,12 @@ public class SecurityConfig {
         };
     }
 
+    /**
+     * Configura o codificador de senha.
+     * Utiliza BCrypt para hash seguro das senhas dos usuários.
+     * 
+     * @return Codificador de senha BCrypt configurado
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

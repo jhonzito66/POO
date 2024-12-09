@@ -22,13 +22,35 @@ import dev.team.systers.service.MentoriaService;
 import dev.team.systers.service.ParticipanteService;
 import dev.team.systers.service.UsuarioService;
 
+/**
+ * Controlador responsável pelo gerenciamento de mentorias.
+ * Gerencia operações de criação, visualização, finalização e avaliação
+ * de sessões de mentoria entre mentores e mentorados.
+ */
 @Controller
 public class MentoriaController {
 
+    /**
+     * Serviço que gerencia operações relacionadas a mentorias.
+     */
     private final MentoriaService mentoriaService;
+
+    /**
+     * Serviço que gerencia operações relacionadas a usuários.
+     */
     private final UsuarioService usuarioService;
+
+    /**
+     * Serviço que gerencia operações relacionadas a participantes.
+     */
     private final ParticipanteService participanteService;
 
+    /**
+     * Construtor que inicializa o controlador com as dependências necessárias.
+     * @param mentoriaService Serviço de mentoria injetado pelo Spring
+     * @param usuarioService Serviço de usuário injetado pelo Spring
+     * @param participanteService Serviço de participante injetado pelo Spring
+     */
     @Autowired
     public MentoriaController(MentoriaService mentoriaService, UsuarioService usuarioService, ParticipanteService participanteService) {
         this.mentoriaService = mentoriaService;
@@ -38,9 +60,13 @@ public class MentoriaController {
 
     /**
      * Exibe a página de mentorias para o usuário autenticado.
+     * Lista todas as mentorias em que o usuário participa,
+     * seja como mentor ou mentorado.
      *
-     * @param model Modelo para passar dados para a view.
-     * @return Nome da view correspondente.
+     * @param model Modelo para passar dados à view
+     * @return Nome da view de mentorias
+     * @throws UsuarioException se o usuário não estiver autenticado ou não for encontrado
+     * @throws MentoriaException se houver erro ao recuperar as mentorias
      */
     @GetMapping("/mentorias")
     public String exibirMentorias(Model model) {
@@ -59,7 +85,6 @@ public class MentoriaController {
         }
         model.addAttribute("usuario", usuario);
 
-        // Obter mentorias do usuário
         List<Mentoria> mentorias = mentoriaService.listarMentoriasPorUsuario(usuario);
         if (mentorias == null) {
             throw new MentoriaException("Erro ao recuperar mentorias.");
@@ -71,6 +96,17 @@ public class MentoriaController {
         return "mentorias";
     }
 
+    /**
+     * Cria uma nova sessão de mentoria.
+     * Apenas usuários com status de mentor podem criar mentorias.
+     *
+     * @param nome Nome/título da mentoria
+     * @param dataHoraInicio Data e hora de início da mentoria
+     * @param dataHoraFim Data e hora de término da mentoria (opcional)
+     * @param loginMentorado Login do usuário que será mentorado
+     * @param model Modelo para passar dados à view
+     * @return Redirecionamento para a lista de mentorias ou mensagem de erro
+     */
     @PostMapping("/mentorias/criar-mentoria")
     public String criarMentoria(@RequestParam String nome,
                                @RequestParam LocalDateTime dataHoraInicio,
@@ -78,31 +114,25 @@ public class MentoriaController {
                                @RequestParam String loginMentorado,
                                Model model) {
         try {
-            // Obter usuário mentor (logado)
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Usuario mentor = usuarioService.encontrarPorLogin(auth.getName());
             
-            // Verificar se é mentor
             if (mentor.getTipoMentor() == null || !mentor.getTipoMentor()) {
                 throw new IllegalStateException("Usuário não é mentor");
             }
             
-            // Obter usuário mentorado
             Usuario mentorado = usuarioService.encontrarPorLogin(loginMentorado);
             if (mentorado == null) {
                 throw new IllegalArgumentException("Usuário mentorado não encontrado");
             }
             
-            // Criar nova mentoria
             Mentoria mentoria = new Mentoria();
             mentoria.setNome(nome);
             mentoria.setDataHoraInicio(dataHoraInicio);
             mentoria.setDataHoraFim(dataHoraFim);
             
-            // Salvar mentoria
             mentoria = mentoriaService.oferecerMentoria(mentoria, mentor);
             
-            // Criar participantes
             participanteService.criarParticipanteMentor(mentor, mentoria);
             participanteService.criarParticipanteMentorado(mentorado, mentoria);
             
@@ -114,14 +144,19 @@ public class MentoriaController {
         }
     }
 
+    /**
+     * Finaliza uma sessão de mentoria.
+     * Apenas o mentor responsável pode finalizar a mentoria.
+     *
+     * @param id ID da mentoria a ser finalizada
+     * @return Redirecionamento para a lista de mentorias ou mensagem de erro
+     */
     @GetMapping("/mentorias/finalizar/{id}")
     public String finalizarMentoria(@PathVariable Long id) {
         try {
-            // Obter usuário mentor (logado)
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Usuario mentor = usuarioService.encontrarPorLogin(auth.getName());
             
-            // Verificar se é mentor
             if (mentor.getTipoMentor() == null || !mentor.getTipoMentor()) {
                 throw new IllegalStateException("Apenas mentores podem finalizar mentorias");
             }
@@ -134,15 +169,21 @@ public class MentoriaController {
         }
     }
 
+    /**
+     * Registra uma avaliação para uma mentoria.
+     * Permite que participantes avaliem a qualidade da mentoria.
+     *
+     * @param mentoriaId ID da mentoria a ser avaliada
+     * @param avaliacao Nota da avaliação (0-5)
+     * @return Redirecionamento para a lista de mentorias ou mensagem de erro
+     */
     @PostMapping("/mentorias/avaliar")
     public String avaliarMentoria(@RequestParam Long mentoriaId,
                                  @RequestParam int avaliacao) {
         try {
-            // Obter usuário logado
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Usuario usuario = usuarioService.encontrarPorLogin(auth.getName());
             
-            // Criar avaliação
             Avaliacao novaAvaliacao = new Avaliacao();
             novaAvaliacao.setAvaliacaoMentoria(avaliacao);
             novaAvaliacao.setParticipanteAvaliador(usuario);

@@ -8,26 +8,60 @@ import org.springframework.stereotype.Repository;
 
 import dev.team.systers.model.Mentoria;
 
+/**
+ * Repositório para operações de persistência de Mentoria.
+ * Fornece métodos para acessar e manipular dados de mentorias no banco de dados.
+ */
 @Repository
 public interface MentoriaRepository extends JpaRepository<Mentoria, Long> {
 
-    // Buscar mentorias por status
+    /**
+     * Busca mentorias por status.
+     * @param status Status da mentoria (ex: Agendada, Em Andamento, Concluída)
+     * @return Lista de mentorias com o status especificado
+     */
     List<Mentoria> findByStatus(String status);
 
-    // Buscar mentorias pelo nome (ignorando maiúsculas/minúsculas)
+    /**
+     * Busca mentorias por nome, ignorando maiúsculas e minúsculas.
+     * @param nome Texto a ser buscado no nome da mentoria
+     * @return Lista de mentorias que contêm o texto no nome
+     */
     List<Mentoria> findByNomeContainingIgnoreCase(String nome);
 
-    // Buscar mentorias que começam depois de uma determinada data
+    /**
+     * Busca mentorias que começam após uma data específica.
+     * @param dataHoraInicio Data e hora de referência
+     * @return Lista de mentorias futuras à data especificada
+     */
     List<Mentoria> findByDataHoraInicioAfter(LocalDateTime dataHoraInicio);
 
-    // Buscar mentorias que terminam antes de uma determinada data
+    /**
+     * Busca mentorias que terminam antes de uma data específica.
+     * @param dataHoraFim Data e hora de referência
+     * @return Lista de mentorias que terminam antes da data
+     */
     List<Mentoria> findByDataHoraFimBefore(LocalDateTime dataHoraFim);
 
-    // Buscar mentorias em um intervalo de datas
+    /**
+     * Busca mentorias em um intervalo de datas.
+     * @param startDate Data inicial
+     * @param endDate Data final
+     * @return Lista de mentorias no período especificado
+     */
     List<Mentoria> findByDataHoraInicioBetween(LocalDateTime startDate, LocalDateTime endDate);
 
-    // Buscar mentorias com participantes específicos
+    /**
+     * Busca mentorias de um participante específico.
+     * @param participanteId ID do participante (mentor ou mentorado)
+     * @return Lista de mentorias do participante
+     */
     List<Mentoria> findByParticipantes_Id(Long participanteId);
 
+    /**
+     * Busca uma mentoria pelo seu ID.
+     * @param id ID da mentoria
+     * @return Mentoria encontrada ou null se não existir
+     */
     Mentoria findMentoriaById(Long id);
 }

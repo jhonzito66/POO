@@ -26,21 +26,12 @@
 <!-- Conteúdo Principal -->
 <main class="container">
 
-
     <!-- Botão de criar mentoria -->
     <div class="actions" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}">
         <h2>Mentorias</h2>
         <p>Gerencie e crie mentorias para compartilhar conhecimento e auxiliar no desenvolvimento de outros usuários.</p>
         <button class="btn-create-mentorship" onclick="openPopup()">Criar Mentoria</button>
     </div>
-
-    <div class="actions" th:if="${usuario.getTipoMentor() == null || !usuario.getTipoMentor()}"> <!-- MENTEE -->
-        <h2>Mentorias</h2>
-        <p>Encontre e solicite mentorias para aprimorar suas habilidades e alcançar seus objetivos com o apoio de especialistas.</p>
-        <button class="btn-create-mentorship" onclick="solicitarMentoria()">Solicitar Mentoria</button>
-    </div>
-
-
 
     <!-- Tabela de Mentorias -->
     <table class="mentorships-table">
@@ -118,42 +109,6 @@
         </tr>
         </tbody>
     </table>
-
-    <!-- Gerencia de Mentorias -->
-    <table class="mentorships-table" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}">
-        <h2>Gerenciar Solicitações de Mentoria</h2>
-        <p>Encontre solicitações de mentorias.</p>
-        <thead>
-        <tr>
-            <th>Título</th>
-            <th th:text="${(usuario.getTipoMentor() != null && !usuario.getTipoMentor())
-                ? 'Mentorado'
-                : 'Mentor'}">
-                Nome do Mentor
-            </th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Linha de Mentorias -->
-        <tr th:each="mentoria : ${mentorias}">
-            <td th:text="${mentoria.getNome()}">Título da Mentoria</td>
-            <td th:text="${mentoria.getParticipantes() != null && !#lists.isEmpty(mentoria.getParticipantes())
-                ? mentoria.getParticipantes().get(0).getNome()
-                : 'Sem mentor'}">
-                Nome do Mentor
-            </td>
-            <td>
-                <button class="nav-btn" onclick="window.location.href='/mentorias/detalhes/';">Mentorar</button>
-                <button class="nav-btn" onclick="window.location.href='/mentorias/participar/';">Finalizar</button>
-            </td>
-        </tr>
-        <!-- Caso não haja mentorias -->
-        <tr th:if="${mentorias.isEmpty()}">
-            <td colspan="4">Nenhuma mentoria encontrada.</td>
-        </tr>
-        </tbody>
-    </table>
 </main>
 
 <!-- Rodapé -->
@@ -212,29 +167,6 @@
         </form>
     </div>
 </div>
-
-<div id="requestMentorshipPopup" class="popup">
-    <div class="popup-content">
-        <span class="close" onclick="closeRequestMentorshipPopup()">&times;</span>
-        <h3>Solicitar Mentoria</h3>
-        <form th:action="@{/mentorias/solicitar}" method="post">
-            <label for="mentorshipTopic">Título da Mentoria:</label>
-            <input type="text" id="mentorshipTopic" name="mentorshipTopic" placeholder="Insira o título..." required />
-
-            <button type="submit" class="btn-submit">Enviar Solicitação</button>
-        </form>
-    </div>
-</div>
-
-<script>
-    function solicitarMentoria() {
-        document.getElementById("requestMentorshipPopup").style.display = "block";
-    }
-
-    function closeRequestMentorshipPopup() {
-        document.getElementById("requestMentorshipPopup").style.display = "none";
-    }
-</script>
 
 <!-- Estrutura do Pop-Up -->
 <div id="ratingPopup" class="popup">

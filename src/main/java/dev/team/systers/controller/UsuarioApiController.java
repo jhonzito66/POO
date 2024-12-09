@@ -20,17 +20,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.service.UsuarioService;
 
+/**
+ * Controlador REST para operações relacionadas a usuários.
+ * Fornece endpoints para gerenciamento de usuários,
+ * com foco em funcionalidades administrativas.
+ */
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioApiController {
     
+    /**
+     * Serviço que gerencia operações relacionadas a usuários.
+     */
     private final UsuarioService usuarioService;
 
+    /**
+     * Construtor que inicializa o controlador com as dependências necessárias.
+     * @param usuarioService Serviço de usuário injetado pelo Spring
+     */
     @Autowired
     public UsuarioApiController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
+    /**
+     * Lista todos os usuários que possuem denúncias.
+     * Endpoint restrito a administradores.
+     * 
+     * @return Lista de usuários denunciados
+     * @throws AccessDeniedException se o usuário não for administrador
+     */
     @GetMapping("/denunciados")
     public List<Usuario> listarUsuariosDenunciados() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -44,6 +63,14 @@ public class UsuarioApiController {
         return usuarioService.listarUsuariosDenunciados();
     }
 
+    /**
+     * Atualiza o status de um usuário específico.
+     * Endpoint restrito a administradores.
+     * 
+     * @param id ID do usuário a ser atualizado
+     * @param status Novo status a ser definido
+     * @return ResponseEntity com o usuário atualizado ou erro apropriado
+     */
     @PutMapping("/{id}/status")
     public ResponseEntity<Usuario> atualizarStatusUsuario(
             @PathVariable Long id,
@@ -66,14 +93,25 @@ public class UsuarioApiController {
         }
     }
 
-    // Classe interna para receber o status
+    /**
+     * Classe interna para deserialização do status na atualização.
+     * Usada para receber o novo status do usuário via JSON.
+     */
     private static class StatusUpdateRequest {
         private String status;
         
+        /**
+         * Obtém o status solicitado.
+         * @return String representando o status
+         */
         public String getStatus() {
             return status;
         }
         
+        /**
+         * Define o status a partir do JSON.
+         * @param status String representando o novo status
+         */
         @JsonProperty("status")
         public void setStatus(String status) {
             this.status = status;

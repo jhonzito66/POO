@@ -10,26 +10,50 @@ import org.springframework.stereotype.Service;
 import dev.team.systers.model.Denuncia;
 import dev.team.systers.repository.DenunciaRepository;
 
+/**
+ * Serviço responsável pelo gerenciamento de denúncias no sistema.
+ * Fornece funcionalidades para criar, buscar, atualizar e gerenciar denúncias,
+ * incluindo validações e regras de negócio específicas.
+ */
 @Service
 public class DenunciaService {
 
+    /**
+     * Repositório para acesso aos dados de denúncias.
+     */
     private final DenunciaRepository denunciaRepository;
+
+    /**
+     * Serviço para operações relacionadas a usuários.
+     */
     private final UsuarioService usuarioService;
 
+    /**
+     * Construtor que inicializa o serviço com as dependências necessárias.
+     * @param denunciaRepository Repositório de denúncias injetado pelo Spring
+     * @param usuarioService Serviço de usuário injetado pelo Spring
+     */
     @Autowired
     public DenunciaService(DenunciaRepository denunciaRepository, UsuarioService usuarioService) {
         this.denunciaRepository = denunciaRepository;
         this.usuarioService = usuarioService;
     }
 
-    // Listar todas as denúncias
+    /**
+     * Lista todas as denúncias cadastradas no sistema.
+     * @return Lista de todas as denúncias com informações dos usuários
+     */
     public List<Denuncia> listarTodas() {
         return denunciaRepository.findAllWithUsuarios();
     }
 
-    // Buscar denúncias por status
+    /**
+     * Lista denúncias por status específico.
+     * @param status Status da denúncia a ser buscado
+     * @return Lista de denúncias com o status especificado
+     * @throws IllegalArgumentException se o status for inválido
+     */
     public List<Denuncia> listarPorStatus(String status) {
-        // Validar se o status é válido
         try {
             Denuncia.StatusDenuncia.valueOf(status);
         } catch (IllegalArgumentException e) {
@@ -38,7 +62,12 @@ public class DenunciaService {
         return denunciaRepository.findByStatus(Denuncia.StatusDenuncia.valueOf(status));
     }
 
-    // Buscar denúncias por categoria
+    /**
+     * Lista denúncias por categoria.
+     * @param categoria Categoria das denúncias a serem buscadas
+     * @return Lista de denúncias da categoria especificada
+     * @throws IllegalArgumentException se a categoria for vazia ou nula
+     */
     public List<Denuncia> listarPorCategoria(String categoria) {
         if (categoria == null || categoria.trim().isEmpty()) {
             throw new IllegalArgumentException("Categoria não pode ser vazia");
@@ -46,12 +75,21 @@ public class DenunciaService {
         return denunciaRepository.findByCategoria(categoria);
     }
 
-    // Buscar denúncias feitas por um usuário específico
+    /**
+     * Lista denúncias feitas por um usuário específico.
+     * @param autorId ID do usuário autor das denúncias
+     * @return Lista de denúncias feitas pelo usuário
+     */
     public List<Denuncia> listarPorUsuarioAutor(Long autorId) {
         return denunciaRepository.findByUsuarioAutorIdWithUsuarios(autorId);
     }
 
-    // Buscar denúncias feitas contra um usuário específico
+    /**
+     * Lista denúncias feitas contra um usuário específico.
+     * @param usuarioId ID do usuário reportado
+     * @return Lista de denúncias contra o usuário
+     * @throws IllegalArgumentException se o ID do usuário for nulo
+     */
     public List<Denuncia> listarPorUsuarioReportado(Long usuarioId) {
         if (usuarioId == null) {
             throw new IllegalArgumentException("ID do usuário reportado não pode ser nulo");
@@ -59,14 +97,24 @@ public class DenunciaService {
         return denunciaRepository.findByUsuarioReportado_Id(usuarioId);
     }
 
-    // Salvar uma nova denúncia
+    /**
+     * Salva uma nova denúncia no sistema.
+     * @param denuncia Denúncia a ser salva
+     * @return Denúncia salva com dados atualizados
+     * @throws IllegalArgumentException se a denúncia for inválida
+     */
     public Denuncia salvarDenuncia(Denuncia denuncia) {
         validarDenuncia(denuncia);
         denuncia.setDataHora(LocalDateTime.now());
-        denuncia.setStatus(Denuncia.StatusDenuncia.PENDENTE); // Usando o enum diretamente
+        denuncia.setStatus(Denuncia.StatusDenuncia.PENDENTE);
         return denunciaRepository.save(denuncia);
     }
 
+    /**
+     * Valida os dados de uma denúncia antes de salvá-la.
+     * @param denuncia Denúncia a ser validada
+     * @throws IllegalArgumentException se algum campo obrigatório estiver inválido
+     */
     private void validarDenuncia(Denuncia denuncia) {
         if (denuncia == null) {
             throw new IllegalArgumentException("Denúncia não pode ser nula");
@@ -88,7 +136,12 @@ public class DenunciaService {
         }
     }
 
-    // Buscar denúncia por ID
+    /**
+     * Busca uma denúncia específica por ID.
+     * @param id ID da denúncia
+     * @return Optional contendo a denúncia se encontrada
+     * @throws IllegalArgumentException se o ID for nulo
+     */
     public Optional<Denuncia> buscarPorId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo");
@@ -96,7 +149,13 @@ public class DenunciaService {
         return denunciaRepository.findById(id);
     }
 
-    // Atualizar denúncia existente
+    /**
+     * Atualiza uma denúncia existente.
+     * @param id ID da denúncia a ser atualizada
+     * @param denuncia Novos dados da denúncia
+     * @return Optional contendo a denúncia atualizada se encontrada
+     * @throws IllegalArgumentException se o ID ou denúncia forem nulos
+     */
     public Optional<Denuncia> atualizarDenuncia(Long id, Denuncia denuncia) {
         if (id == null || denuncia == null) {
             throw new IllegalArgumentException("ID e denúncia não podem ser nulos");
@@ -111,7 +170,12 @@ public class DenunciaService {
             });
     }
 
-    // Listar denúncias após uma data
+    /**
+     * Lista denúncias realizadas após uma data específica.
+     * @param dataHora Data/hora de referência
+     * @return Lista de denúncias posteriores à data informada
+     * @throws IllegalArgumentException se a data for nula
+     */
     public List<Denuncia> listarPorDataHoraAfter(LocalDateTime dataHora) {
         if (dataHora == null) {
             throw new IllegalArgumentException("Data não pode ser nula");
@@ -119,7 +183,13 @@ public class DenunciaService {
         return denunciaRepository.findByDataHoraAfter(dataHora);
     }
 
-    // Listar denúncias entre duas datas
+    /**
+     * Lista denúncias realizadas entre duas datas.
+     * @param inicio Data/hora inicial
+     * @param fim Data/hora final
+     * @return Lista de denúncias no período especificado
+     * @throws IllegalArgumentException se alguma data for nula ou inválida
+     */
     public List<Denuncia> listarPorDataHoraBetween(LocalDateTime inicio, LocalDateTime fim) {
         if (inicio == null || fim == null) {
             throw new IllegalArgumentException("Datas não podem ser nulas");
@@ -129,19 +199,28 @@ public class DenunciaService {
         }
         return denunciaRepository.findByDataHoraBetween(inicio, fim);
     }
+
     /**
      * Marca uma denúncia como resolvida.
-     * @param id ID da denúncia.
-     * @return True se a denúncia foi resolvida com sucesso, false caso contrário.
+     * @param id ID da denúncia
+     * @return True se a denúncia foi resolvida com sucesso, false caso contrário
      */
     public boolean resolverDenuncia(Long id) {
         return denunciaRepository.findById(id).map(denuncia -> {
-            denuncia.setStatus(Denuncia.StatusDenuncia.ATENDIDA); // Atualiza o status
-            denunciaRepository.save(denuncia); // Persiste a alteração no banco
+            denuncia.setStatus(Denuncia.StatusDenuncia.ATENDIDA);
+            denunciaRepository.save(denuncia);
             return true;
-        }).orElse(false); // Retorna false se a denúncia não foi encontrada
+        }).orElse(false);
     }
 
+    /**
+     * Cria uma nova denúncia com os dados básicos.
+     * @param categoria Categoria da denúncia
+     * @param descricao Descrição detalhada
+     * @param loginAutor Login do usuário autor
+     * @param loginReportado Login do usuário reportado
+     * @return Nova denúncia criada
+     */
     public Denuncia criarDenuncia(String categoria, String descricao, String loginAutor, String loginReportado) {
         Denuncia denuncia = new Denuncia();
         denuncia.setCategoria(categoria);
@@ -152,10 +231,18 @@ public class DenunciaService {
         return denuncia;
     }
 
+    /**
+     * Salva uma denúncia de forma simplificada.
+     * @param denuncia Denúncia a ser salva
+     */
     public void salvarDenunciaSimples(Denuncia denuncia) {
         denunciaRepository.save(denuncia);
     }
 
+    /**
+     * Lista todas as denúncias pendentes.
+     * @return Lista de denúncias com status PENDENTE
+     */
     public List<Denuncia> listarPendentes() {
         return denunciaRepository.findByStatusWithUsuarios(Denuncia.StatusDenuncia.PENDENTE);
     }

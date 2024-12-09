@@ -17,12 +17,35 @@ import dev.team.systers.repository.GrupoRepository;
 import dev.team.systers.repository.MembroRepository;
 import dev.team.systers.repository.PostagemRepository;
 
+/**
+ * Serviço responsável pelo gerenciamento de postagens em grupos.
+ * Fornece funcionalidades para criar, editar, excluir e listar postagens,
+ * incluindo verificações de permissões e validações.
+ */
 @Service
 public class PostagemService {
+    
+    /**
+     * Repositório para acesso aos dados de postagens.
+     */
     private final PostagemRepository postagemRepository;
+
+    /**
+     * Repositório para acesso aos dados de grupos.
+     */
     private final GrupoRepository grupoRepository;
+
+    /**
+     * Repositório para acesso aos dados de membros.
+     */
     private final MembroRepository membroRepository;
 
+    /**
+     * Construtor que inicializa o serviço com as dependências necessárias.
+     * @param postagemRepository Repositório de postagens
+     * @param grupoRepository Repositório de grupos
+     * @param membroRepository Repositório de membros
+     */
     @Autowired
     public PostagemService(PostagemRepository postagemRepository, GrupoRepository grupoRepository, MembroRepository membroRepository) {
         this.postagemRepository = postagemRepository;
@@ -30,6 +53,16 @@ public class PostagemService {
         this.membroRepository = membroRepository;
     }
 
+    /**
+     * Cria uma nova postagem em um grupo.
+     * Verifica se o usuário é membro do grupo antes de permitir a criação.
+     * 
+     * @param grupoId ID do grupo onde a postagem será criada
+     * @param conteudo Texto da postagem
+     * @param autor Usuário que está criando a postagem
+     * @return Postagem criada
+     * @throws PostagemException se o grupo não existir, usuário não for membro ou conteúdo for vazio
+     */
     public Postagem criarPostagem(Long grupoId, String conteudo, Usuario autor) {
         Grupo grupo = grupoRepository.findById(grupoId)
                 .orElseThrow(() -> new PostagemException("Grupo não encontrado"));
@@ -49,6 +82,15 @@ public class PostagemService {
         return postagemRepository.save(postagem);
     }
 
+    /**
+     * Edita uma postagem existente.
+     * Apenas o autor pode editar a postagem.
+     * 
+     * @param postagemId ID da postagem a ser editada
+     * @param novoConteudo Novo texto da postagem
+     * @param autor Usuário que está tentando editar
+     * @throws PostagemException se a postagem não existir, usuário não for o autor ou conteúdo for vazio
+     */
     public void editarPostagem(Long postagemId, String novoConteudo, Usuario autor) {
         Postagem postagem = postagemRepository.findById(postagemId)
                 .orElseThrow(() -> new PostagemException("Postagem não encontrada"));
@@ -65,6 +107,14 @@ public class PostagemService {
         postagemRepository.save(postagem);
     }
 
+    /**
+     * Apaga uma postagem existente.
+     * Apenas o autor, moderadores ou dono do grupo podem apagar.
+     * 
+     * @param postagemId ID da postagem a ser apagada
+     * @param solicitante Usuário que está tentando apagar
+     * @throws PostagemException se a postagem não existir ou usuário não tiver permissão
+     */
     public void apagarPostagem(Long postagemId, Usuario solicitante) {
         Postagem postagem = postagemRepository.findById(postagemId)
                 .orElseThrow(() -> new PostagemException("Postagem não encontrada"));
@@ -81,25 +131,46 @@ public class PostagemService {
         postagemRepository.delete(postagem);
     }
 
+    /**
+     * Lista todas as postagens de um grupo, ordenadas por data de criação.
+     * 
+     * @param grupoId ID do grupo
+     * @return Lista de postagens do grupo
+     * @throws PostagemException se o grupo não existir
+     */
     public List<Postagem> listarPostagensPorGrupo(Long grupoId) {
         Grupo grupo = grupoRepository.findById(grupoId)
                 .orElseThrow(() -> new PostagemException("Grupo não encontrado"));
         return postagemRepository.findByGrupoOrderByDataCriacaoDesc(grupo);
     }
 
+    /**
+     * Lista as 10 postagens mais recentes de todos os grupos do usuário.
+     * 
+     * @param usuario Usuário para listar as postagens
+     * @return Lista das últimas 10 postagens dos grupos do usuário
+     */
     public List<Postagem> listarUltimas10PostagensDeTodosOsGruposDoUsuario(Usuario usuario) {
         if (usuario == null || usuario.getMembros() == null || usuario.getMembros().isEmpty()) {
-            return Collections.emptyList(); // Retorna uma lista vazia se não houver membros
+            return Collections.emptyList();
         }
 
         return usuario.getMembros().stream()
-                .map(Membro::getGrupo) // Obtém o grupo de cada membro
-                .flatMap(grupo -> postagemRepository.getAllByGrupo(grupo).stream()) // Achata as postagens de todos os grupos
-                .sorted(Comparator.comparing(Postagem::getDataCriacao).reversed()) // Ordena por data (mais recente primeiro)
-                .limit(10) // Limita a 10 postagens
-                .collect(Collectors.toList()); // Coleta em uma lista
+                .map(Membro::getGrupo)
+                .flatMap(grupo -> postagemRepository.getAllByGrupo(grupo).stream())
+                .sorted(Comparator.comparing(Postagem::getDataCriacao).reversed())
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
+    /**
+     * Exclui uma postagem existente.
+     * Apenas o autor, moderadores ou dono do grupo podem excluir.
+     * 
+     * @param postagemId ID da postagem a ser excluída
+     * @param usuario Usuário que está tentando excluir
+     * @throws PostagemException se a postagem não existir ou usuário não tiver permissão
+     */
     public void excluirPostagem(Long postagemId, Usuario usuario) {
         Postagem postagem = postagemRepository.findById(postagemId)
                 .orElseThrow(() -> new PostagemException("Postagem não encontrada"));
@@ -107,7 +178,6 @@ public class PostagemService {
         Membro membro = membroRepository.findByUsuarioAndGrupo(usuario, postagem.getGrupo())
                 .orElseThrow(() -> new PostagemException("Usuário não é membro do grupo"));
 
-        // Verifica se o usuário é o autor da postagem ou tem permissão para excluir
         if (!postagem.getAutor().equals(membro) && 
             membro.getAutorizacao() != Membro.Autorizacao.DONO && 
             membro.getAutorizacao() != Membro.Autorizacao.MODERADOR) {

@@ -82,8 +82,8 @@
                 <div class="comentarios">
                     <div th:each="comentario : ${postagem.comentarios}" class="comentario">
                         <div class="comentario-header">
-                            <a th:href="@{'/perfil/' + ${comentario.autor.login}}" 
-                               th:text="'@' + ${comentario.autor.login}"
+                            <a th:href="@{'/perfil/' + ${comentario.autor.usuario.login}}" 
+                               th:text="'@' + ${comentario.autor.usuario.login}"
                                class="user-link">@usuario</a>
                             <span th:text="${#temporals.format(comentario.dataCriacao, 'dd/MM/yyyy HH:mm')}">Data</span>
                         </div>
@@ -94,7 +94,7 @@
                         <div class="comentario-acoes" 
                              th:if="${membro.getAutorizacao().name() == 'DONO' or 
                                     membro.getAutorizacao().name() == 'MODERADOR' or 
-                                    comentario.getAutor().getLogin() == #authentication.principal.username}">
+                                    comentario.getAutor().getUsuario().getLogin() == #authentication.principal.username}">
                             <form th:action="@{/grupos/grupo/{grupoId}/comentario/{comentarioId}/excluir(grupoId=${grupo.id},comentarioId=${comentario.id})}" 
                                   method="post" 
                                   style="display: inline;">

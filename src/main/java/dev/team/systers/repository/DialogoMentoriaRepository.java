@@ -1,27 +1,55 @@
 package dev.team.systers.repository;
 
-import dev.team.systers.model.DialogoMentoria;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import dev.team.systers.model.DialogoMentoria;
+
+/**
+ * Repositório para operações de persistência de Diálogo de Mentoria.
+ * Fornece métodos para acessar e manipular dados de mensagens trocadas durante mentorias.
+ */
 @Repository
 public interface DialogoMentoriaRepository extends JpaRepository<DialogoMentoria, Long> {
 
-    // Buscar diálogos de mentoria por participante
+    /**
+     * Busca diálogos de um participante específico.
+     * @param participanteId ID do participante
+     * @return Lista de diálogos do participante
+     */
     List<DialogoMentoria> findByParticipante_Id(Long participanteId);
 
-    // Buscar diálogos de uma mentoria específica
+    /**
+     * Busca diálogos de uma mentoria específica.
+     * @param mentoriaId ID da mentoria
+     * @return Lista de diálogos da mentoria
+     */
     List<DialogoMentoria> findByMentoria_Id(Long mentoriaId);
 
-    // Buscar diálogos que ocorreram após uma data específica
+    /**
+     * Busca diálogos posteriores a uma data específica.
+     * @param dataHora Data e hora de referência
+     * @return Lista de diálogos após a data especificada
+     */
     List<DialogoMentoria> findByDataHoraAfter(LocalDateTime dataHora);
 
-    // Buscar diálogos dentro de um intervalo de datas
+    /**
+     * Busca diálogos dentro de um intervalo de datas.
+     * @param startDate Data inicial
+     * @param endDate Data final
+     * @return Lista de diálogos no período especificado
+     */
     List<DialogoMentoria> findByDataHoraBetween(LocalDateTime startDate, LocalDateTime endDate);
 
-    // Buscar diálogos de uma mentoria específicos por mensagem (com parte da mensagem)
+    /**
+     * Busca diálogos de uma mentoria que contenham determinado texto.
+     * Realiza busca case-insensitive com correspondência parcial.
+     * @param mentoriaId ID da mentoria
+     * @param mensagem Texto a ser buscado nas mensagens
+     * @return Lista de diálogos que contêm o texto
+     */
     List<DialogoMentoria> findByMentoria_IdAndMensagemContainingIgnoreCase(Long mentoriaId, String mensagem);
 }

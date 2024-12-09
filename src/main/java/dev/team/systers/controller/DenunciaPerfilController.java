@@ -16,13 +16,30 @@ import dev.team.systers.model.Usuario;
 import dev.team.systers.service.DenunciaService;
 import dev.team.systers.service.UsuarioService;
 
+/**
+ * Controlador REST para operações relacionadas a denúncias de perfis.
+ * Gerencia a listagem e visualização de denúncias, com funcionalidades
+ * específicas para usuários comuns e administradores.
+ */
 @RestController
 @RequestMapping("/api/denuncias")
 public class DenunciaPerfilController {
     
+    /**
+     * Serviço que gerencia operações relacionadas a denúncias.
+     */
     private final DenunciaService denunciaService;
+
+    /**
+     * Serviço que gerencia operações relacionadas a usuários.
+     */
     private final UsuarioService usuarioService;
 
+    /**
+     * Construtor que inicializa o controlador com as dependências necessárias.
+     * @param denunciaService Serviço de denúncia injetado pelo Spring
+     * @param usuarioService Serviço de usuário injetado pelo Spring
+     */
     @Autowired
     public DenunciaPerfilController(DenunciaService denunciaService, UsuarioService usuarioService) {
         this.denunciaService = denunciaService;
@@ -30,7 +47,11 @@ public class DenunciaPerfilController {
     }
 
     /**
-     * Lista as denúncias feitas pelo usuário logado
+     * Lista as denúncias relevantes para o usuário autenticado.
+     * Para administradores, retorna todas as denúncias pendentes.
+     * Para usuários comuns, retorna apenas suas próprias denúncias.
+     * 
+     * @return ResponseEntity contendo a lista de denúncias apropriada
      */
     @GetMapping("/minhas")
     public ResponseEntity<List<Denuncia>> listarMinhasDenuncias() {
@@ -40,16 +61,19 @@ public class DenunciaPerfilController {
         
         List<Denuncia> denuncias;
         if (usuario.getAutorizacao() == Usuario.Autorizacao.ADMINISTRADOR) {
-            denuncias = denunciaService.listarPendentes(); // Lista apenas pendentes para admin
+            denuncias = denunciaService.listarPendentes();
         } else {
-            denuncias = denunciaService.listarPorUsuarioAutor(usuario.getId()); // Lista próprias denúncias
+            denuncias = denunciaService.listarPorUsuarioAutor(usuario.getId());
         }
         
         return ResponseEntity.ok(denuncias);
     }
 
     /**
-     * Lista todas as denúncias (apenas para administradores)
+     * Lista todas as denúncias do sistema.
+     * Endpoint restrito a administradores.
+     * 
+     * @return ResponseEntity contendo todas as denúncias ou FORBIDDEN se não for administrador
      */
     @GetMapping("/todas")
     public ResponseEntity<List<Denuncia>> listarTodasDenuncias() {
