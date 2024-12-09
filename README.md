@@ -46,7 +46,6 @@
 
 ### Frontend
 - Thymeleaf
-- Bootstrap
 - HTML5/CSS3
 - JavaScript
 
