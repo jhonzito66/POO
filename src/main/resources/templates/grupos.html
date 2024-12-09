@@ -50,16 +50,17 @@
             <td th:text="${grupo.descricao}">Descrição do grupo</td>
             <td th:text="${grupo.membros.size()}">Número de participantes</td>
             <td>
-                <button class="nav-btn" onclick="window.location.href='/grupos/detalhes/';">Ver</button>
+                <a th:href="@{/grupos/detalhes/{nome}(nome=${grupo.nome})}" class="nav-btn">Ver Detalhes</a>
 
                 <!-- Botão para Excluir Grupo -->
-                <button class="nav-btn" onclick="confirmarExcluirGrupo()">Excluir Grupo</button>
+                <button class="nav-btn" onclick="document.getElementById('excluirGrupoForm').submit();">Excluir Grupo</button>
 
-                <!-- Formulário de Exclusão do Grupo -->
-                <form id="excluirGrupoForm" th:action="@{/grupos/excluir}" method="post" style="display: none;">
+                <form id="excluirGrupoForm" th:action="@{/grupos/excluir/{nome}(nome=${grupo.nome})}" method="post" style="display: inline;">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-                    <input type="hidden" name="grupoId" th:value="${grupo.id}" /> <!-- Inclua o ID do grupo -->
+                    <button class="nav-btn" type="submit">Excluir Grupo</button>
                 </form>
+
+
 
             </td>
         </tr>

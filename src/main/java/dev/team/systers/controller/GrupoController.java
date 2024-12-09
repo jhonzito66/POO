@@ -2,14 +2,13 @@ package dev.team.systers.controller;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import dev.team.systers.exception.GrupoException;
 import dev.team.systers.exception.UsuarioException;
@@ -17,6 +16,8 @@ import dev.team.systers.model.Grupo;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.service.GrupoService;
 import dev.team.systers.service.UsuarioService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class GrupoController {
@@ -88,6 +89,28 @@ public class GrupoController {
             model.addAttribute("mensagemErro", e.getMessage());
             return "/grupos/criar-grupo";
         }
-        return "/grupos";
+        return "redirect:/grupos";
     }
+
+    @GetMapping("/grupos/detalhes/{nome}")
+    public String exibirDetalhesGrupo(@PathVariable String nome, Model model) {
+        // Buscar o grupo pelo nome
+        Grupo grupo = grupoService.buscarGrupoPorNome(nome);
+        if (grupo == null) {
+            throw new IllegalArgumentException("Grupo não encontrado com o nome: " + nome);
+        }
+
+        // Buscar o usuário associado ao grupo
+        Usuario usuario = (Usuario) grupo.getUsuario(); // Certifique-se de que `getUsuario` está implementado corretamente
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário associado ao grupo não encontrado");
+        }
+
+        // Adicionar dados ao modelo para a view
+        model.addAttribute("grupo", grupo);
+        model.addAttribute("usuario", usuario);
+
+        return "detalhes";
+    }
+
 }

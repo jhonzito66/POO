@@ -1,6 +1,5 @@
 package dev.team.systers.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,7 @@ import dev.team.systers.model.Postagem;
 import dev.team.systers.repository.GrupoRepository;
 import dev.team.systers.repository.MembroRepository;
 import dev.team.systers.repository.PostagemRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class GrupoService {
         this.postagemRepository = postagemRepository;
     }
 
-    public Grupo criarGrupo(String nome, String descricao, Usuario criador) {
+    public void criarGrupo(String nome, String descricao, Usuario criador) {
         try {
             Membro membro = new Membro();
             membro.setTag(criador.getLogin());
@@ -52,7 +52,6 @@ public class GrupoService {
             
             membroRepository.save(membro);
 
-            return grupo;
         } catch (MembroException e) {
             throw new MembroException(e.getMessage());
         } catch (GrupoException e) {
@@ -176,4 +175,8 @@ public class GrupoService {
         membroRepository.delete(membro);
     }
 
+    public Grupo buscarGrupoPorNome(String nome) {
+        return grupoRepository.findByNome(nome)
+                .orElseThrow(() -> new IllegalArgumentException("Grupo não encontrado com o nome: " + nome));
+    }
 }

@@ -98,4 +98,8 @@ public class Grupo {
     public void setMembros(List<Membro> membros) {
         this.membros = membros;
     }
+
+    public Object getUsuario() {
+        return null;
+    }
 }
