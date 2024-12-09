@@ -43,7 +43,9 @@
     <section class="postagens">
         <div th:each="postagem : ${postagens}" class="postagem">
             <div class="postagem-header">
-                <span th:text="${postagem.autor.usuario.login}">Autor</span>
+                <a th:href="@{'/perfil/' + ${postagem.autor.usuario.login}}" 
+                   th:text="'@' + ${postagem.autor.usuario.login}"
+                   class="user-link">@usuario</a>
                 <span th:text="${#temporals.format(postagem.dataCriacao, 'dd/MM/yyyy HH:mm')}">Data</span>
             </div>
             
@@ -69,7 +71,9 @@
             <div class="comentarios">
                 <div th:each="comentario : ${postagem.comentarios}" class="comentario">
                     <div class="comentario-header">
-                        <span th:text="${comentario.autor.login}">Autor do comentário</span>
+                        <a th:href="@{'/perfil/' + ${comentario.autor.login}}" 
+                           th:text="'@' + ${comentario.autor.login}"
+                           class="user-link">@usuario</a>
                         <span th:text="${#temporals.format(comentario.dataCriacao, 'dd/MM/yyyy HH:mm')}">Data</span>
                     </div>
                     <div class="comentario-conteudo" th:text="${comentario.conteudo}">

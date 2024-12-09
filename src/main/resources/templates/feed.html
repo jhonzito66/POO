@@ -82,11 +82,16 @@
                             <div class="profile-pic"></div>
                             <div class="post-info">
                                 <h4 th:text="${post.autor.usuario.nome}">Nome do Autor</h4>
-                                <p th:text="'@' + ${post.autor.usuario.login}">@usuario</p>
-                                <p class="post-date" 
-                                   th:text="${#temporals.format(post.dataCriacao, 'dd/MM/yyyy HH:mm')}">
-                                   Data
-                                </p>
+                                <a th:href="@{'/perfil/' + ${post.autor.usuario.login}}" 
+                                   th:text="'@' + ${post.autor.usuario.login}" 
+                                   class="user-link">@usuario</a>
+                                <p class="post-date" th:text="${#temporals.format(post.dataCriacao, 'dd/MM/yyyy HH:mm')}">Data</p>
+                                <span th:if="${post.grupo != null}">
+                                    postado em 
+                                    <a th:href="@{'/grupos/grupo/' + ${post.grupo.id}}" 
+                                       th:text="${post.grupo.nome}"
+                                       class="group-link">Nome do Grupo</a>
+                                </span>
                             </div>
                         </div>
                         <div class="post-content">

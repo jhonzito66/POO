@@ -1,29 +1,32 @@
 package dev.team.systers.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dev.team.systers.exception.MentoriaException;
 import dev.team.systers.model.Avaliacao;
 import dev.team.systers.model.Mentoria;
 import dev.team.systers.model.Participante;
 import dev.team.systers.model.Usuario;
+import dev.team.systers.repository.AvaliacaoRepository;
 import dev.team.systers.repository.MentoriaRepository;
 import dev.team.systers.repository.ParticipanteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MentoriaService {
 
     private final MentoriaRepository mentoriaRepository;
     private final ParticipanteRepository participanteRepository;
+    private final AvaliacaoRepository avaliacaoRepository;
 
     @Autowired
-    public MentoriaService(MentoriaRepository mentoriaRepository, ParticipanteRepository participanteRepository) {
+    public MentoriaService(MentoriaRepository mentoriaRepository, ParticipanteRepository participanteRepository, AvaliacaoRepository avaliacaoRepository) {
         this.mentoriaRepository = mentoriaRepository;
         this.participanteRepository = participanteRepository;
+        this.avaliacaoRepository = avaliacaoRepository;
     }
 
     // Listar todas as mentorias
@@ -58,16 +61,25 @@ public class MentoriaService {
 
     public List<Mentoria> listarMentoriasPorUsuario(Usuario usuario) {
         List<Participante> participantes;
-        List<Mentoria> mentorias;
-        Participante.TipoParticipante tipoParticipante;
-        if (usuario.getTipoMentor() != null && !usuario.getTipoMentor()) {
-            tipoParticipante = Participante.TipoParticipante.MENTOR;
-        } else {
-            tipoParticipante = Participante.TipoParticipante.MENTORADO;
+        // Se o usuário for mentor, busca mentorias onde ele é mentor
+        if (usuario.getTipoMentor() != null && usuario.getTipoMentor()) {
+            participantes = participanteRepository.findByUsuarioIdAndTipo(
+                usuario.getId(), 
+                Participante.TipoParticipante.MENTOR
+            );
+        } 
+        // Se não for mentor, busca mentorias onde ele é mentorado
+        else {
+            participantes = participanteRepository.findByUsuarioIdAndTipo(
+                usuario.getId(), 
+                Participante.TipoParticipante.MENTORADO
+            );
         }
-        participantes = participanteRepository.findByUsuarioIdAndTipo(usuario.getId(), tipoParticipante);
-        mentorias = mentoriaRepository.findMentoriasByParticipantes(participantes);
-        return mentorias;
+
+        // Extrair as mentorias dos participantes
+        return participantes.stream()
+            .map(Participante::getMentoria)
+            .toList();
     }
 
     public Mentoria solicitarMentoria(Long mentoriaId, Usuario mentee) {
@@ -100,11 +112,11 @@ public class MentoriaService {
         if (mentoria.getNome() == null || mentoria.getNome().isEmpty()) {
             throw new IllegalArgumentException("O nome da mentoria é obrigatório.");
         }
-        if (mentoria.getDataHoraInicio() == null || mentoria.getDataHoraFim() == null) {
-            throw new IllegalArgumentException("As datas de início e fim são obrigatórias.");
+        if (mentoria.getDataHoraInicio() == null) {
+            throw new IllegalArgumentException("A data de início é obrigatória.");
         }
-        if (mentoria.getDataHoraInicio().isAfter(mentoria.getDataHoraFim())) {
-            throw new IllegalArgumentException("A data de início deve ser anterior à data de fim.");
+        if (mentoria.getDataHoraInicio().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("A data de início deve ser futura.");
         }
 
         // Definir o status inicial da mentoria
@@ -130,5 +142,57 @@ public class MentoriaService {
         }
 
         return mentoriaRepository.save(mentoriaExistente);
+    }
+
+    public Mentoria finalizarMentoria(Long mentoriaId) {
+        Mentoria mentoria = mentoriaRepository.findById(mentoriaId)
+                .orElseThrow(() -> new MentoriaException("Mentoria não encontrada"));
+
+        if (mentoria.getStatus().equals("Concluída")) {
+            throw new MentoriaException("Mentoria já está finalizada.");
+        }
+
+        mentoria.setStatus("Concluída");
+        mentoria.setDataHoraFim(LocalDateTime.now());
+        
+        return mentoriaRepository.save(mentoria);
+    }
+
+    public void avaliarMentoria(Avaliacao avaliacao) {
+        Mentoria mentoria = avaliacao.getMentoriaAvaliada();
+        
+        // Verificar se a mentoria está finalizada
+        if (!mentoria.getStatus().equals("Concluída")) {
+            throw new MentoriaException("Só é possível avaliar mentorias finalizadas");
+        }
+        
+        // Verificar se o usuário é participante da mentoria como mentorado
+        boolean isParticipante = mentoria.getParticipantes().stream()
+            .anyMatch(p -> p.getUsuario().getId().equals(avaliacao.getParticipanteAvaliador().getId()) 
+                    && p.getTipo() == Participante.TipoParticipante.MENTORADO);
+                    
+        if (!isParticipante) {
+            throw new MentoriaException("Apenas o mentorado participante pode avaliar a mentoria");
+        }
+        
+        // Verificar se já existe avaliação deste usuário para esta mentoria
+        if (avaliacaoRepository.existsByMentoriaAvaliadaAndParticipanteAvaliador(
+                mentoria, avaliacao.getParticipanteAvaliador())) {
+            throw new MentoriaException("Mentoria já foi avaliada por este usuário");
+        }
+        
+        avaliacaoRepository.save(avaliacao);
+    }
+
+    public Mentoria buscarPorId(Long mentoriaId) {
+        return mentoriaRepository.findMentoriaById(mentoriaId);
+    }
+
+    public boolean jaFoiAvaliada(Long mentoriaId, Long usuarioId) {
+        return avaliacaoRepository.existsByMentoriaAvaliadaIdAndParticipanteAvaliadorId(mentoriaId, usuarioId);
+    }
+
+    public Avaliacao buscarAvaliacao(Long mentoriaId) {
+        return avaliacaoRepository.findByMentoriaAvaliadaId(mentoriaId);
     }
 }

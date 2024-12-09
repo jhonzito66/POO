@@ -1,12 +1,12 @@
 package dev.team.systers.repository;
 
-import dev.team.systers.model.Mentoria;
-import dev.team.systers.model.Participante;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import dev.team.systers.model.Mentoria;
 
 @Repository
 public interface MentoriaRepository extends JpaRepository<Mentoria, Long> {
@@ -29,5 +29,5 @@ public interface MentoriaRepository extends JpaRepository<Mentoria, Long> {
     // Buscar mentorias com participantes específicos
     List<Mentoria> findByParticipantes_Id(Long participanteId);
 
-    List<Mentoria> findMentoriasByParticipantes(List<Participante> participantes);
+    Mentoria findMentoriaById(Long id);
 }

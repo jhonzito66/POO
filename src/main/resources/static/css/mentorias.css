@@ -349,3 +349,40 @@ footer {
 .star.selected {
     color: #ffcc00; /* Cor amarela para estrelas selecionadas */
 }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #444;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    border-color: #9568ad;
+    outline: none;
+    box-shadow: 0 0 5px rgba(149, 104, 173, 0.2);
+}
+
+.avaliacao-info {
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.avaliacao-info strong {
+    color: #666;
+    margin-right: 5px;
+}

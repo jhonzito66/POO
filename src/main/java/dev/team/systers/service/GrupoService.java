@@ -8,14 +8,11 @@ import dev.team.systers.exception.MembroException;
 import dev.team.systers.model.Grupo;
 import dev.team.systers.model.Membro;
 import dev.team.systers.model.Postagem;
-import dev.team.systers.repository.GrupoRepository;
-import dev.team.systers.repository.MembroRepository;
-import dev.team.systers.repository.PostagemRepository;
+import dev.team.systers.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dev.team.systers.model.Usuario;
-import dev.team.systers.repository.UsuarioRepository;
 
 @Service
 public class GrupoService {
@@ -23,13 +20,15 @@ public class GrupoService {
     private final MembroRepository membroRepository;
     private final UsuarioRepository usuarioRepository;
     private final PostagemRepository postagemRepository;
+    private final ComentarioRepository comentarioRepository;
 
     @Autowired
-    public GrupoService(GrupoRepository grupoRepository, MembroRepository membroRepository, UsuarioRepository usuarioRepository, PostagemRepository postagemRepository) {
+    public GrupoService(GrupoRepository grupoRepository, MembroRepository membroRepository, UsuarioRepository usuarioRepository, PostagemRepository postagemRepository, ComentarioRepository comentarioRepository) {
         this.grupoRepository = grupoRepository;
         this.membroRepository = membroRepository;
         this.usuarioRepository = usuarioRepository;
         this.postagemRepository = postagemRepository;
+        this.comentarioRepository = comentarioRepository;
     }
 
     public void criarGrupo(String nome, String descricao, Usuario criador) {
@@ -99,8 +98,24 @@ public class GrupoService {
     }
 
     public void excluirGrupo(Long grupoId, Usuario usuario) {
-        Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new GrupoException("Grupo não encontrado"));
+        Grupo grupo = grupoRepository.findById(grupoId)
+                .orElseThrow(() -> new GrupoException("Grupo não encontrado"));
+        
         verificarPermissao(usuario, grupo, Membro.Autorizacao.DONO);
+        
+        // Primeiro, excluir todos os comentários de todas as postagens
+        List<Postagem> postagens = postagemRepository.getAllByGrupo(grupo);
+        for (Postagem postagem : postagens) {
+            comentarioRepository.deleteAll(postagem.getComentarios());
+        }
+        
+        // Depois, excluir todas as postagens
+        postagemRepository.deleteAll(postagens);
+        
+        // Excluir todos os membros
+        membroRepository.deleteAll(grupo.getMembros());
+        
+        // Finalmente, excluir o grupo
         grupoRepository.delete(grupo);
     }
 

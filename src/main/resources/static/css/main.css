@@ -74,3 +74,29 @@ footer {
     border-top: 1px solid #dcdcdc;
     margin-top: auto;
 }
+
+.user-link {
+    color: #9568ad;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.user-link:hover {
+    text-decoration: underline;
+}
+
+.group-link {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.9em;
+    margin-left: 8px;
+}
+
+.group-link:hover {
+    text-decoration: underline;
+}
+
+.post-info span {
+    color: #6c757d;
+    font-size: 0.9em;
+}
