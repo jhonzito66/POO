@@ -3,6 +3,8 @@
 <head th:fragment="title">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Perfil do Usuário</title>
     <link rel="stylesheet" href="/css/perfil.css">
 </head>
@@ -63,8 +65,10 @@
         <!-- Contêiner para os botões -->
         <div class="btn-container">
             <button class="btn" onclick="openEditProfilePopup()" >Editar Perfil</button>
-            <button class="btn" onclick="openBecomeMentorPopup()" th:if="${usuario.getTipoMentor() != null && !usuario.getTipoMentor()}" >Virar Mentor</button>
-            <button class="btn" onclick="openLeaveMentorPopup()" th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor()}">Abandonar a mentoria</button>
+            <!-- Botão para se tornar mentor (exibido quando o usuário não é mentor) -->
+            <button class="btn" onclick="openBecomeMentorPopup()" th:if="${usuario.tipoMentor == null || !usuario.tipoMentor}" >Virar Mentor</button>
+            <!-- Botão para deixar de ser mentor (exibido quando o usuário é mentor) -->
+            <button class="btn" onclick="openLeaveMentorPopup()" th:if="${usuario.tipoMentor != null && usuario.tipoMentor}">Abandonar a mentoria</button>
             <button class="btn" onclick="openSupportPopup()">Suporte</button>
         </div>
     </section>
@@ -254,98 +258,107 @@
 </div>
 
 <script>
-    async function loadDenuncias() {
-        const container = document.getElementById("user-reports");
+    function openSupportPopup() {
+        document.getElementById('supportPopup').style.display = 'block';
+        loadUserReports();
+    }
+
+    function closeSupportPopup() {
+        document.getElementById('supportPopup').style.display = 'none';
+    }
+
+    async function loadUserReports() {
         try {
-            const isAdmin = document.querySelector('[data-role="ADMINISTRADOR"]') !== null;
-            const url = isAdmin ? '/api/denuncias-perfil/todas' : '/api/denuncias-perfil/minhas';
-
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
+            const response = await fetch('/api/denuncias');
             const denuncias = await response.json();
+            const reportsContainer = document.getElementById('user-reports');
+            reportsContainer.innerHTML = ''; // Limpa o conteúdo anterior
 
-            if (!denuncias || denuncias.length === 0) {
-                container.innerHTML = "<p>Nenhuma denúncia encontrada.</p>";
-                return;
-            }
-
-            container.innerHTML = denuncias.map(denuncia => {
-                const nomeReportado = denuncia.usuarioReportado
-                    ? `${denuncia.usuarioReportado.nome} (@${denuncia.usuarioReportado.login})`
-                    : 'Usuário não disponível';
-
-                return `
-                    <div class="report-card">
-                        <h4>Denúncia #${denuncia.id}</h4>
-                        <p><strong>Reportado:</strong> ${nomeReportado}</p>
-                        <p><strong>Categoria:</strong> ${denuncia.categoria}</p>
-                        <p><strong>Descrição:</strong> ${denuncia.descricao}</p>
-                        <p>
-                            <strong>Status:</strong>
-                            <span class="report-status ${denuncia.status === 'PENDENTE' ? 'status-pendente' : 'status-atendida'}">
-                                ${denuncia.status}
-                            </span>
-                        </p>
-                        <p class="report-date">${formatDate(denuncia.dataHora)}</p>
-                        ${
-                    denuncia.status === 'PENDENTE'
-                        ? `<button class="btn-submit" onclick="resolverDenuncia(${denuncia.id})">Resolver</button>`
-                        : `<p class="resolved-message">Esta denúncia já foi resolvida.</p>`
-                }
-                    </div>
+            denuncias.forEach(denuncia => {
+                const denunciaElement = document.createElement('div');
+                denunciaElement.className = 'report-item';
+                denunciaElement.innerHTML = `
+                    <p><strong>Categoria:</strong> ${denuncia.categoria}</p>
+                    <p><strong>Descrição:</strong> ${denuncia.descricao}</p>
+                    <p><strong>Status:</strong> ${denuncia.status}</p>
+                    <p><strong>Data:</strong> ${new Date(denuncia.dataHora).toLocaleString()}</p>
+                    ${denuncia.status === 'PENDENTE' ? `
+                        <button onclick="resolverDenuncia(${denuncia.id})" class="btn-resolve">
+                            Resolver Denúncia
+                        </button>
+                    ` : ''}
                 `;
-            }).join('');
-
+                reportsContainer.appendChild(denunciaElement);
+            });
         } catch (error) {
             console.error('Erro ao carregar denúncias:', error);
-            container.innerHTML = `<p class="error-message">Erro ao carregar denúncias: ${error.message}</p>`;
         }
     }
 
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    // Função para obter o token CSRF e o nome do header
+    function getCsrfToken() {
+        return {
+            token: document.querySelector("meta[name='_csrf']").getAttribute("content"),
+            header: document.querySelector("meta[name='_csrf_header']").getAttribute("content")
+        };
     }
 
     async function resolverDenuncia(id) {
         try {
-            const response = await fetch(`/resolver/${id}`, {
+            const csrf = getCsrfToken();
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            headers[csrf.header] = csrf.token;
+
+            const response = await fetch(`/api/denuncias/resolver/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' }
+                headers: headers,
+                credentials: 'same-origin'
             });
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => null);
-                const errorMessage = errorData?.message || response.statusText || 'Erro desconhecido';
-                throw new Error(errorMessage);
+            if (response.ok) {
+                alert('Denúncia resolvida com sucesso!');
+                loadUserReports(); // Recarrega a lista de denúncias
+            } else {
+                const error = await response.json();
+                alert(`Erro ao resolver denúncia: ${error.message || error.error || 'Erro desconhecido'}`);
             }
-
-            alert(`Denúncia #${id} resolvida com sucesso!`);
-            loadDenuncias(); // Recarrega a lista de denúncias
         } catch (error) {
             console.error('Erro ao resolver denúncia:', error);
-            alert(`Erro ao resolver denúncia: ${error.message}`);
+            alert('Erro ao resolver denúncia. Por favor, tente novamente.');
         }
     }
-
-
-    function openSupportPopup() {
-        document.getElementById("supportPopup").style.display = "block";
-        loadDenuncias();
-    }
-
-    function closeSupportPopup() {
-        document.getElementById("supportPopup").style.display = "none";
-    }
 </script>
+
+<style>
+    .report-item {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+
+    .btn-resolve {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .btn-resolve:hover {
+        background-color: #218838;
+    }
+
+    .popup-scroll-area {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 10px;
+    }
+</style>
 
 

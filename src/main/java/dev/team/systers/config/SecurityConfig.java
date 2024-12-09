@@ -22,6 +22,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login", "/registrar", "/registrar_usuario", "/css/**", "/js/**").permitAll() // Páginas públicas
+                        .requestMatchers("/api/denuncias/resolver/**").hasRole("ADMIN") // Apenas admin pode resolver denúncias
                         .requestMatchers("/perfil/denunciar").authenticated()
                         .anyRequest().authenticated() // Protege outras páginas
                 )
@@ -36,10 +37,12 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login") // Redireciona à tela de login após logout
                         .invalidateHttpSession(true) // Invalidar sessão
                         .deleteCookies("JSESSIONID") // Deletar cookies
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/css/**", "/js/**")
+                        .csrfTokenRepository(org.springframework.security.web.csrf.CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
-        http.csrf(csrf -> csrf
-                .ignoringRequestMatchers("/css/**", "/js/**")
-        );
+
         return http.build();
     }
 
@@ -49,10 +52,12 @@ public class SecurityConfig {
             Usuario usuario = usuarioRepository.findByLogin(username)
                     .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
+            String role = usuario.getAutorizacao() == Usuario.Autorizacao.ADMINISTRADOR ? "ADMIN" : "USER";
+
             return org.springframework.security.core.userdetails.User.builder()
                     .username(usuario.getLogin())
                     .password(usuario.getSenha())
-                    .authorities("ROLE_USER")
+                    .roles(role)
                     .accountLocked(usuario.getStatusConta() == Usuario.StatusConta.BANIDO)
                     .disabled(usuario.getStatusConta() == Usuario.StatusConta.SUSPENSO)
                     .build();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,16 +61,19 @@
             <td>
                 <a th:href="@{/grupos/detalhes/{nome}(nome=${grupo.nome})}" class="nav-btn">Ver Detalhes</a>
 
-                <!-- Botão para Excluir Grupo -->
-                <button class="nav-btn" onclick="document.getElementById('excluirGrupoForm').submit();">Excluir Grupo</button>
-
-                <form id="excluirGrupoForm" th:action="@{/grupos/excluir/{nome}(nome=${grupo.nome})}" method="post" style="display: inline;">
+                <!-- Botão para Excluir Grupo (apenas para administradores) -->
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:id="'excluirGrupoForm-' + ${grupo.nome}"
+                      th:action="@{/grupos/excluir/{nome}(nome=${grupo.nome})}" 
+                      method="post" 
+                      style="display: inline;">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-                    <button class="nav-btn" type="submit">Excluir Grupo</button>
+                    <button class="nav-btn" type="submit" 
+                            th:data-grupo-nome="${grupo.nome}"
+                            onclick="return confirmarExclusao(this)">
+                        Excluir Grupo
+                    </button>
                 </form>
-
-
-
             </td>
         </tr>
         <!-- Caso não haja grupos -->
@@ -78,13 +82,19 @@
         </tr>
         </tbody>
     </table>
-    </div>
 </main>
 
 <!-- Rodapé -->
 <footer class="footer">
     <p>&copy; 2024 Systers</p>
 </footer>
+
+<script>
+    function confirmarExclusao(button) {
+        const nomeGrupo = button.getAttribute('data-grupo-nome');
+        return confirm(`Tem certeza que deseja excluir o grupo ${nomeGrupo}?`);
+    }
+</script>
 </body>
 </html>
 

@@ -94,8 +94,8 @@ public class GrupoController {
         return "redirect:/grupos";
     }
 
-    @GetMapping("/grupos/detalhes/{nome}")
-    public String exibirDetalhesGrupo(@PathVariable String nome, Model model) {
+    @GetMapping("/grupos/{nome}")
+    public String exibirGrupo(@PathVariable String nome, Model model) {
         // Buscar o grupo pelo nome
         Grupo grupo = grupoService.buscarGrupoPorNome(nome);
         if (grupo == null) {
@@ -112,7 +112,7 @@ public class GrupoController {
         model.addAttribute("grupo", grupo);
         model.addAttribute("usuario", usuario);
 
-        return "detalhes";
+        return "grupo";
     }
 
     @PostMapping("/grupos/excluir/{nome}")
