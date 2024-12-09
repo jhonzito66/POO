@@ -144,3 +144,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 - LinkedIn: [Pedro Henrique](https://www.linkedin.com/in/sousxs/)
 - GitHub: [@Sousxs](https://github.com/Sousxs)
 
+### João Pedro
+- Email: joaopedroaraujosilvabarbosa@gmail.com
+- LinkedIn: www.linkedin.com/in/joãopedro-sb
+- GitHub: [@jhonzito66](https://github.com/jhonzito66/)
