@@ -2,13 +2,16 @@ package dev.team.systers.controller;
 
 import java.util.List;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dev.team.systers.exception.GrupoException;
 import dev.team.systers.exception.UsuarioException;
@@ -16,7 +19,6 @@ import dev.team.systers.model.Grupo;
 import dev.team.systers.model.Usuario;
 import dev.team.systers.service.GrupoService;
 import dev.team.systers.service.UsuarioService;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -113,4 +115,35 @@ public class GrupoController {
         return "detalhes";
     }
 
+    @PostMapping("/grupos/excluir/{nome}")
+    public String excluirGrupo(@PathVariable String nome, RedirectAttributes redirectAttributes) {
+        try {
+            // Obter o usuário autenticado
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated() || auth.getName().equals("anonymousUser")) {
+                throw new UsuarioException("Usuário não autenticado");
+            }
+
+            // Buscar o usuário autenticado
+            String username = auth.getName();
+            Usuario usuarioAutenticado = usuarioService.encontrarPorLogin(username);
+            if (usuarioAutenticado == null) {
+                throw new UsuarioException("Usuário não encontrado");
+            }
+
+            // Buscar o grupo pelo nome
+            Grupo grupo = grupoService.buscarGrupoPorNome(nome);
+            if (grupo == null) {
+                throw new GrupoException("Grupo não encontrado");
+            }
+
+            // Excluir o grupo
+            grupoService.excluirGrupo(grupo.getId(), usuarioAutenticado);
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Grupo excluído com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao excluir grupo: " + e.getMessage());
+        }
+
+        return "redirect:/grupos";
+    }
 }

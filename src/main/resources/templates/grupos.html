@@ -23,6 +23,14 @@
     </form>
 </header>
 
+<!-- Mensagens de Feedback -->
+<div th:if="${mensagemSucesso}" class="alert alert-success" role="alert">
+    <span th:text="${mensagemSucesso}"></span>
+</div>
+<div th:if="${mensagemErro}" class="alert alert-danger" role="alert">
+    <span th:text="${mensagemErro}"></span>
+</div>
+
 <!-- Conteúdo Principal -->
 <main class="container">
     <h2>Grupos</h2>
