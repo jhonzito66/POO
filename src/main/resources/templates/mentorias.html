@@ -75,7 +75,7 @@
                 <div th:if="${usuario.getTipoMentor() != null && usuario.getTipoMentor() == true}">
                     <!-- Botões de ação quando a mentoria não está concluída -->
                     <div th:if="${mentoria.getStatus() != 'Concluída'}">
-                        <button class="nav-btn" th:onclick="'window.location.href=\'/mentorias/detalhes/' + ${mentoria.getId()} + '\''">Diálogo</button>
+                        <button class="nav-btn" th:onclick="'window.location.href=\'/mentorias/dialogo/' + ${mentoria.getId()} + '\''">Diálogo</button>
                         <button class="nav-btn" th:onclick="'finalizarMentoria(' + ${mentoria.getId()} + ')'">Finalizar</button>
                     </div>
                     <!-- Mostrar avaliação quando a mentoria está concluída -->
@@ -98,7 +98,7 @@
                 <div th:if="${usuario.getTipoMentor() == null || usuario.getTipoMentor() == false}">
                     <!-- Botões visíveis apenas se a mentoria não estiver finalizada -->
                     <div th:if="${mentoria.getStatus() != 'Concluída'}">
-                        <button class="nav-btn" th:onclick="'window.location.href=\'/mentorias/detalhes/' + ${mentoria.getId()} + '\''">Diálogo</button>
+                        <button class="nav-btn" th:onclick="'window.location.href=\'/mentorias/dialogo/' + ${mentoria.getId()} + '\''">Diálogo</button>
                         <button class="nav-btn" th:onclick="'sairMentoria(' + ${mentoria.getId()} + ')'">Sair</button>
                     </div>
                     <!-- Mostrar status da avaliação -->

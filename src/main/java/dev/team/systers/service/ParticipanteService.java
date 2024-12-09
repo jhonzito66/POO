@@ -18,21 +18,25 @@ public class ParticipanteService {
         this.participanteRepository = participanteRepository;
     }
 
-    public Participante criarParticipanteMentor(Usuario mentor, Mentoria mentoria) {
+    public void criarParticipanteMentor(Usuario mentor, Mentoria mentoria) {
         Participante participante = new Participante();
         participante.setNome(mentor.getNome());
         participante.setUsuario(mentor);
         participante.setTipo(Participante.TipoParticipante.MENTOR);
         participante.setMentoria(mentoria);
-        return participanteRepository.save(participante);
+        participanteRepository.save(participante);
     }
 
-    public Participante criarParticipanteMentorado(Usuario mentorado, Mentoria mentoria) {
+    public void criarParticipanteMentorado(Usuario mentorado, Mentoria mentoria) {
         Participante participante = new Participante();
         participante.setNome(mentorado.getNome());
         participante.setUsuario(mentorado);
         participante.setTipo(Participante.TipoParticipante.MENTORADO);
         participante.setMentoria(mentoria);
-        return participanteRepository.save(participante);
+        participanteRepository.save(participante);
     }
-} 
+
+    public Participante buscarParticipantePorUsuarioEMentoria(Usuario usuario, Mentoria mentoria) {
+        return participanteRepository.findParticipanteByUsuarioAndMentoria(usuario, mentoria);
+    }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisar Grupos</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/pesquisar-grupos.css}">
+</head>
+<body>
+    <!-- Barra Superior -->
+    <header class="top-bar">
+        <div class="logo">Systers</div>
+        <nav class="nav-bar">
+            <button class="nav-btn" onclick="window.location.href='/feed';">Home</button>
+            <button class="nav-btn" onclick="window.location.href='/perfil/me';">Meu Perfil</button>
+            <button class="nav-btn" onclick="window.location.href='/grupos';">Grupo</button>
+            <button class="nav-btn" onclick="window.location.href='/mentorias';">Mentoria</button>
+            <button class="nav-btn" onclick="document.getElementById('logoutForm').submit();">Logout</button>
+        </nav>
+        <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        </form>
+    </header>
+
+    <main class="container">
+        <h2>Pesquisar Grupos</h2>
+        <p>Encontre grupos para participar</p>
+
+        <!-- Formulário de Pesquisa -->
+        <form th:action="@{/grupos/pesquisar}" method="get" class="search-form">
+            <input type="text" name="q" th:value="${param.q}" placeholder="Digite o nome do grupo..." class="search-input">
+            <button type="submit" class="btn-search">Pesquisar</button>
+        </form>
+
+        <!-- Resultados da Pesquisa -->
+        <div class="search-results">
+            <div th:each="grupo : ${grupos}" class="grupo-card">
+                <h3>
+                    <a th:href="@{/grupos/grupo/{id}(id=${grupo.id})}" 
+                       th:text="${grupo.nome}" 
+                       class="grupo-link">Nome do Grupo</a>
+                </h3>
+                <p th:text="${grupo.descricao}">Descrição do grupo</p>
+                <div class="grupo-info">
+                    <div class="grupo-detalhes">
+                        <span class="membro-count" th:text="${grupo.membros.size() + ' membros'}">0 membros</span>
+                        <span class="grupo-dono" 
+                              th:with="dono=${grupo.membros.?[autorizacao.name() == 'DONO'].get(0)}"
+                              th:text="'Criado por @' + ${dono.usuario.login}">@dono</span>
+                    </div>
+                    <a th:href="@{/grupos/grupo/{id}(id=${grupo.id})}" class="btn-ver">Ver Grupo</a>
+                </div>
+            </div>
+            
+            <!-- Mensagem quando não há resultados -->
+            <div th:if="${grupos != null && grupos.empty}" class="no-results">
+                <p>Nenhum grupo encontrado.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Systers</p>
+    </footer>
+</body>
+</html> 
