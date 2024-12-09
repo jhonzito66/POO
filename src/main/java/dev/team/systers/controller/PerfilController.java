@@ -1,14 +1,13 @@
 package dev.team.systers.controller;
 
+import dev.team.systers.model.Denuncia;
+import dev.team.systers.service.DenunciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import dev.team.systers.exception.UsuarioException;
 import dev.team.systers.model.Perfil;
@@ -20,11 +19,13 @@ import dev.team.systers.service.UsuarioService;
 public class PerfilController {
     private final UsuarioService usuarioService;
     private final PerfilService perfilService;
+    private final DenunciaService denunciaService;
 
     @Autowired
-    public PerfilController(PerfilService perfilService, UsuarioService usuarioService) {
+    public PerfilController(PerfilService perfilService, UsuarioService usuarioService, DenunciaService denunciaService) {
         this.usuarioService = usuarioService;
         this.perfilService = perfilService;
+        this.denunciaService = denunciaService;
     }
 
     @GetMapping("/perfil/me")
@@ -165,6 +166,22 @@ public class PerfilController {
         } catch (Exception e) {
             model.addAttribute("mensagemErro", "Erro ao atualizar perfil: " + e.getMessage());
             return "editarPerfil";
+        }
+    }
+
+    @PostMapping("perfil/denunciar")
+    public String criarDenuncia(@RequestParam String categoria,
+                                @RequestParam String descricao,
+                                @RequestParam String loginAutor,
+                                @RequestParam String loginReportado,
+                                Model model) {
+        try {
+            Denuncia denuncia = denunciaService.criarDenuncia(categoria, descricao, loginAutor, loginReportado);
+            denunciaService.salvarDenunciaSimples(denuncia);
+            return "redirect:/perfil/me"; // Redireciona corretamente para o perfil
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("erro", "Erro ao criar denúncia: " + e.getMessage()); // Passa o erro para o modelo
+            return "error"; // Retorna para uma página de erro, como "perfil/erro"
         }
     }
 }

@@ -215,8 +215,13 @@
         <span class="close" onclick="closeReportPopup()">&times;</span>
         <h3>Denunciar Perfil</h3>
         <form th:action="@{/perfil/denunciar}" method="post">
-            <label for="reason">Motivo da Denúncia:</label>
-            <textarea id="reason" name="reason" placeholder="Descreva o motivo da denúncia..." rows="4" required></textarea>
+            <input type="hidden" name="loginAutor" th:value="${#authentication.name}" />
+            <input type="hidden" name="loginReportado" th:value="${usuario.login}" />
+            <label for="categoria">Categoria:</label>
+            <input id="categoria" name="categoria" type="text" placeholder="Ex: Comportamento inadequado" required />
+
+            <label for="descricao">Descrição:</label>
+            <textarea id="descricao" name="descricao" placeholder="Descreva o motivo da denúncia..." rows="4" required></textarea>
 
             <button type="submit" class="btn-submit">Enviar Denúncia</button>
         </form>

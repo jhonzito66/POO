@@ -22,13 +22,14 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login", "/registrar", "/registrar_usuario", "/css/**", "/js/**").permitAll() // Páginas públicas
+                        .requestMatchers("/perfil/denunciar").authenticated()
                         .anyRequest().authenticated() // Protege outras páginas
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Página personalizada  de login
+                        .loginPage("/login") // Página personalizada de login
                         .usernameParameter("login")
                         .passwordParameter("senha")
-                        .defaultSuccessUrl("/feed", true) // Redireciona à página de perfil após o login
+                        .defaultSuccessUrl("/feed", true) // Redireciona à página de feed após o login
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -36,9 +37,9 @@ public class SecurityConfig {
                         .invalidateHttpSession(true) // Invalidar sessão
                         .deleteCookies("JSESSIONID") // Deletar cookies
                 );
-                http.csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/css/**", "/js/**")
-                );
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers("/css/**", "/js/**")
+        );
         return http.build();
     }
 

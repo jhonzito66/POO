@@ -14,10 +14,12 @@ import dev.team.systers.repository.DenunciaRepository;
 public class DenunciaService {
 
     private final DenunciaRepository denunciaRepository;
+    private final UsuarioService usuarioService;
 
     @Autowired
-    public DenunciaService(DenunciaRepository denunciaRepository) {
+    public DenunciaService(DenunciaRepository denunciaRepository, UsuarioService usuarioService) {
         this.denunciaRepository = denunciaRepository;
+        this.usuarioService = usuarioService;
     }
 
     // Listar todas as denúncias
@@ -140,4 +142,17 @@ public class DenunciaService {
         }).orElse(false); // Retorna false se a denúncia não foi encontrada
     }
 
+    public Denuncia criarDenuncia(String categoria, String descricao, String loginAutor, String loginReportado) {
+        Denuncia denuncia = new Denuncia();
+        denuncia.setCategoria(categoria);
+        denuncia.setDescricao(descricao);
+        denuncia.setDataHora(LocalDateTime.now());
+        denuncia.setUsuarioAutor(usuarioService.encontrarPorLogin(loginAutor));
+        denuncia.setUsuarioReportado(usuarioService.encontrarPorLogin(loginReportado));
+        return denuncia;
+    }
+
+    public void salvarDenunciaSimples(Denuncia denuncia) {
+        denunciaRepository.save(denuncia);
+    }
 }

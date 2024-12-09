@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,21 +47,6 @@ public class DenunciaController {
         return denunciaService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    /**
-     * Cria uma nova denúncia.
-     * @param denuncia Dados da denúncia.
-     * @return Denúncia criada.
-     */
-    @PostMapping
-    public ResponseEntity<Denuncia> criarDenuncia(@RequestBody Denuncia denuncia) {
-        try {
-            Denuncia novaDenuncia = denunciaService.salvarDenuncia(denuncia);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaDenuncia);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     /**
@@ -143,6 +127,7 @@ public class DenunciaController {
         LocalDateTime dataFim = LocalDateTime.parse(fim);
         return ResponseEntity.ok(denunciaService.listarPorDataHoraBetween(dataInicio, dataFim));
     }
+
     @PutMapping("/resolver/{id}")
     public ResponseEntity<String> resolverDenuncia(@PathVariable Long id) {
         boolean resolvida = denunciaService.resolverDenuncia(id);
