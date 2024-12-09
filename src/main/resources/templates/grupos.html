@@ -59,12 +59,13 @@
             <td th:text="${grupo.descricao}">Descrição do grupo</td>
             <td th:text="${grupo.membros.size()}">Número de participantes</td>
             <td>
-                <a th:href="@{/grupos/detalhes/{nome}(nome=${grupo.nome})}" class="nav-btn">Ver Detalhes</a>
+                <a th:href="@{/grupos/grupo/{id}(id=${grupo.id})}" class="nav-btn">Ver Detalhes</a>
 
-                <!-- Botão para Excluir Grupo (apenas para administradores) -->
-                <form sec:authorize="hasRole('ADMIN')"
-                      th:id="'excluirGrupoForm-' + ${grupo.nome}"
-                      th:action="@{/grupos/excluir/{nome}(nome=${grupo.nome})}" 
+                <!-- Botão para Excluir Grupo (apenas para donos) -->
+                <form th:with="currentUser=${#authentication.principal.username}"
+                      th:if="${grupo.membros.?[usuario.login == #authentication.principal.username and autorizacao.name() == 'DONO'].size() > 0}"
+                      th:id="'excluirGrupoForm-' + ${grupo.id}"
+                      th:action="@{/grupos/excluir/{id}(id=${grupo.id})}" 
                       method="post" 
                       style="display: inline;">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
@@ -72,6 +73,19 @@
                             th:data-grupo-nome="${grupo.nome}"
                             onclick="return confirmarExclusao(this)">
                         Excluir Grupo
+                    </button>
+                </form>
+
+                <!-- Botão para Sair do Grupo (para membros que não são donos) -->
+                <form th:with="currentUser=${#authentication.principal.username}"
+                      th:if="${grupo.membros.?[usuario.login == #authentication.principal.username and autorizacao.name() != 'DONO'].size() > 0}"
+                      th:action="@{/grupos/sair/{id}(id=${grupo.id})}" 
+                      method="post" 
+                      style="display: inline;">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <button class="nav-btn" type="submit"
+                            th:onclick="return confirm('Tem certeza que deseja sair do grupo?')">
+                        Sair do Grupo
                     </button>
                 </form>
             </td>

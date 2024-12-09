@@ -94,12 +94,12 @@ public class GrupoController {
         return "redirect:/grupos";
     }
 
-    @GetMapping("/grupos/{nome}")
-    public String exibirGrupo(@PathVariable String nome, Model model) {
-        // Buscar o grupo pelo nome
-        Grupo grupo = grupoService.buscarGrupoPorNome(nome);
+    @GetMapping("/grupos/{id}")
+    public String exibirGrupo(@PathVariable String id, Model model) {
+        // Buscar o grupo pelo id
+        Grupo grupo = grupoService.buscarGrupoPorNome(id);
         if (grupo == null) {
-            throw new IllegalArgumentException("Grupo não encontrado com o nome: " + nome);
+            throw new IllegalArgumentException("Grupo não encontrado com o id: " + id);
         }
 
         // Buscar o usuário associado ao grupo
@@ -115,8 +115,8 @@ public class GrupoController {
         return "grupo";
     }
 
-    @PostMapping("/grupos/excluir/{nome}")
-    public String excluirGrupo(@PathVariable String nome, RedirectAttributes redirectAttributes) {
+    @PostMapping("/grupos/excluir/{id}")
+    public String excluirGrupo(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             // Obter o usuário autenticado
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -131,14 +131,8 @@ public class GrupoController {
                 throw new UsuarioException("Usuário não encontrado");
             }
 
-            // Buscar o grupo pelo nome
-            Grupo grupo = grupoService.buscarGrupoPorNome(nome);
-            if (grupo == null) {
-                throw new GrupoException("Grupo não encontrado");
-            }
-
             // Excluir o grupo
-            grupoService.excluirGrupo(grupo.getId(), usuarioAutenticado);
+            grupoService.excluirGrupo(id, usuarioAutenticado);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Grupo excluído com sucesso!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao excluir grupo: " + e.getMessage());
